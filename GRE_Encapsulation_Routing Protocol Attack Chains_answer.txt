@@ -1,0 +1,3001 @@
+================================================================
+  INDIRECT PENTEST MODEL — 150 ANSWERS (BILINGUAL)
+  English + Tamil — One by One
+  Topic: GRE / Encapsulation / Routing Protocol Attack Chains
+================================================================
+
+--- SECTION 1: GRE FUNDAMENTALS (A1–A15) ---
+
+A1.
+[EN] The router treats Proto=47 as any other routed
+     protocol. It looks up the destination IP in its
+     routing table and forwards the packet onward.
+     Without a tunnel interface configured, the router
+     performs NO decapsulation. The inner packet is
+     never exposed. The GRE packet is simply forwarded
+     as-is toward the outer Dst IP.
+
+[TM] Router Proto=47-ஐ வேற எந்த routed protocol
+     மாதிரியே treat பண்றது. Outer Dst IP-ஐ routing
+     table-ல் lookup பண்ணி packet-ஐ forward பண்றது.
+     Tunnel interface configure ஆகவில்லை என்றால்
+     router decapsulation பண்றதே இல்லை. Inner packet
+     எப்போதும் expose ஆவதில்லை. GRE packet outer
+     Dst IP-நோக்கி அப்படியே forward ஆகும்.
+
+----------------------------------------------------------------
+
+A2.
+[EN] No. The tunnel has a fixed destination of 5.5.5.5.
+     When a GRE packet arrives from 1.2.3.4 (not 5.5.5.5),
+     the router checks: "Is this packet from my configured
+     tunnel peer?" — it is not. The packet is either
+     dropped or forwarded as a plain Proto=47 packet
+     without decapsulation. Fixed-destination tunnels
+     only decap packets from the configured peer IP.
+
+[TM] இல்லை. Tunnel-க்கு fixed destination 5.5.5.5.
+     1.2.3.4-லிருந்து GRE packet வரும்போது router
+     check பண்றது: "இது என்னோட configured tunnel
+     peer-லிருந்து வந்ததா?" — இல்லை. Packet drop
+     ஆகும் அல்லது decapsulation இல்லாம plain
+     Proto=47 packet-ஆக forward ஆகும். Fixed-destination
+     tunnel configured peer IP-லிருந்து வரும் packets
+     மட்டும் decap பண்றது.
+
+----------------------------------------------------------------
+
+A3.
+[EN] The router decapsulates the GRE packet. mGRE
+     (multipoint GRE) has no fixed destination — it
+     accepts GRE packets from ANY source IP. After decap,
+     the inner packet is forwarded according to the
+     routing table. The attacker's inner packet reaches
+     the internal LAN. This is the vulnerable condition
+     for GRE injection.
+
+[TM] Router GRE packet-ஐ decapsulate பண்றது. mGRE
+     (multipoint GRE)-க்கு fixed destination இல்லை —
+     எந்த source IP-லிருந்தும் GRE packets accept
+     பண்றது. Decap ஆன பிறகு inner packet routing
+     table படி forward ஆகும். Attacker-ஓட inner
+     packet internal LAN-ஐ reach பண்றது. இதுதான்
+     GRE injection-க்கான vulnerable condition.
+
+----------------------------------------------------------------
+
+A4.
+[EN] The packet is dropped. IPSec protection requires
+     valid ESP/AH headers with correct SPI and
+     cryptographic integrity. An attacker cannot forge
+     a valid IPSec-protected GRE packet without the
+     session keys. The router's IPSec processing will
+     fail the integrity check and discard the packet
+     before decapsulation.
+
+[TM] Packet drop ஆகும். IPSec protection-க்கு correct
+     SPI மற்றும் cryptographic integrity உள்ள valid
+     ESP/AH headers தேவை. Session keys இல்லாம attacker
+     valid IPSec-protected GRE packet forge பண்ண
+     முடியாது. Router-ஓட IPSec processing integrity
+     check fail பண்ணும், decapsulation-க்கு முன்னாடியே
+     packet discard ஆகும்.
+
+----------------------------------------------------------------
+
+A5.
+[EN] Forwarding GRE: Router sees Proto=47, looks up
+     outer Dst in routing table, forwards packet.
+     No decap. The inner packet is invisible to the router.
+     GRE tunnel interface: Router has "tunnel source X,
+     tunnel destination Y" configured. When outer Dst=X
+     and conditions match, router DECAPSULATES the packet
+     and processes the inner payload. The inner packet
+     enters the router's routing engine as a new packet.
+
+[TM] GRE forward பண்றது: Router Proto=47 பார்க்கும்,
+     routing table-ல் outer Dst lookup பண்ணி forward
+     பண்றது. Decap இல்லை. Inner packet router-க்கு
+     invisible.
+     GRE tunnel interface: "tunnel source X, tunnel
+     destination Y" configure ஆகியிருக்கு. Outer Dst=X
+     மற்றும் conditions match ஆனால் router DECAPSULATE
+     பண்ணி inner payload process பண்றது. Inner packet
+     router routing engine-ல் புது packet-ஆக enter ஆகும்.
+
+----------------------------------------------------------------
+
+A6.
+[EN] Outer Dst IP = 203.0.113.1 (Gi0/0 — external
+     interface). This is the internet-routable IP that
+     the attacker can reach from the internet. The GRE
+     tunnel endpoint is always the external interface IP
+     of the whitelist router.
+
+[TM] Outer Dst IP = 203.0.113.1 (Gi0/0 — external
+     interface). இது internet-ல் reachable IP —
+     attacker internet-லிருந்து reach பண்ணலாம்.
+     GRE tunnel endpoint எப்போதும் whitelist router-ஓட
+     external interface IP ஆகும்.
+
+----------------------------------------------------------------
+
+A7.
+[EN] Inner Src IP must be from the internal subnet,
+     e.g. 10.0.0.99 (unused IP on 10.0.0.0/24).
+     Must NOT be public IP because:
+     (1) OSPF checks that Hello Src IP belongs to the
+         same subnet as the receiving interface. A public
+         IP like 8.8.8.8 does not match 10.0.0.0/24 —
+         Hello rejected.
+     (2) Return traffic: target replies to inner Src IP.
+         Public IP return traffic routes to internet,
+         never reaches attacker. Attack loop broken.
+
+[TM] Inner Src IP internal subnet-லிருந்து இருக்கணும்,
+     எ.கா. 10.0.0.99 (10.0.0.0/24-ல் unused IP).
+     Public IP ஆக இருக்கக்கூடாது, ஏனென்றால்:
+     (1) OSPF check பண்றது — Hello Src IP, receiving
+         interface-ஓட subnet-ல் இருக்கணும். 8.8.8.8
+         போன்ற public IP 10.0.0.0/24-க்கு match ஆகாது
+         — Hello rejected.
+     (2) Return traffic: target inner Src IP-க்கு reply
+         அனுப்பும். Public IP return traffic internet-க்கு
+         போகும், attacker-ஐ reach பண்ணாது. Attack
+         loop broken.
+
+----------------------------------------------------------------
+
+A8.
+[EN] OSPF subnet check fails. The target router's internal
+     interface is on 10.0.0.0/24 (or 172.16.0.0/24).
+     When it receives an OSPF Hello with Src=8.8.8.8,
+     it checks: "Is 8.8.8.8 in my directly connected
+     subnet?" — No. OSPF discards the Hello. No neighbor
+     relationship is formed.
+
+[TM] OSPF subnet check fail ஆகும். Target router-ஓட
+     internal interface 10.0.0.0/24 (அல்லது 172.16.0.0/24)
+     -ல் இருக்கு. Src=8.8.8.8 என்று OSPF Hello receive
+     பண்ணும்போது check பண்றது: "8.8.8.8 என்னோட
+     directly connected subnet-ல் இருக்கா?" — இல்லை.
+     OSPF Hello-ஐ discard பண்றது. Neighbor relationship
+     form ஆவதில்லை.
+
+----------------------------------------------------------------
+
+A9.
+[EN] Inner Src IP must be in 10.0.0.0/24 range, i.e.,
+     10.0.0.1 through 10.0.0.254. The exact IP must
+     not be already assigned to a live device (to avoid
+     conflicts). An unused IP like 10.0.0.99 is ideal.
+     The subnet mask match is what OSPF validates, not
+     whether the IP is reachable independently.
+
+[TM] Inner Src IP 10.0.0.0/24 range-ல் இருக்கணும்,
+     அதாவது 10.0.0.1 முதல் 10.0.0.254 வரை. Exact IP
+     live device-க்கு already assign ஆகியிருக்கக்கூடாது
+     (conflicts avoid பண்ண). 10.0.0.99 போன்ற unused IP
+     ideal. OSPF subnet mask match validate பண்றது —
+     IP தனியா reachable-ஆ இருக்கான்னு இல்லை.
+
+----------------------------------------------------------------
+
+A10.
+[EN] Step 1: Attacker sends GRE packet, outer Dst=whitelist
+     router external IP, inner Src=10.0.0.99, inner
+     Dst=224.0.0.5, inner Proto=89, inner TTL=1.
+     Step 2: Whitelist router (mGRE) decapsulates.
+     Step 3: Inner packet forwarded out Gi0/1 (internal).
+     Step 4: 224.0.0.5 is OSPF multicast — all OSPF
+     routers on segment receive the Hello.
+     Step 5: Target router sees Hello from 10.0.0.99 on
+     its subnet, no auth configured → starts OSPF neighbor
+     negotiation (INIT state).
+     Step 6: Full adjacency forms, attacker can inject LSAs.
+
+[TM] Step 1: Attacker GRE packet அனுப்புறான் — outer
+     Dst=whitelist router external IP, inner Src=10.0.0.99,
+     inner Dst=224.0.0.5, inner Proto=89, inner TTL=1.
+     Step 2: Whitelist router (mGRE) decapsulate பண்றது.
+     Step 3: Inner packet Gi0/1 (internal) வழியா forward.
+     Step 4: 224.0.0.5 = OSPF multicast — segment-ல்
+     உள்ள எல்லா OSPF routers-உம் Hello receive பண்றது.
+     Step 5: Target router தன்னோட subnet-ல் 10.0.0.99-லிருந்து
+     Hello பார்க்குது, auth இல்லை → OSPF neighbor
+     negotiation start (INIT state).
+     Step 6: Full adjacency form ஆகுது, attacker LSAs
+     inject பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A11.
+[EN] Longest prefix match: a /32 host route is more
+     specific than a /24 network route. When the routing
+     table has both 172.16.0.1/32 (via attacker) and
+     172.16.0.0/24 (directly connected), all traffic TO
+     172.16.0.1 uses the /32 route. This means BGP SYN-ACK
+     packets destined for 172.16.0.1 are routed to the
+     attacker, completing the TCP handshake. The /24 route
+     still handles other IPs on the subnet normally.
+
+[TM] Longest prefix match: /32 host route, /24 network
+     route-விட more specific. Routing table-ல் இரண்டும்
+     இருந்தால் — 172.16.0.1/32 (attacker வழியா) மற்றும்
+     172.16.0.0/24 (directly connected) — 172.16.0.1-க்கான
+     எல்லா traffic-உம் /32 route பயன்படுத்தும். BGP
+     SYN-ACK 172.16.0.1-க்கு போகும்போது attacker-க்கு
+     route ஆகும் — TCP handshake complete ஆகும். /24
+     route மற்ற subnet IPs-க்கு normally handle பண்றது.
+
+----------------------------------------------------------------
+
+A12.
+[EN] If inner Src = outer Dst = 10.10.10.1 (same IP):
+     After decap, inner packet Src=10.10.10.1. This is
+     the router's own external interface. Routing table:
+     10.10.10.1 is "me" — packet will be processed locally
+     or create routing confusion. OSPF will see a Hello
+     from the router's own IP — invalid. Inner Src must
+     be the INTERNAL interface IP (172.16.0.1, Gi0/1)
+     or an unused internal subnet IP.
+
+[TM] Inner Src = outer Dst = 10.10.10.1 (same IP) என்றால்:
+     Decap-க்கு பிறகு inner packet Src=10.10.10.1.
+     இது router-ஓட own external interface. Routing table:
+     10.10.10.1 = "நானே" — packet locally process ஆகும்
+     அல்லது routing confusion create ஆகும். OSPF router-ஓட
+     own IP-லிருந்து Hello பார்க்கும் — invalid.
+     Inner Src INTERNAL interface IP (172.16.0.1, Gi0/1)
+     அல்லது unused internal subnet IP ஆக இருக்கணும்.
+
+----------------------------------------------------------------
+
+A13.
+[EN] GRE Protocol field 0x0800 = EtherType for IPv4.
+     This means an IPv4 packet is encapsulated inside GRE.
+     Other values: 0x86DD = IPv6, 0x0806 = ARP,
+     0x8100 = 802.1Q VLAN-tagged Ethernet.
+
+[TM] GRE Protocol field 0x0800 = IPv4-க்கான EtherType.
+     GRE-க்குள் IPv4 packet encapsulate ஆகியிருக்கு
+     என்று அர்த்தம்.
+     மற்ற values: 0x86DD = IPv6, 0x0806 = ARP,
+     0x8100 = 802.1Q VLAN-tagged Ethernet.
+
+----------------------------------------------------------------
+
+A14.
+[EN] OSPF Hello with TTL=64: When the inner packet is
+     forwarded from the whitelist router's internal
+     interface to the LAN, it is a routed packet. If
+     OSPF Hello TTL=64, the target receives it with
+     TTL=63 (after one hop decrement). OSPF on broadcast
+     segments sends to multicast 224.0.0.5 and TTL must
+     be 1 for link-local scope — TTL=64 would allow the
+     multicast to propagate beyond the segment, which is
+     not OSPF's intent and may cause issues.
+
+[TM] OSPF Hello TTL=64 இருந்தால்: Inner packet whitelist
+     router internal interface-லிருந்து LAN-க்கு forward
+     ஆகும்போது routed packet. OSPF Hello TTL=64 என்றால்
+     target TTL=63-ஆ receive பண்ணும் (one hop decrement).
+     Broadcast segments-ல் OSPF multicast 224.0.0.5-க்கு
+     அனுப்புது, TTL=1 link-local scope-க்கு தேவை.
+     TTL=64 multicast-ஐ segment-க்கு அப்பால் propagate
+     பண்ண allow பண்றது — OSPF-ஓட intent இல்லை, issues
+     create பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A15.
+[EN] Correct TTL = 1 for OSPF Hello on broadcast/NBMA
+     segments. TTL=1 means the packet is link-local — it
+     cannot be forwarded beyond one hop. This ensures
+     OSPF neighbors are directly connected. An OSPF Hello
+     with TTL=1 sent on the internal LAN segment will
+     reach all routers on that segment but won't be
+     forwarded further, matching normal OSPF behavior.
+
+[TM] Broadcast/NBMA segments-ல் OSPF Hello-க்கு correct
+     TTL = 1. TTL=1 என்றால் packet link-local — ஒரு
+     hop-க்கு அப்பால் forward ஆகாது. OSPF neighbors
+     directly connected என்று இது ensure பண்றது.
+     TTL=1-உடன் internal LAN segment-ல் அனுப்பப்பட்ட
+     OSPF Hello அந்த segment-ல் உள்ள எல்லா routers-ஐ
+     reach பண்ணும், அதற்கு அப்பால் forward ஆகாது —
+     normal OSPF behavior match ஆகும்.
+
+----------------------------------------------------------------
+
+--- SECTION 2: INNER vs OUTER IP ADDRESSING (A16–A30) ---
+
+A16.
+[EN] Outer Dst IP = 203.0.113.1 (Gi0/0 — external).
+     This is internet-routable — needed for GRE delivery.
+     Inner Src IP = 172.16.0.1 (Gi0/1 — internal).
+     This is the LAN-facing IP — used for protocol trust.
+     Same physical device, two different interfaces,
+     two different IPs serving two different purposes.
+
+[TM] Outer Dst IP = 203.0.113.1 (Gi0/0 — external).
+     Internet-ல் routable — GRE delivery-க்கு தேவை.
+     Inner Src IP = 172.16.0.1 (Gi0/1 — internal).
+     LAN-facing IP — protocol trust-க்கு பயன்படுது.
+     ஒரே physical device, இரண்டு different interfaces,
+     இரண்டு different purposes-க்கு இரண்டு different IPs.
+
+----------------------------------------------------------------
+
+A17.
+[EN] OSPF uses subnet-based trust: any IP in the correct
+     subnet triggers neighbor negotiation. No explicit
+     per-IP whitelist. So any 172.16.0.x works.
+     BGP uses explicit IP-based trust: the config says
+     "neighbor 172.16.0.1 remote-as X" — ONLY TCP from
+     172.16.0.1 on port 179 is accepted. Any other source
+     IP causes the TCP connection to be refused or RST.
+
+[TM] OSPF subnet-based trust பயன்படுத்துது: correct subnet-ல்
+     எந்த IP-யும் neighbor negotiation trigger பண்றது.
+     Explicit per-IP whitelist இல்லை. 172.16.0.x எதுவும்
+     work ஆகும்.
+     BGP explicit IP-based trust: config சொல்றது
+     "neighbor 172.16.0.1 remote-as X" — port 179-ல்
+     172.16.0.1-லிருந்து TCP மட்டும் accept. வேற எந்த
+     source IP-லிருந்தும் TCP connection refuse அல்லது
+     RST ஆகும்.
+
+----------------------------------------------------------------
+
+A18.
+[EN] No. Target BGP config explicitly states
+     "neighbor 172.16.0.1 remote-as 65001". When TCP
+     SYN arrives from 172.16.0.99, the router checks its
+     neighbor table — 172.16.0.99 is not configured. TCP
+     connection is refused. BGP session never opens.
+     Inner Src must be exactly 172.16.0.1.
+
+[TM] இல்லை. Target BGP config clearly சொல்றது
+     "neighbor 172.16.0.1 remote-as 65001". 172.16.0.99-லிருந்து
+     TCP SYN வரும்போது router neighbor table check பண்றது
+     — 172.16.0.99 configure ஆகவில்லை. TCP connection
+     refuse ஆகும். BGP session open ஆவதே இல்லை.
+     Inner Src exactly 172.16.0.1 ஆக இருக்கணும்.
+
+----------------------------------------------------------------
+
+A19.
+[EN] TCP requires 3-way handshake. SYN-ACK returns to
+     inner Src IP. If inner Src=172.16.0.99 (unused fake
+     IP), the SYN-ACK goes to 172.16.0.99. No device owns
+     this IP, so no ACK is sent back. Handshake fails.
+     If inner Src=172.16.0.1 (whitelist router), combined
+     with OSPF /32 route injection pointing 172.16.0.1 to
+     attacker, the SYN-ACK is routed to the attacker who
+     completes the handshake.
+
+[TM] TCP-க்கு 3-way handshake வேண்டும். SYN-ACK inner
+     Src IP-க்கு திரும்பும். Inner Src=172.16.0.99 (unused
+     fake IP) என்றால் SYN-ACK 172.16.0.99-க்கு போகும்.
+     இந்த IP எந்த device-க்கும் சொந்தமில்லை, ACK
+     அனுப்பப்படாது. Handshake fail. Inner Src=172.16.0.1
+     (whitelist router) + OSPF /32 route injection
+     172.16.0.1→attacker என்று இருந்தால் SYN-ACK attacker-க்கு
+     route ஆகும், handshake complete ஆகும்.
+
+----------------------------------------------------------------
+
+A20.
+[EN] No. Access-list 10 only permits 172.16.0.1.
+     SNMP request from 172.16.0.99 hits the implicit
+     deny — request dropped. Inner Src must be changed
+     to 172.16.0.1 (whitelist router internal IF).
+     This IP is in the ACL permit list, so the SNMP
+     query will be accepted and processed.
+
+[TM] இல்லை. Access-list 10 172.16.0.1 மட்டும் permit
+     பண்றது. 172.16.0.99-லிருந்து SNMP request implicit
+     deny-ஐ hit பண்ணும் — request drop ஆகும்.
+     Inner Src 172.16.0.1-ஆக (whitelist router internal IF)
+     மாத்தணும். இந்த IP ACL permit list-ல் இருக்கு,
+     SNMP query accept மற்றும் process ஆகும்.
+
+----------------------------------------------------------------
+
+A21.
+[EN] Yes. VRRP does not perform per-IP authentication
+     by default. It checks: (1) VRID matches, (2) priority
+     comparison, (3) no auth configured. Inner Src=172.16.0.99
+     is on the correct subnet, VRID=1 matches, priority=255
+     beats real master's 100. Real master follows RFC 3768
+     and steps down. Virtual IP is taken over.
+
+[TM] ஆமா. VRRP default-ஆ per-IP authentication பண்றதில்லை.
+     Check பண்றது: (1) VRID match, (2) priority compare,
+     (3) auth configure ஆகவில்லை. Inner Src=172.16.0.99
+     correct subnet-ல் இருக்கு, VRID=1 match, priority=255
+     real master-ஓட 100-ஐ beat பண்றது. Real master RFC 3768
+     follow பண்ணி step down ஆகும். Virtual IP takeover ஆகும்.
+
+----------------------------------------------------------------
+
+A22.
+[EN] Any unused subnet IP (e.g. 172.16.0.99) is
+     appropriate. NTP is UDP and stateless. Without ntp
+     access-group, the NTP server accepts time responses
+     from any source. The server does not track who sent
+     the query — it processes the response based on timing
+     fields, not source IP. Using a fake IP avoids conflict
+     with real devices and is cleaner.
+
+[TM] எந்த unused subnet IP-யும் (எ.கா. 172.16.0.99)
+     appropriate. NTP UDP மற்றும் stateless. ntp
+     access-group இல்லாம NTP server எந்த source-லிருந்தும்
+     time responses accept பண்றது. யார் query அனுப்பினாங்கன்னு
+     server track பண்றதில்லை — timing fields-ஐ பார்த்து
+     process பண்றது, source IP-ஐ இல்லை. Fake IP
+     real devices-உடன் conflict avoid பண்றது — cleaner.
+
+----------------------------------------------------------------
+
+A23.
+[EN] Yes, this works. DNS server has no ACL. UDP port 53
+     is stateless. The DNS server receives the spoofed
+     reply and if the transaction ID matches a pending
+     query, it caches the fake answer. Inner Src=172.16.0.99
+     (subnet IP) is valid enough — DNS does not validate
+     whether the source IP is a real configured resolver.
+
+[TM] ஆமா, இது work ஆகும். DNS server-ல் ACL இல்லை.
+     UDP port 53 stateless. DNS server spoofed reply
+     receive பண்றது, transaction ID pending query-உடன்
+     match ஆனால் fake answer cache பண்றது.
+     Inner Src=172.16.0.99 (subnet IP) valid — DNS source
+     IP real configured resolver-ஆ இருக்கான்னு validate
+     பண்றதில்லை.
+
+----------------------------------------------------------------
+
+A24.
+[EN] SYN-ACK is sent to inner Src IP = 172.16.0.99.
+     Since 172.16.0.99 is an unused/fake IP, no device
+     on the LAN owns it. The SYN-ACK arrives on the LAN,
+     finds no owner, and is dropped. No ACK is returned.
+     TCP 3-way handshake never completes. LDAP session
+     cannot be established. Attack fails at handshake.
+
+[TM] SYN-ACK inner Src IP = 172.16.0.99-க்கு அனுப்பப்படும்.
+     172.16.0.99 unused/fake IP என்பதால் LAN-ல் எந்த
+     device-க்கும் சொந்தமில்லை. SYN-ACK LAN-ல் வரும்,
+     owner கிடைக்காது, drop ஆகும். ACK திரும்பி
+     அனுப்பப்படாது. TCP 3-way handshake complete ஆவதே
+     இல்லை. LDAP session establish ஆகாது. Attack
+     handshake-ல் fail ஆகும்.
+
+----------------------------------------------------------------
+
+A25.
+[EN] OSPF injects a /32 host route:
+     172.16.0.1/32 → next-hop: attacker's tunnel IP.
+     All internal routers install this route.
+     When target sends SYN-ACK to 172.16.0.1, routing
+     table lookup finds /32 route → forwards to attacker.
+     Attacker receives SYN-ACK, sends ACK → handshake
+     complete. BGP session established. The /32 route
+     redirects only 172.16.0.1 traffic to attacker without
+     breaking other 172.16.0.x traffic.
+
+[TM] OSPF /32 host route inject பண்றது:
+     172.16.0.1/32 → next-hop: attacker tunnel IP.
+     எல்லா internal routers-உம் இந்த route install பண்றது.
+     Target SYN-ACK 172.16.0.1-க்கு அனுப்பும்போது routing
+     table lookup /32 route find பண்றது → attacker-க்கு
+     forward. Attacker SYN-ACK receive பண்றான், ACK
+     அனுப்புறான் → handshake complete. BGP session
+     establish ஆகும். /32 route 172.16.0.1 traffic மட்டும்
+     attacker-க்கு redirect — மற்ற 172.16.0.x traffic
+     break ஆவதில்லை.
+
+----------------------------------------------------------------
+
+A26.
+[EN] After OSPF poison, routing table says:
+     172.16.0.1/32 → attacker (192.168.1.10 or tunnel IP).
+     Target's SYN-ACK (Dst=172.16.0.1) is forwarded via
+     this route → reaches attacker. Attacker sends ACK →
+     TCP handshake complete → BGP OPEN sent → BGP session
+     established. The route injection is what enables the
+     stateful TCP session over GRE.
+
+[TM] OSPF poison-க்கு பிறகு routing table சொல்றது:
+     172.16.0.1/32 → attacker (192.168.1.10 அல்லது tunnel IP).
+     Target-ஓட SYN-ACK (Dst=172.16.0.1) இந்த route வழியா
+     forward → attacker reach. Attacker ACK அனுப்புறான் →
+     TCP handshake complete → BGP OPEN அனுப்பப்படுது →
+     BGP session establish. Route injection தான் GRE
+     வழியா stateful TCP session-ஐ enable பண்றது.
+
+----------------------------------------------------------------
+
+A27.
+[EN] Router performs routing lookup on inner Dst=8.8.8.8.
+     8.8.8.8 is a public internet IP. Default route or
+     internet route matches → packet forwarded out the
+     external interface (Gi0/0) toward the internet.
+     The packet goes to Google's DNS, not to any internal
+     target. Attack is useless — inner Dst must be an
+     internal private IP to reach internal LAN targets.
+
+[TM] Router inner Dst=8.8.8.8-க்கு routing lookup பண்றது.
+     8.8.8.8 public internet IP. Default route அல்லது
+     internet route match ஆகும் → packet external interface
+     (Gi0/0) வழியா internet-க்கு forward ஆகும்.
+     Packet Google-ஓட DNS-க்கு போகும், எந்த internal
+     target-க்கும் இல்லை. Attack useless — internal LAN
+     targets reach பண்ண inner Dst internal private IP
+     ஆக இருக்கணும்.
+
+----------------------------------------------------------------
+
+A28.
+[EN] Packet is dropped. After GRE decap, router does
+     routing lookup for 192.168.1.100. If no route exists
+     in the routing table for this destination, router
+     sends ICMP Unreachable back to inner Src and drops
+     the packet. Attacker must first verify routing
+     reachability or inject a route for 192.168.1.0/24.
+
+[TM] Packet drop ஆகும். GRE decap-க்கு பிறகு router
+     192.168.1.100-க்கு routing lookup பண்றது. Routing
+     table-ல் இந்த destination-க்கு route இல்லையென்றால்
+     router inner Src-க்கு ICMP Unreachable அனுப்பி
+     packet drop பண்றது. Attacker முதலில் routing
+     reachability verify பண்ணணும் அல்லது 192.168.1.0/24-க்கு
+     route inject பண்ணணும்.
+
+----------------------------------------------------------------
+
+A29.
+[EN] OSPF:  inner Dst = 224.0.0.5  (AllSPFRouters multicast)
+     EIGRP: inner Dst = 224.0.0.10 (EIGRP multicast)
+     VRRP:  inner Dst = 224.0.0.18 (VRRP multicast)
+     HSRP:  inner Dst = 224.0.0.2  (HSRPv1) or
+                        224.0.0.102 (HSRPv2)
+     All four are link-local multicast addresses, meaning
+     they are only valid on the local segment.
+
+[TM] OSPF:  inner Dst = 224.0.0.5  (AllSPFRouters multicast)
+     EIGRP: inner Dst = 224.0.0.10 (EIGRP multicast)
+     VRRP:  inner Dst = 224.0.0.18 (VRRP multicast)
+     HSRP:  inner Dst = 224.0.0.2  (HSRPv1) அல்லது
+                        224.0.0.102 (HSRPv2)
+     நான்கும் link-local multicast addresses — local
+     segment-ல் மட்டும் valid.
+
+----------------------------------------------------------------
+
+A30.
+[EN] Target rejects the Hello. OSPF MD5 auth: each Hello
+     and LSA carries an MD5 hash computed with the shared
+     key. Without the key, attacker cannot produce valid
+     hash. Target receives Hello, computes expected hash,
+     finds mismatch → Hello discarded. Attacker needs the
+     MD5 key to succeed. Key can be obtained via:
+     Wireshark capture on LAN, config dump via SNMP,
+     or brute force if weak key is used.
+
+[TM] Target Hello-ஐ reject பண்றது. OSPF MD5 auth: ஒவ்வொரு
+     Hello மற்றும் LSA-உம் shared key-உடன் compute பண்ண
+     MD5 hash carry பண்றது. Key இல்லாம attacker valid
+     hash produce பண்ண முடியாது. Target Hello receive
+     பண்ணி expected hash compute பண்றது, mismatch
+     கிடைக்குது → Hello discard. Attacker-க்கு succeed
+     ஆக MD5 key தேவை. Key பெற: LAN-ல் Wireshark capture,
+     SNMP வழியா config dump, அல்லது weak key இருந்தால்
+     brute force.
+
+----------------------------------------------------------------
+
+--- SECTION 3: ROUTING PROTOCOL ATTACKS (A31–A55) ---
+
+A31.
+[EN] After OSPF neighbor via GRE, attacker can:
+     (1) Inject fake LSAs to poison routing tables.
+     (2) Advertise routes to redirect traffic (MitM).
+     (3) Advertise black-hole routes to drop traffic (DoS).
+     (4) Use route injection to fix BGP return path, then
+         establish BGP session for wider route control.
+
+[TM] GRE வழியா OSPF neighbor-க்கு பிறகு attacker:
+     (1) Routing tables poison பண்ண fake LSAs inject.
+     (2) Traffic redirect பண்ண routes advertise (MitM).
+     (3) Traffic drop பண்ண black-hole routes advertise (DoS).
+     (4) Route injection வழியா BGP return path fix பண்ணி
+         wider route control-க்கு BGP session establish.
+
+----------------------------------------------------------------
+
+A32.
+[EN] Fake route wins. OSPF SPF algorithm selects lowest
+     metric path. Metric=1 (attacker) < Metric=10 (real).
+     Additionally, if attacker injects /32 host route vs
+     real /24 network route, /32 wins via longest prefix
+     match regardless of metric comparison. Router installs
+     fake route, traffic redirected.
+
+[TM] Fake route win ஆகும். OSPF SPF algorithm lowest
+     metric path select பண்றது. Metric=1 (attacker) <
+     Metric=10 (real). கூடுதலாக, attacker /32 host route
+     inject பண்ணி real /24 network route-உடன் compare
+     பண்ணினால் — metric comparison இல்லாம longest prefix
+     match வழியா /32 win ஆகும். Router fake route install
+     பண்றது, traffic redirect ஆகும்.
+
+----------------------------------------------------------------
+
+A33.
+[EN] LSA Type 1 = Router LSA. Key fields for fake host route:
+     Link Type = 1 (point-to-point stub)
+     Link ID = target IP (e.g. 172.16.0.1)
+     Link Data = 255.255.255.255 (/32 mask)
+     Metric = 1 (low to win SPF)
+     Forwarding Address = attacker's inner tunnel IP
+     (must be reachable from LAN, so use private IP).
+
+[TM] LSA Type 1 = Router LSA. Fake host route-க்கு
+     key fields:
+     Link Type = 1 (point-to-point stub)
+     Link ID = target IP (எ.கா. 172.16.0.1)
+     Link Data = 255.255.255.255 (/32 mask)
+     Metric = 1 (SPF win பண்ண low value)
+     Forwarding Address = attacker-ஓட inner tunnel IP
+     (LAN-லிருந்து reachable ஆக இருக்கணும் —
+     private IP பயன்படுத்து).
+
+----------------------------------------------------------------
+
+A34.
+[EN] Redistribution propagates routes between protocols.
+     Fake OSPF route → redistributed into EIGRP → EIGRP
+     sends Update to all EIGRP neighbors → Fake route
+     spreads to EIGRP domain. Attacker's blast radius
+     extends beyond OSPF area into all EIGRP-reachable
+     segments. Route tag can be used to control
+     redistribution.
+
+[TM] Redistribution protocols-க்கிடையே routes propagate
+     பண்றது. Fake OSPF route → EIGRP-ல் redistribute →
+     EIGRP எல்லா EIGRP neighbors-க்கும் Update அனுப்பும் →
+     Fake route EIGRP domain-க்கு spread ஆகும். Attacker-ஓட
+     blast radius OSPF area-ஐ தாண்டி எல்லா EIGRP-reachable
+     segments-க்கும் extend ஆகும். Route tag redistribution
+     control பண்ண பயன்படும்.
+
+----------------------------------------------------------------
+
+A35.
+[EN] Neighbor relationship fails. EIGRP K-value mismatch
+     causes Hello to be rejected. Target receives Hello
+     with K2=1 (attacker) vs its own K2=0. EIGRP logs
+     "K-value mismatch" and tears down or refuses the
+     neighbor. Attacker must match exact K-values of the
+     target network. Default: K1=1,K2=0,K3=1,K4=0,K5=0.
+
+[TM] Neighbor relationship fail ஆகும். EIGRP K-value
+     mismatch Hello-ஐ reject பண்ண cause ஆகும். Target
+     K2=1 (attacker) vs own K2=0 என்று Hello receive
+     பண்றது. EIGRP "K-value mismatch" log பண்ணி neighbor-ஐ
+     tear down அல்லது refuse பண்றது. Attacker target
+     network-ஓட exact K-values match பண்ணணும்.
+     Default: K1=1,K2=0,K3=1,K4=0,K5=0.
+
+----------------------------------------------------------------
+
+A36.
+[EN] Discovery methods:
+     (1) CDP/LLDP — EIGRP AS number sometimes in
+         platform/capability fields.
+     (2) SNMP walk — OID for EIGRP AS number.
+     (3) Wireshark on LAN — EIGRP Hello captures show AS.
+     (4) Web shell on internal host — show run output.
+     (5) Cisco IOS HTTP server if enabled — config view.
+
+[TM] Discovery methods:
+     (1) CDP/LLDP — platform/capability fields-ல் சில நேரம்
+         EIGRP AS number இருக்கும்.
+     (2) SNMP walk — EIGRP AS number-க்கான OID.
+     (3) LAN-ல் Wireshark — EIGRP Hello capture-ல் AS number
+         தெரியும்.
+     (4) Internal host-ல் web shell — show run output.
+     (5) Cisco IOS HTTP server enabled இருந்தால் — config view.
+
+----------------------------------------------------------------
+
+A37.
+[EN] EIGRP DUAL uses composite metric. Delay is a major
+     component. Delay=1 (attacker) vs Delay=100 (real).
+     DUAL selects lowest feasible distance → attacker's
+     route wins. All traffic for 10.0.0.0/8 is now
+     forwarded toward the attacker's next-hop IP.
+
+[TM] EIGRP DUAL composite metric பயன்படுத்துது. Delay
+     major component. Delay=1 (attacker) vs Delay=100 (real).
+     DUAL lowest feasible distance select பண்றது →
+     attacker route win ஆகும். 10.0.0.0/8-க்கான எல்லா
+     traffic-உம் இப்போ attacker next-hop IP-நோக்கி
+     forward ஆகும்.
+
+----------------------------------------------------------------
+
+A38.
+[EN] Inner Src must be exactly 10.0.0.1 — the IP configured
+     in "neighbor 10.0.0.1 remote-as 65001". This is the
+     whitelist router's internal interface IP. Any other
+     source IP results in TCP connection refusal. BGP
+     performs strict source IP validation against its
+     configured neighbor list.
+
+[TM] Inner Src exactly 10.0.0.1 ஆக இருக்கணும் —
+     "neighbor 10.0.0.1 remote-as 65001"-ல் configure
+     பண்ண IP. இது whitelist router-ஓட internal interface IP.
+     வேற எந்த source IP-உம் TCP connection refusal result
+     ஆகும். BGP configured neighbor list-ஐ வைத்து strict
+     source IP validation பண்றது.
+
+----------------------------------------------------------------
+
+A39.
+[EN] BGP is TCP-based (port 179). TCP requires 3-way
+     handshake. SYN-ACK returns to inner Src IP.
+     Without OSPF route injection, SYN-ACK goes to
+     172.16.0.1 (whitelist router) which sends RST
+     (no active TCP session). With OSPF injection of
+     172.16.0.1/32 → attacker, SYN-ACK is routed to
+     attacker who completes handshake. OSPF injection
+     is the enabler for BGP TCP return path.
+
+[TM] BGP TCP-based (port 179). TCP-க்கு 3-way handshake
+     வேண்டும். SYN-ACK inner Src IP-க்கு திரும்பும்.
+     OSPF route injection இல்லாம SYN-ACK 172.16.0.1
+     (whitelist router)-க்கு போகும், RST அனுப்பும்
+     (active TCP session இல்லை). OSPF injection
+     172.16.0.1/32 → attacker என்று இருந்தால் SYN-ACK
+     attacker-க்கு route ஆகும், handshake complete ஆகும்.
+     OSPF injection தான் BGP TCP return path-க்கு enabler.
+
+----------------------------------------------------------------
+
+A40.
+[EN] 0.0.0.0/0 is the default route. Advertising a more
+     specific version or same prefix with better attributes
+     causes all internet-bound traffic from internal routers
+     to be forwarded to the attacker. Attacker becomes a
+     black-hole or MitM for all outbound traffic. All web,
+     DNS, email traffic passes through attacker's control.
+
+[TM] 0.0.0.0/0 default route. More specific version அல்லது
+     better attributes-உடன் same prefix advertise பண்றது
+     internal routers-லிருந்து எல்லா internet-bound
+     traffic-ஐ attacker-க்கு forward பண்ற cause ஆகும்.
+     Attacker எல்லா outbound traffic-க்கு black-hole அல்லது
+     MitM ஆகுறான். Web, DNS, email எல்லாமே attacker
+     control-ல் pass ஆகும்.
+
+----------------------------------------------------------------
+
+A41.
+[EN] Yes, TCP RST injection is possible without MD5 key.
+     TCP RST requires only: correct Src/Dst IP, correct
+     Src/Dst port (179), and a sequence number within the
+     acceptable window. MD5 protects BGP UPDATE messages
+     but RST with correct seq number will terminate the
+     TCP session before BGP processes it. Defense: BGP
+     TTL security (GTSM) + MD5 together.
+
+[TM] ஆமா, MD5 key இல்லாம TCP RST injection possible.
+     TCP RST-க்கு தேவை: correct Src/Dst IP, correct
+     Src/Dst port (179), acceptable window-ல் sequence
+     number. MD5 BGP UPDATE messages protect பண்றது,
+     ஆனால் correct seq number-உடன் RST BGP process
+     பண்ணுவதற்கு முன்னாடியே TCP session terminate
+     பண்றது. Defense: BGP TTL security (GTSM) + MD5
+     சேர்ந்து.
+
+----------------------------------------------------------------
+
+A42.
+[EN] No. IS-IS runs directly on Layer 2 as a link-state
+     protocol. It uses ISO CLNP, not IP, for its PDUs.
+     GRE encapsulates IP payloads (Proto field = IP).
+     IS-IS PDUs are not IP packets, so they cannot be
+     placed inside GRE inner payload in the same way.
+     IS-IS attack requires L2 access (same segment),
+     not L3 GRE encapsulation.
+
+[TM] இல்லை. IS-IS Layer 2-ல் directly link-state protocol-ஆக
+     run ஆகுது. PDUs-க்கு IP இல்லாம ISO CLNP பயன்படுத்துது.
+     GRE IP payloads encapsulate பண்றது (Proto field = IP).
+     IS-IS PDUs IP packets இல்லை, அதனால் GRE inner payload-ல்
+     place பண்ண முடியாது. IS-IS attack-க்கு L2 access
+     (same segment) தேவை — L3 GRE encapsulation இல்லை.
+
+----------------------------------------------------------------
+
+A43.
+[EN] Inner Dst = ff02::5 (OSPFv3 AllSPFRouters IPv6
+     multicast). For IPv6 link-local scope, inner Src
+     must be a link-local address (fe80::/10 range).
+     fe80::99 is valid. OSPFv3 uses IPv6 link-local
+     addresses for all neighbor adjacency formation.
+
+[TM] Inner Dst = ff02::5 (OSPFv3 AllSPFRouters IPv6
+     multicast). IPv6 link-local scope-க்கு inner Src
+     link-local address (fe80::/10 range) ஆக இருக்கணும்.
+     fe80::99 valid. OSPFv3 எல்லா neighbor adjacency
+     formation-க்கும் IPv6 link-local addresses
+     பயன்படுத்துது.
+
+----------------------------------------------------------------
+
+A44.
+[EN] PIM Join tells upstream router: "Send me multicast
+     traffic for this group." Attacker's injected Join adds
+     attacker's path to multicast distribution tree.
+     Group 239.1.1.1 traffic now flows to both legitimate
+     receivers AND attacker's path. Attacker receives copy
+     of all multicast stream data — video, trading feeds,
+     internal broadcasts.
+
+[TM] PIM Join upstream router-க்கு சொல்றது: "இந்த group-க்கு
+     multicast traffic அனுப்பு." Attacker inject பண்ண Join
+     multicast distribution tree-ல் attacker path add
+     பண்றது. Group 239.1.1.1 traffic இப்போ legitimate
+     receivers-க்கும் attacker path-க்கும் flow ஆகும்.
+     Attacker எல்லா multicast stream data copy receive
+     பண்றான் — video, trading feeds, internal broadcasts.
+
+----------------------------------------------------------------
+
+A45.
+[EN] RSVP PATH sends resource reservation request along
+     the path. Fake PATH with large bandwidth reservation
+     (Tspec peak rate = 1Gbps per session) sent 1000+ times
+     exhausts RSVP state tables and reservation capacity.
+     Routers try to maintain state for all sessions →
+     CPU/memory exhaustion → legitimate reservations fail
+     → QoS guaranteed services (VoIP, video) degrade.
+
+[TM] RSVP PATH path-ல் resource reservation request
+     அனுப்புது. Large bandwidth reservation-உடன் fake PATH
+     (Tspec peak rate = 1Gbps per session) 1000+ முறை
+     அனுப்பி RSVP state tables மற்றும் reservation capacity
+     exhaust பண்றது. Routers எல்லா sessions-க்கும் state
+     maintain பண்ண try பண்றது → CPU/memory exhaustion →
+     legitimate reservations fail → QoS guaranteed services
+     (VoIP, video) degrade ஆகும்.
+
+----------------------------------------------------------------
+
+A46.
+[EN] LDP discovery: UDP multicast 224.0.0.2 port 646
+     (Link Hello). After discovery, LDP uses TCP 646 for
+     session. Attacker must: (1) Send LDP Hello to trigger
+     discovery. (2) Establish TCP session (needs return path
+     fix if spoofing whitelist router IP). (3) Complete LDP
+     Initialization exchange. (4) Send Label Mapping message
+     with fake FEC→label. MPLS forwarding table updated.
+
+[TM] LDP discovery: UDP multicast 224.0.0.2 port 646
+     (Link Hello). Discovery-க்கு பிறகு LDP session-க்கு
+     TCP 646 பயன்படுத்துது. Attacker செய்யணும்:
+     (1) Discovery trigger பண்ண LDP Hello அனுப்பு.
+     (2) TCP session establish (whitelist router IP spoof
+         பண்றால் return path fix வேண்டும்).
+     (3) LDP Initialization exchange complete பண்ணு.
+     (4) Fake FEC→label-உடன் Label Mapping message அனுப்பு.
+     MPLS forwarding table update ஆகும்.
+
+----------------------------------------------------------------
+
+A47.
+[EN] BFD detect time = multiplier × interval =
+     3 × 300ms = 900ms. Spoofed BFD DOWN packet immediately
+     signals session failure. OSPF linked to BFD gets
+     adjacency down notification within ~900ms (or faster
+     if BFD processes the DOWN state message immediately).
+     Compare to normal OSPF dead timer = 40 seconds.
+     BFD attack causes 40x faster disruption.
+
+[TM] BFD detect time = multiplier × interval =
+     3 × 300ms = 900ms. Spoofed BFD DOWN packet
+     immediately session failure signal பண்றது. BFD-உடன்
+     linked OSPF ~900ms-ல் (அல்லது BFD DOWN state message
+     immediately process பண்ணினால் faster) adjacency down
+     notification பெறும். Normal OSPF dead timer = 40
+     seconds-உடன் compare பண்ணினால் BFD attack 40x
+     faster disruption cause பண்றது.
+
+----------------------------------------------------------------
+
+A48.
+[EN] GLBP has one AVG and multiple AVFs. If attacker
+     compromises the AVG role (by sending GLBP Hello with
+     higher priority), attacker controls load balancing
+     assignments for ALL forwarders. Attacker can assign
+     any MAC to any forwarder, directing specific flows to
+     specific paths. More granular MitM than VRRP — GLBP
+     allows selective per-flow traffic steering.
+
+[TM] GLBP-ல் ஒரு AVG மற்றும் multiple AVFs. Attacker
+     AVG role compromise பண்ணினால் (higher priority-உடன்
+     GLBP Hello அனுப்பி) எல்லா forwarders-க்கும் load
+     balancing assignments control பண்றான். எந்த
+     forwarder-க்கும் எந்த MAC-உம் assign பண்ணலாம்,
+     specific flows-ஐ specific paths-க்கு direct பண்ணலாம்.
+     VRRP-விட more granular MitM — GLBP selective
+     per-flow traffic steering allow பண்றது.
+
+----------------------------------------------------------------
+
+A49.
+[EN] HSRP v2 inner Dst = 224.0.0.102 (instead of 224.0.0.2
+     for v1). Also, HSRP v2 group numbers can be 0-4095
+     (v1 is 0-255). Virtual MAC format changes: v2 =
+     0000.0C9F.FXXX where XXX is group. Inner UDP port
+     remains 1985 for both versions.
+
+[TM] HSRP v2 inner Dst = 224.0.0.102 (v1-ஓட 224.0.0.2
+     பதிலாக). HSRP v2 group numbers 0-4095 ஆக இருக்கலாம்
+     (v1 = 0-255). Virtual MAC format மாறும்: v2 =
+     0000.0C9F.FXXX (XXX = group number). Inner UDP
+     port இரண்டு versions-க்கும் 1985-ஆகவே இருக்கும்.
+
+----------------------------------------------------------------
+
+A50.
+[EN] VRRP receiver checks TTL field of incoming
+     advertisement. RFC 3768 states: "MUST discard packets
+     where IP TTL is not 255." TTL=64 fails this check.
+     The advertisement is silently discarded. No election
+     change occurs. Attacker must set inner packet TTL
+     exactly to 255 for VRRP advertisements to be processed.
+
+[TM] VRRP receiver incoming advertisement-ஓட TTL field
+     check பண்றது. RFC 3768 சொல்றது: "IP TTL 255
+     இல்லாத packets discard பண்ணணும்." TTL=64 இந்த
+     check fail பண்றது. Advertisement silently discard
+     ஆகும். Election change நடக்காது. VRRP advertisements
+     process ஆக attacker inner packet TTL exactly 255
+     set பண்ணணும்.
+
+----------------------------------------------------------------
+
+A51.
+[EN] Gratuitous ARP (GARP): attacker sends broadcast ARP
+     Reply with Sender IP = virtual IP (172.16.0.254) and
+     Sender MAC = attacker's MAC. All hosts on LAN
+     immediately update ARP cache without waiting for ARP
+     timeout. This ensures all hosts redirect default
+     gateway traffic to attacker immediately, rather than
+     waiting for existing ARP entries to expire.
+
+[TM] Gratuitous ARP (GARP): attacker broadcast ARP Reply
+     அனுப்புறான் — Sender IP = virtual IP (172.16.0.254),
+     Sender MAC = attacker MAC. LAN-ல் எல்லா hosts-உம்
+     ARP timeout-ஐ காக்காம உடனே ARP cache update
+     பண்றது. இது எல்லா hosts-உம் default gateway traffic-ஐ
+     attacker-க்கு உடனே redirect பண்ண ensure பண்றது —
+     existing ARP entries expire ஆவதை காக்கவேண்டியதில்லை.
+
+----------------------------------------------------------------
+
+A52.
+[EN] Yes. Simple plaintext auth (type=1) means password
+     is carried in clear text in OSPF packet header. Once
+     captured via Wireshark, attacker knows the exact
+     password string. For GRE injection, attacker sets
+     Auth Type=1 and Auth Data = captured password in the
+     OSPF header. Target validates, finds match, accepts
+     the Hello/LSA. Full OSPF injection works.
+
+[TM] ஆமா. Simple plaintext auth (type=1) என்றால் password
+     OSPF packet header-ல் clear text-ஆக carry ஆகுது.
+     Wireshark வழியா capture ஆனதும் attacker exact password
+     string தெரிஞ்சுக்கிறான். GRE injection-க்கு attacker
+     OSPF header-ல் Auth Type=1, Auth Data = captured
+     password set பண்றான். Target validate பண்ணி match
+     கண்டுபிடிக்கும், Hello/LSA accept பண்ணும்.
+     Full OSPF injection works.
+
+----------------------------------------------------------------
+
+A53.
+[EN] Yes. Even with MD5 protecting neighbor formation,
+     a MD5 collision attack is theoretically possible
+     against MD5 (though computationally expensive).
+     More practically: if MD5 key is short or dictionary
+     word, offline brute force against captured OSPF
+     packets is feasible. SHA-256 is significantly
+     stronger. Networks should migrate to SHA-256
+     (EIGRP Named Mode authentication).
+
+[TM] ஆமா. MD5 neighbor formation protect பண்றாலும்,
+     theoretically MD5 collision attack possible (computationally
+     expensive). Practically: MD5 key short அல்லது
+     dictionary word இருந்தால் captured OSPF packets-ஐ
+     வைத்து offline brute force feasible. SHA-256
+     significantly stronger. Networks EIGRP Named Mode
+     authentication வழியா SHA-256-க்கு migrate பண்ணணும்.
+
+----------------------------------------------------------------
+
+A54.
+[EN] Alternative encapsulation protocols to bypass
+     GRE-specific ACL (deny proto 47):
+     (1) IP-in-IP (Proto 4) — if not blocked
+     (2) IPv6-in-IPv4 / 6in4 (Proto 41) — for OSPFv3
+     (3) EtherIP (Proto 97) — for L2 injection
+     (4) IPSec ESP (Proto 50) — to hide OSPF inside
+         encrypted ESP if firewall permits VPN traffic
+     ACL must explicitly deny ALL encapsulation protos.
+
+[TM] GRE-specific ACL (deny proto 47) bypass பண்ண
+     alternative encapsulation protocols:
+     (1) IP-in-IP (Proto 4) — block ஆகவில்லையென்றால்
+     (2) IPv6-in-IPv4 / 6in4 (Proto 41) — OSPFv3-க்கு
+     (3) EtherIP (Proto 97) — L2 injection-க்கு
+     (4) IPSec ESP (Proto 50) — firewall VPN traffic
+         permit பண்றால் encrypted ESP-க்குள் OSPF hide
+     ACL எல்லா encapsulation protos-ஐயும் explicitly
+     deny பண்ணணும்.
+
+----------------------------------------------------------------
+
+A55.
+[EN] OSPF LSA Type 5 (AS External LSA) or Type 7 (NSSA)
+     can black-hole specific prefixes. However, LSA
+     injection requires either neighbor relationship OR
+     OSPF database overflow attack. For black-hole without
+     full adjacency, attacker needs at least Exchange state
+     to flood LSAs. Required fields: LSA Type=5, Prefix=target,
+     Mask=255.255.255.0, Metric=1, NextHop=black-hole IP.
+
+[TM] OSPF LSA Type 5 (AS External LSA) அல்லது Type 7
+     (NSSA) specific prefixes black-hole பண்ணலாம்.
+     ஆனால் LSA injection-க்கு neighbor relationship அல்லது
+     OSPF database overflow attack தேவை. Full adjacency
+     இல்லாம black-hole பண்ண attacker-க்கு குறைந்தது
+     Exchange state-ல் LSAs flood பண்ண வேண்டும்.
+     தேவையான fields: LSA Type=5, Prefix=target,
+     Mask=255.255.255.0, Metric=1, NextHop=black-hole IP.
+
+----------------------------------------------------------------
+
+--- SECTION 4: ENCAPSULATION PROTOCOLS (A56–A80) ---
+
+A56.
+[EN] Five IP encapsulation protocol numbers:
+     Proto 4   = IP-in-IP (simple IP inside IP)
+     Proto 41  = IPv6-in-IPv4 (6in4 tunnel)
+     Proto 47  = GRE (Generic Routing Encapsulation)
+     Proto 50  = IPSec ESP (Encapsulating Security Payload)
+     Proto 97  = EtherIP (Ethernet frame in IP)
+
+[TM] ஐந்து IP encapsulation protocol numbers:
+     Proto 4   = IP-in-IP (simple IP inside IP)
+     Proto 41  = IPv6-in-IPv4 (6in4 tunnel)
+     Proto 47  = GRE (Generic Routing Encapsulation)
+     Proto 50  = IPSec ESP (Encapsulating Security Payload)
+     Proto 97  = EtherIP (Ethernet frame in IP)
+
+----------------------------------------------------------------
+
+A57.
+[EN] EtherIP carries complete Ethernet frames including
+     MAC headers, VLAN tags, and any L2 protocol. More
+     dangerous than GRE because: GRE = L3 injection only
+     (IP packets, routing protocols). EtherIP = L2 injection
+     (ARP, STP, CDP, DHCP, VLAN, any Ethernet-based protocol).
+     Attacker gains full Layer 2 domain access — can
+     manipulate switching fabric, not just routing.
+
+[TM] EtherIP MAC headers, VLAN tags மற்றும் எந்த L2
+     protocol-உடன் complete Ethernet frames carry பண்றது.
+     GRE-விட more dangerous ஏனென்றால்: GRE = L3 injection
+     மட்டும் (IP packets, routing protocols). EtherIP = L2
+     injection (ARP, STP, CDP, DHCP, VLAN, எந்த Ethernet-based
+     protocol-உம்). Attacker full Layer 2 domain access
+     பெறுவான் — routing மட்டுமில்லாம switching fabric
+     manipulate பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A58.
+[EN] Gratuitous ARP injected via EtherIP reaches all hosts
+     on the LAN segment (broadcast). Sender IP = default
+     gateway (e.g. 172.16.0.1), Sender MAC = attacker's
+     fake MAC. All hosts update ARP table: gateway IP →
+     attacker MAC. All outbound traffic from hosts is now
+     sent to attacker's MAC. Full subnet gateway MitM
+     achieved at Layer 2.
+
+[TM] EtherIP வழியா inject பண்ண Gratuitous ARP LAN
+     segment-ல் எல்லா hosts-ஐ (broadcast) reach பண்றது.
+     Sender IP = default gateway (172.16.0.1), Sender MAC
+     = attacker fake MAC. எல்லா hosts-உம் ARP table update:
+     gateway IP → attacker MAC. Hosts-லிருந்து எல்லா
+     outbound traffic attacker MAC-க்கு அனுப்பப்படும்.
+     Layer 2-ல் full subnet gateway MitM achieve ஆகும்.
+
+----------------------------------------------------------------
+
+A59.
+[EN] EtherIP header = 2 bytes only:
+     Bits 15-12: Version = 3 (fixed value, always 3)
+     Bits 11-0:  Reserved = 0 (must be zero)
+     Total: 0x3000 in hex. Simplest encapsulation header —
+     no keys, no sequence numbers, no auth.
+
+[TM] EtherIP header = 2 bytes மட்டும்:
+     Bits 15-12: Version = 3 (fixed value, எப்போதும் 3)
+     Bits 11-0:  Reserved = 0 (zero ஆக இருக்கணும்)
+     Total: 0x3000 hex-ல். Simplest encapsulation header —
+     keys இல்லை, sequence numbers இல்லை, auth இல்லை.
+
+----------------------------------------------------------------
+
+A60.
+[EN] IP-in-IP (Proto 4) structure:
+     [Outer IP Header][Inner IP Header][Payload]
+     No intermediate header between outer and inner IP.
+     Router knows inner IP starts immediately after outer
+     IP header ends, calculated from outer IHL field.
+     Outer IHL=5 means 20-byte outer header, so inner IP
+     starts at byte 21 of the packet.
+
+[TM] IP-in-IP (Proto 4) structure:
+     [Outer IP Header][Inner IP Header][Payload]
+     Outer மற்றும் inner IP-க்கிடையே intermediate header
+     இல்லை. Router-க்கு தெரியும் inner IP outer IP header
+     முடிந்த உடனே தொடங்கும் — outer IHL field-லிருந்து
+     calculate பண்றது. Outer IHL=5 என்றால் 20-byte outer
+     header, inner IP packet-ஓட byte 21-ல் தொடங்கும்.
+
+----------------------------------------------------------------
+
+A61.
+[EN] Inner Src must be an IPv6 link-local address
+     (fe80::/10 range), e.g. fe80::1 or fe80::99.
+     OSPFv3 uses link-local addresses for all neighbor
+     adjacency formation. Global unicast IPv6 addresses
+     (2001::/16 etc.) do not work for OSPFv3 Hello source
+     — link-local is mandatory per RFC 5340.
+
+[TM] Inner Src IPv6 link-local address (fe80::/10 range)
+     ஆக இருக்கணும், எ.கா. fe80::1 அல்லது fe80::99.
+     OSPFv3 எல்லா neighbor adjacency formation-க்கும்
+     link-local addresses பயன்படுத்துது. Global unicast
+     IPv6 addresses (2001::/16 etc.) OSPFv3 Hello source-க்கு
+     work ஆகாது — RFC 5340 படி link-local mandatory.
+
+----------------------------------------------------------------
+
+A62.
+[EN] ESP encrypts the payload completely. Firewall/IDS
+     rules that "permit ESP for VPN traffic" cannot inspect
+     the encrypted content. Attacker wraps attack packets
+     (OSPF LSA, DNS poison, SNMP SET) inside ESP. IDS
+     signature matching fails — no protocol signatures
+     visible. Attack traffic appears as legitimate VPN
+     traffic. Defense requires SSL/IPSec inspection
+     (decrypt-inspect-reencrypt).
+
+[TM] ESP payload-ஐ completely encrypt பண்றது.
+     "VPN traffic-க்கு ESP permit" பண்ற firewall/IDS
+     encrypted content inspect பண்ண முடியாது. Attacker
+     attack packets (OSPF LSA, DNS poison, SNMP SET)-ஐ
+     ESP-க்குள் wrap பண்றான். IDS signature matching
+     fail — protocol signatures visible இல்லை. Attack
+     traffic legitimate VPN traffic-ஆ தெரியும். Defense-க்கு
+     SSL/IPSec inspection (decrypt-inspect-reencrypt) தேவை.
+
+----------------------------------------------------------------
+
+A63.
+[EN] AH authenticates the IP header including Src/Dst
+     addresses. NAT changes the IP header (modifies Src IP),
+     breaking AH authentication — packet discarded. For
+     GRE+AH: if NAT is in path, AH fails. Attack via
+     GRE+AH requires the outer GRE packet to traverse path
+     without NAT. AH provides stronger proof of source than
+     ESP but breaks in NAT environments.
+
+[TM] AH Src/Dst addresses உட்பட IP header authenticate
+     பண்றது. NAT IP header மாத்தும் (Src IP modify),
+     AH authentication break — packet discard. GRE+AH-க்கு:
+     path-ல் NAT இருந்தால் AH fail. GRE+AH வழியா attack-க்கு
+     outer GRE packet NAT இல்லாம path traverse பண்ணணும்.
+     AH, ESP-விட stronger source proof provide பண்றது
+     ஆனால் NAT environments-ல் break ஆகும்.
+
+----------------------------------------------------------------
+
+A64.
+[EN] Proto 47 (GRE) is denied — GRE injection blocked.
+     Proto 4 (IP-in-IP) is denied — IP-in-IP blocked.
+     Remaining possible: Proto 41 (IPv6-in-IPv4),
+     Proto 97 (EtherIP), Proto 50 (ESP), Proto 88
+     (EIGRP direct), Proto 89 (OSPF direct).
+     The ACL is incomplete — does not block all vectors.
+
+[TM] Proto 47 (GRE) denied — GRE injection blocked.
+     Proto 4 (IP-in-IP) denied — IP-in-IP blocked.
+     இன்னும் possible: Proto 41 (IPv6-in-IPv4),
+     Proto 97 (EtherIP), Proto 50 (ESP), Proto 88
+     (EIGRP direct), Proto 89 (OSPF direct).
+     ACL incomplete — எல்லா vectors-ஐயும் block
+     பண்றதில்லை.
+
+----------------------------------------------------------------
+
+A65.
+[EN] STP elects root bridge based on lowest Bridge ID
+     (Priority + MAC). Real root: Priority=32768.
+     Attacker BPDU: Priority=0. Lower value wins. All
+     switches receive BPDU via EtherIP inject, process it
+     as legitimate STP BPDU, and elect attacker as new
+     root bridge. STP topology reconverges (30-50 seconds
+     with classic STP).
+
+[TM] STP lowest Bridge ID (Priority + MAC) வைத்து root
+     bridge elect பண்றது. Real root: Priority=32768.
+     Attacker BPDU: Priority=0. Lower value win. எல்லா
+     switches-உம் EtherIP inject வழியா BPDU receive
+     பண்ணி legitimate STP BPDU-ஆக process பண்ணி attacker-ஐ
+     new root bridge-ஆக elect பண்றது. STP topology
+     reconverge ஆகும் (classic STP-ல் 30-50 seconds).
+
+----------------------------------------------------------------
+
+A66.
+[EN] After root bridge takeover, ALL Layer 2 traffic paths
+     are recalculated to flow through the "root bridge"
+     (attacker). Switches block/unblock ports based on
+     attacker's position. All inter-VLAN and intra-VLAN
+     traffic flows through or via attacker's path. Full
+     Layer 2 domain MitM. Also enables: selective port
+     blocking (DoS), topology change floods (CPU exhaustion).
+
+[TM] Root bridge takeover-க்கு பிறகு எல்லா Layer 2 traffic
+     paths-உம் "root bridge" (attacker) வழியா flow ஆக
+     recalculate ஆகும். Switches attacker position-ஐ வைத்து
+     ports block/unblock பண்றது. Inter-VLAN மற்றும் intra-VLAN
+     எல்லா traffic-உம் attacker path வழியா flow ஆகும்.
+     Full Layer 2 domain MitM. கூடுதலாக: selective port
+     blocking (DoS), topology change floods (CPU exhaustion).
+
+----------------------------------------------------------------
+
+A67.
+[EN] VLAN hopping via double-tagging (802.1Q-in-802.1Q).
+     Prerequisite: attacker must be on native VLAN (VLAN 1).
+     Switch strips outer tag (native VLAN), sees inner tag
+     VLAN=100, forwards to VLAN 100. Attack is one-directional
+     — replies from VLAN 100 don't return to attacker without
+     additional ARP poison. Used to reach servers on isolated VLANs.
+
+[TM] Double-tagging (802.1Q-in-802.1Q) வழியா VLAN hopping.
+     Prerequisite: attacker native VLAN (VLAN 1)-ல் இருக்கணும்.
+     Switch outer tag (native VLAN) strip பண்ணி inner tag
+     VLAN=100 பார்க்குது, VLAN 100-க்கு forward பண்றது.
+     Attack one-directional — VLAN 100-லிருந்து replies
+     additional ARP poison இல்லாம attacker-க்கு return
+     ஆவதில்லை. Isolated VLANs-ல் servers reach பண்ண
+     பயன்படுத்துது.
+
+----------------------------------------------------------------
+
+A68.
+[EN] Fake CDP can poison: Device ID (hostname spoof),
+     IP addresses (fake management IP), Platform (Cisco
+     model/version spoof), Capabilities (router/switch roles),
+     IOS Version (version info for CVE targeting), Native
+     VLAN (VLAN ID leak), Interface (port topology), Power
+     (PoE info). NMS tools auto-discover via CDP — fake
+     entries corrupt network topology map.
+
+[TM] Fake CDP இவற்றை poison பண்ணலாம்: Device ID (hostname
+     spoof), IP addresses (fake management IP), Platform
+     (Cisco model/version spoof), Capabilities (router/switch
+     roles), IOS Version (CVE targeting-க்கு version info),
+     Native VLAN (VLAN ID leak), Interface (port topology),
+     Power (PoE info). SolarWinds, PRTG போன்ற NMS tools
+     CDP வழியா auto-discover பண்றது — fake entries network
+     topology map-ஐ corrupt பண்றது.
+
+----------------------------------------------------------------
+
+A69.
+[EN] Yes. LLDP (802.1AB) can be injected via EtherIP in
+     the same way. LLDP multicast MAC = 01:80:C2:00:00:0E
+     (nearest bridge scope) or 01:80:C2:00:00:03
+     (non-TPMR scope). LLDP TLVs carry: Chassis ID,
+     Port ID, TTL, System Name, System Description,
+     Capabilities, Management Address — all can be spoofed.
+
+[TM] ஆமா. LLDP (802.1AB) அதே மாதிரி EtherIP வழியா
+     inject பண்ணலாம். LLDP multicast MAC =
+     01:80:C2:00:00:0E (nearest bridge scope) அல்லது
+     01:80:C2:00:00:03 (non-TPMR scope). LLDP TLVs
+     carry பண்றது: Chassis ID, Port ID, TTL, System Name,
+     System Description, Capabilities, Management Address —
+     எல்லாமே spoof பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A70.
+[EN] No. BPDU Guard is an access-port feature that blocks
+     BPDUs on access ports. Trunk ports are NOT subject to
+     BPDU Guard by default. The EtherIP injection via a
+     whitelist router typically reaches the LAN on a trunk
+     or routed interface where BPDU Guard is not applied.
+     BPDU Guard protects end-user access ports, not
+     infrastructure trunk links. Root Guard on specific
+     ports is the correct defense.
+
+[TM] இல்லை. BPDU Guard access ports-ல் BPDUs block பண்ற
+     access-port feature. Trunk ports default-ஆ BPDU Guard-க்கு
+     subject இல்லை. Whitelist router வழியா EtherIP injection
+     பொதுவாக trunk அல்லது routed interface-ல் LAN-ஐ reach
+     பண்றது — அங்கே BPDU Guard apply ஆவதில்லை. BPDU Guard
+     end-user access ports protect பண்றது, infrastructure
+     trunk links இல்லை. Correct defense: specific ports-ல்
+     Root Guard.
+
+----------------------------------------------------------------
+
+A71.
+[EN] VXLAN uses UDP encapsulation over IP (UDP 4789) with a
+     VXLAN header containing VNI (VLAN Network Identifier).
+     EtherIP uses IP Proto 97 directly. VXLAN attack: requires
+     UDP 4789 to be routable to the VTEP. EtherIP: requires
+     Proto 97 tunnel endpoint. VXLAN is more common in data
+     centers. Both allow injecting Ethernet frames, but VXLAN
+     requires correct VNI value for target segment.
+
+[TM] VXLAN UDP encapsulation over IP (UDP 4789)-ஐ VNI
+     (VLAN Network Identifier) உள்ள VXLAN header-உடன்
+     பயன்படுத்துது. EtherIP IP Proto 97 directly. VXLAN
+     attack: UDP 4789 VTEP-க்கு routable ஆக வேண்டும்.
+     EtherIP: Proto 97 tunnel endpoint தேவை. VXLAN data
+     centers-ல் more common. இரண்டும் Ethernet frames
+     inject allow பண்றது, ஆனால் VXLAN target segment-க்கு
+     correct VNI value தேவை.
+
+----------------------------------------------------------------
+
+A72.
+[EN] GRE keepalives are processed by the tunnel endpoint,
+     not by the routing/forwarding plane for injected packets.
+     An attacker injecting arbitrary GRE payloads does NOT
+     need to send keepalives. The attack packets are processed
+     immediately upon decap regardless of keepalive state.
+     Keepalives affect tunnel UP/DOWN state but not packet
+     processing for already-received data.
+
+[TM] GRE keepalives tunnel endpoint-ஆல் process ஆகுது,
+     injected packets-க்கான routing/forwarding plane-ஆல் இல்லை.
+     Arbitrary GRE payloads inject பண்ற attacker keepalives
+     அனுப்பத் தேவையில்லை. Attack packets decap-ஆன உடனே
+     keepalive state-ஐ பொறுத்து இல்லாம process ஆகும்.
+     Keepalives tunnel UP/DOWN state-ஐ affect பண்றது —
+     already-received data-க்கான packet processing-ஐ இல்லை.
+
+----------------------------------------------------------------
+
+A73.
+[EN] GRE tunnel key must match. Without the key, the router
+     rejects the GRE packet: "key mismatch — dropping".
+     The tunnel key is configured as: tunnel key 12345.
+     Attacker must know and include the correct key in GRE
+     header. Key discovery: SNMP config read, web shell
+     show-run, config backup theft.
+
+[TM] GRE tunnel key match ஆகணும். Key இல்லாம router GRE
+     packet reject பண்றது: "key mismatch — dropping".
+     Tunnel key: tunnel key 12345. Attacker correct key
+     தெரிஞ்சு GRE header-ல் include பண்ணணும்.
+     Key discovery: SNMP config read, web shell show-run,
+     config backup theft.
+
+----------------------------------------------------------------
+
+A74.
+[EN] Proto 4 (IP-in-IP): Standard RFC 2003. Simple,
+     widely supported. Just IP inside IP, no options.
+     Proto 94 (IPIP): Historically used in some
+     implementations with slightly different handling.
+     In practice, most modern systems treat both similarly.
+     Proto 4 is the universally supported standard. Some
+     older ACLs may not deny Proto 94 if they only deny
+     Proto 4 — creating a bypass opportunity.
+
+[TM] Proto 4 (IP-in-IP): Standard RFC 2003. Simple,
+     widely supported. IP inside IP மட்டும், options இல்லை.
+     Proto 94 (IPIP): சில implementations-ல் historically
+     slightly different handling-உடன் பயன்படுத்தப்பட்டது.
+     Practically, modern systems இரண்டையும் similarly
+     treat பண்றது. Proto 4 universally supported standard.
+     சில பழைய ACLs Proto 4 மட்டும் deny பண்ணி Proto 94
+     deny பண்ணாமல் இருந்தால் — bypass opportunity create ஆகும்.
+
+----------------------------------------------------------------
+
+A75.
+[EN] Inner IPv6 Src must be a link-local address (fe80::/10).
+     Specifically for OSPF (link-local adjacencies), the Src
+     must be a valid link-local unicast in the fe80::/10 range.
+     OSPFv3 RFC 5340 mandates link-local addressing for Hello
+     packets. Global unicast will be rejected by OSPFv3 process.
+
+[TM] Inner IPv6 Src link-local address (fe80::/10) ஆக
+     இருக்கணும். OSPF link-local adjacencies-க்கு Src
+     fe80::/10 range-ல் valid link-local unicast ஆக
+     இருக்கணும். OSPFv3 RFC 5340 Hello packets-க்கு
+     link-local addressing mandate பண்றது. Global unicast
+     OSPFv3 process-ஆல் reject ஆகும்.
+
+----------------------------------------------------------------
+
+A76.
+[EN] Yes, OSPF/EIGRP inner packets can be injected without
+     valid NHRP. NHRP is used for address resolution in DMVPN
+     (mapping overlay to underlay addresses). NHRP operates
+     at the GRE/tunnel layer. The inner routing protocol packets
+     (OSPF Hello, EIGRP Hello) are processed by the routing
+     engine AFTER GRE decap — they are independent of NHRP.
+     NHRP auth failure prevents NHRP registration, not inner
+     protocol packet processing.
+
+[TM] ஆமா, valid NHRP இல்லாம OSPF/EIGRP inner packets inject
+     பண்ணலாம். NHRP DMVPN-ல் address resolution-க்காக
+     பயன்படுத்துது (overlay to underlay addresses mapping).
+     NHRP GRE/tunnel layer-ல் operate பண்றது. Inner routing
+     protocol packets (OSPF Hello, EIGRP Hello) GRE decap
+     ஆன பிறகு routing engine-ஆல் process ஆகும் —
+     NHRP-இலிருந்து independent. NHRP auth failure NHRP
+     registration prevent பண்றது, inner protocol packet
+     processing-ஐ இல்லை.
+
+----------------------------------------------------------------
+
+A77.
+[EN] Sequence number checking rejects out-of-order or
+     duplicate GRE packets. For injection attack, the attacker
+     does not have the current sequence number. First injected
+     packet: if sequence checking strict, router may reject.
+     However: sequence numbers wrap and can be guessed.
+     In practice, sequence checking is rarely deployed. When
+     deployed, attacker can monitor traffic to determine
+     current sequence.
+
+[TM] Sequence number checking out-of-order அல்லது duplicate
+     GRE packets reject பண்றது. Injection attack-க்கு attacker
+     current sequence number தெரியல. First injected packet:
+     sequence checking strict இருந்தால் router reject
+     பண்ணலாம். ஆனால்: sequence numbers wrap ஆகுது,
+     guess பண்ணலாம். Practically, sequence checking rarely
+     deploy ஆகுது. Deploy ஆகியிருந்தால் attacker current
+     sequence determine பண்ண traffic monitor பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A78.
+[EN] Recursive routing: router's own tunnel Src/Dst IP is
+     routed through the tunnel itself. Create fake OSPF route:
+     tunnel destination IP → via Tunnel0. Router tries to send
+     GRE keepalive/packet out Tunnel0, which itself requires
+     routing to the tunnel destination, which routes back into
+     Tunnel0. Infinite loop → high CPU → tunnel flap → DoS.
+     Cisco IOS detects and disables tunnel with "recursive
+     routing" error message.
+
+[TM] Recursive routing: router-ஓட own tunnel Src/Dst IP
+     tunnel-ஐ வழியாகவே route ஆகுது. Fake OSPF route create:
+     tunnel destination IP → via Tunnel0. Router Tunnel0
+     வழியா GRE keepalive/packet அனுப்ப try பண்றது, அதுவே
+     tunnel destination-க்கு routing தேவைப்படுது, அது
+     Tunnel0-க்கே திரும்பி route ஆகுது. Infinite loop →
+     high CPU → tunnel flap → DoS. Cisco IOS "recursive
+     routing" error message-உடன் detect பண்ணி tunnel
+     disable பண்றது.
+
+----------------------------------------------------------------
+
+A79.
+[EN] IP-in-IP tunnel enabled, no ACL, inner Proto=OSPF:
+     Step 1: Attacker sends IP-in-IP packet (Proto 4),
+     outer Dst = router external IP.
+     Step 2: Router decaps, inner OSPF Hello on LAN.
+     Step 3: Target OSPF router receives Hello,
+     forms neighbor (if no auth).
+     Step 4: Attacker injects LSA with fake host route.
+     Step 5: Use for BGP chain or direct MitM.
+     Identical attack path to GRE, different proto number.
+
+[TM] IP-in-IP tunnel enabled, ACL இல்லை, inner Proto=OSPF:
+     Step 1: Attacker IP-in-IP packet (Proto 4) அனுப்புறான்,
+     outer Dst = router external IP.
+     Step 2: Router decap, inner OSPF Hello LAN-ல்.
+     Step 3: Target OSPF router Hello receive,
+     neighbor form (auth இல்லையென்றால்).
+     Step 4: Attacker fake host route-உடன் LSA inject.
+     Step 5: BGP chain அல்லது direct MitM-க்கு பயன்படுத்து.
+     GRE-க்கு identical attack path, different proto number.
+
+----------------------------------------------------------------
+
+A80.
+[EN] EtherIP is required for DHCP starvation. DHCP Discover
+     uses Ethernet broadcast (FF:FF:FF:FF:FF:FF) with different
+     client MAC addresses each time. These are Layer 2
+     broadcasts — they cannot be sent via GRE (which
+     encapsulates IP packets, not raw Ethernet frames).
+     EtherIP carries complete Ethernet frames including
+     broadcast MACs, allowing L2 broadcast injection directly
+     onto the LAN segment.
+
+[TM] DHCP starvation-க்கு EtherIP தேவை. DHCP Discover
+     ஒவ்வொரு முறையும் different client MAC addresses-உடன்
+     Ethernet broadcast (FF:FF:FF:FF:FF:FF) பயன்படுத்துது.
+     இவை Layer 2 broadcasts — GRE வழியா அனுப்ப முடியாது
+     (GRE raw Ethernet frames இல்லாம IP packets encapsulate
+     பண்றது). EtherIP broadcast MACs உட்பட complete Ethernet
+     frames carry பண்றது, LAN segment-ல் directly L2
+     broadcast injection allow பண்றது.
+
+----------------------------------------------------------------
+
+--- SECTION 5: TCP/UDP APPLICATION ATTACKS (A81–A100) ---
+
+A81.
+[EN] UDP is connectionless/stateless. Attacker sends one
+     packet — no handshake needed. For DNS spoofing, attacker
+     sends fake DNS Reply matching a query's transaction ID.
+     No return traffic needed from attacker's perspective
+     (DNS cache updated at server side). TCP would require
+     SYN→SYN-ACK→ACK + OSPF route injection for return path.
+     UDP eliminates the return path problem entirely.
+
+[TM] UDP connectionless/stateless. Attacker ஒரு packet
+     அனுப்புறான் — handshake தேவையில்லை. DNS spoofing-க்கு
+     attacker query-ஓட transaction ID match பண்ற fake DNS
+     Reply அனுப்புறான். Attacker perspective-ல் return traffic
+     தேவையில்லை (server side-ல் DNS cache update ஆகும்).
+     TCP-க்கு SYN→SYN-ACK→ACK + return path-க்கு OSPF
+     route injection தேவை. UDP return path problem-ஐ
+     completely eliminate பண்றது.
+
+----------------------------------------------------------------
+
+A82.
+[EN] SNMP SET to ipRouteNextHop OID modifies the router's
+     IP routing table directly. Attacker sets next-hop for
+     a specific prefix to their own IP. Impact: all traffic
+     destined for that prefix is forwarded to attacker. No
+     OSPF injection needed — direct routing table manipulation
+     bypasses routing protocol entirely. Equivalent to OSPF
+     inject but via management plane.
+
+[TM] ipRouteNextHop OID-க்கு SNMP SET router-ஓட IP routing
+     table-ஐ directly modify பண்றது. Attacker specific prefix-க்கு
+     next-hop-ஐ தன்னோட IP-ஆக set பண்றான். Impact: அந்த
+     prefix-க்கு destined எல்லா traffic-உம் attacker-க்கு
+     forward ஆகும். OSPF injection தேவையில்லை — direct routing
+     table manipulation routing protocol-ஐ completely bypass
+     பண்றது. OSPF inject-க்கு equivalent, management plane
+     வழியா.
+
+----------------------------------------------------------------
+
+A83.
+[EN] SNMP uses access-list to restrict which source IPs can
+     query/set. "snmp-server community public RO 10" with
+     "access-list 10 permit 172.16.0.1" means ONLY 172.16.0.1
+     is allowed. Other IPs → denied. DNS has no such per-IP
+     access control (without ACL config) — any source IP can
+     send queries. The trust model differs: SNMP is explicitly
+     restricted, DNS is open by default.
+
+[TM] SNMP access-list வைத்து எந்த source IPs query/set
+     பண்ணலாம்னு restrict பண்றது. "snmp-server community
+     public RO 10" + "access-list 10 permit 172.16.0.1"
+     என்றால் 172.16.0.1 மட்டும் allowed. மற்றவை → denied.
+     DNS-க்கு (ACL இல்லாம) per-IP access control இல்லை —
+     எந்த source IP-லிருந்தும் queries அனுப்பலாம். Trust
+     model வேறு: SNMP explicitly restricted, DNS default-ஆ
+     open.
+
+----------------------------------------------------------------
+
+A84.
+[EN] NTP Stratum 1 = directly connected to reference clock
+     (GPS, atomic clock). Lowest stratum = highest trust.
+     Client prefers lower stratum time source. Attacker sets
+     stratum=1 to be preferred over the real NTP server
+     (which might be stratum 2 or 3). Client abandons real
+     server and syncs to attacker's fake time, allowing time
+     manipulation.
+
+[TM] NTP Stratum 1 = reference clock (GPS, atomic clock)-உடன்
+     directly connected. Lowest stratum = highest trust.
+     Client lower stratum time source prefer பண்றது. Attacker
+     stratum=1 set பண்றான் real NTP server (stratum 2 அல்லது 3
+     இருக்கலாம்)-விட preferred ஆக. Client real server-ஐ விட்டு
+     attacker fake time-க்கு sync ஆகும், time manipulation
+     allow பண்றது.
+
+----------------------------------------------------------------
+
+A85.
+[EN] Default Kerberos clock skew tolerance = 5 minutes.
+     If client time differs from KDC by more than 5 min,
+     KRB_AP_ERR_SKEW error occurs — authentication fails.
+     Services that fail: Windows logon, file share access
+     (SMB/Kerberos), Exchange, SQL Server authentication,
+     certificate-based services, any Kerberos-dependent SSO.
+     AD domain operations break. Network-wide authentication
+     outage possible.
+
+[TM] Default Kerberos clock skew tolerance = 5 minutes.
+     Client time KDC-விட 5 min-க்கு அதிகமாக differ ஆனால்
+     KRB_AP_ERR_SKEW error — authentication fail. Fail ஆகும்
+     services: Windows logon, file share access (SMB/Kerberos),
+     Exchange, SQL Server authentication, certificate-based
+     services, Kerberos-dependent SSO எல்லாம். AD domain
+     operations break. Network-wide authentication outage
+     possible.
+
+----------------------------------------------------------------
+
+A86.
+[EN] Anonymous bind (empty DN + empty password) = LDAP
+     anonymous access. After anonymous bind, attacker can
+     query: all user accounts (sAMAccountName), group
+     memberships (memberOf), computer accounts, OU structure,
+     GPO names, domain functional level, password policy
+     (sometimes), service account names. Complete AD
+     reconnaissance without any credentials.
+
+[TM] Anonymous bind (empty DN + empty password) = LDAP
+     anonymous access. Anonymous bind-க்கு பிறகு attacker
+     query பண்ணலாம்: எல்லா user accounts (sAMAccountName),
+     group memberships (memberOf), computer accounts, OU
+     structure, GPO names, domain functional level, password
+     policy (சில நேரம்), service account names. எந்த
+     credentials-உம் இல்லாம complete AD reconnaissance.
+
+----------------------------------------------------------------
+
+A87.
+[EN] Two prerequisites for TCP LDAP attack via GRE:
+     (1) Inner Src must be whitelist router internal IP
+         (172.16.0.1) so firewall ACL permits TCP 389
+         from that source.
+     (2) OSPF route injection of 172.16.0.1/32 pointing
+         to attacker, so SYN-ACK from DC is routed back
+         to attacker, completing TCP 3-way handshake.
+     Both must be in place before TCP SYN is sent.
+
+[TM] GRE வழியா TCP LDAP attack-க்கு இரண்டு prerequisites:
+     (1) Inner Src whitelist router internal IP (172.16.0.1)
+         ஆக இருக்கணும் — firewall ACL அந்த source-லிருந்து
+         TCP 389 permit பண்றது.
+     (2) OSPF route injection 172.16.0.1/32 → attacker,
+         DC-லிருந்து SYN-ACK attacker-க்கு route ஆகி
+         TCP 3-way handshake complete ஆக.
+     TCP SYN அனுப்புவதற்கு முன்னாடி இரண்டும் in place
+     இருக்கணும்.
+
+----------------------------------------------------------------
+
+A88.
+[EN] No. Firewall permits only tcp from 10.0.0.1/32 eq 389.
+     Inner Src=10.0.0.99 fails the firewall rule — TCP SYN
+     dropped. Inner Src must be 10.0.0.1 (whitelist router
+     internal IF — the IP explicitly permitted in the rule).
+     Combined with OSPF /32 route inject for 10.0.0.1,
+     return traffic will reach attacker.
+
+[TM] இல்லை. Firewall 10.0.0.1/32 eq 389-லிருந்து tcp மட்டும்
+     permit பண்றது. Inner Src=10.0.0.99 firewall rule fail —
+     TCP SYN drop ஆகும். Inner Src 10.0.0.1 (whitelist router
+     internal IF — rule-ல் explicitly permitted IP) ஆக
+     இருக்கணும். OSPF /32 route inject 10.0.0.1-க்காக
+     combine பண்ணினால் return traffic attacker-ஐ reach
+     பண்ணும்.
+
+----------------------------------------------------------------
+
+A89.
+[EN] sAMAccountName reveals: all usernames for spray/brute
+     force, service account names (often have weak passwords),
+     admin account naming convention. memberOf reveals: who
+     is in Domain Admins, which users have elevated privileges,
+     which groups have access to critical systems. This maps
+     the entire privilege landscape for targeted attack planning.
+
+[TM] sAMAccountName reveal பண்றது: spray/brute force-க்கு
+     எல்லா usernames, service account names (பொதுவாக weak
+     passwords), admin account naming convention.
+     memberOf reveal பண்றது: Domain Admins-ல் யார், elevated
+     privileges உள்ள users, critical systems-க்கு access
+     உள்ள groups. Targeted attack planning-க்கு entire
+     privilege landscape map ஆகும்.
+
+----------------------------------------------------------------
+
+A90.
+[EN] RPC endpoint mapper (TCP 135) reveals: which RPC
+     services are running, their dynamic port assignments,
+     service UUIDs (e.g. MS-SAMR, MS-LSAD, MS-DRSR for
+     DCSync), WMI endpoint, Exchange RPC endpoints. This
+     maps available attack surfaces for lateral movement,
+     credential dumping, and domain replication abuse.
+
+[TM] RPC endpoint mapper (TCP 135) reveal பண்றது: எந்த
+     RPC services run ஆகுது, dynamic port assignments,
+     service UUIDs (எ.கா. MS-SAMR, MS-LSAD, DCSync-க்கு
+     MS-DRSR), WMI endpoint, Exchange RPC endpoints.
+     Lateral movement, credential dumping, domain replication
+     abuse-க்கான available attack surfaces map ஆகும்.
+
+----------------------------------------------------------------
+
+A91.
+[EN] OSPF route injection needed: 172.16.0.1/32 → attacker.
+     After injection, SYN-ACK from 10.0.0.50:8080 is
+     destined for inner Src (172.16.0.1) which routes to
+     attacker. Attacker completes handshake and can interact
+     with web application. Any TCP service on internal network
+     follows same pattern.
+
+[TM] OSPF route injection தேவை: 172.16.0.1/32 → attacker.
+     Injection-க்கு பிறகு 10.0.0.50:8080-லிருந்து SYN-ACK
+     inner Src (172.16.0.1)-க்கு destined — attacker-க்கு
+     route ஆகும். Attacker handshake complete பண்ணி web
+     application-உடன் interact பண்ணலாம். Internal network-ல்
+     எந்த TCP service-உம் same pattern follow பண்றது.
+
+----------------------------------------------------------------
+
+A92.
+[EN] After SMB Negotiate and Session Setup (NTLM auth),
+     attacker captures NTLMv2 challenge-response hash.
+     Next steps: (1) Offline crack the NTLMv2 hash
+     (hashcat/john). (2) Pass-the-Hash to other services
+     (SMB, WMI, RDP). (3) NTLM relay to another service
+     (e.g. LDAP signing not enforced → relay to create
+     AD objects).
+
+[TM] SMB Negotiate மற்றும் Session Setup (NTLM auth)-க்கு
+     பிறகு attacker NTLMv2 challenge-response hash capture
+     பண்றான். Next steps:
+     (1) NTLMv2 hash offline crack (hashcat/john).
+     (2) மற்ற services-க்கு Pass-the-Hash (SMB, WMI, RDP).
+     (3) மற்ற service-க்கு NTLM relay (எ.கா. LDAP signing
+         not enforced → AD objects create பண்ண relay).
+
+----------------------------------------------------------------
+
+A93.
+[EN] After DHCP pool exhaustion, two follow-up attacks:
+     (1) Rogue DHCP server: attacker sends DHCP Offer to
+         new clients with gateway=attacker IP and DNS=attacker
+         IP → all new clients route through attacker (gateway
+         MitM) and resolve DNS via attacker (DNS MitM).
+     (2) Denial of Service: existing clients cannot renew
+         leases when they expire → lose network access.
+
+[TM] DHCP pool exhaustion-க்கு பிறகு இரண்டு follow-up attacks:
+     (1) Rogue DHCP server: attacker புதிய clients-க்கு
+         DHCP Offer அனுப்புறான் — gateway=attacker IP,
+         DNS=attacker IP → எல்லா புதிய clients-உம் attacker
+         வழியா route (gateway MitM) மற்றும் attacker வழியா
+         DNS resolve (DNS MitM).
+     (2) Denial of Service: existing clients leases expire
+         ஆகும்போது renew பண்ண முடியாது → network access
+         இழக்கும்.
+
+----------------------------------------------------------------
+
+A94.
+[EN] Beyond log poisoning: (1) SIEM/SOC alert suppression —
+     flood with fake normal events to hide real attack activity
+     (log drowning). (2) Fake security events — inject alerts
+     about non-existent threats to cause analysts to
+     investigate wrong direction (distraction). (3) Compliance
+     log falsification — inject fake audit events that satisfy
+     compliance requirements while hiding malicious activity.
+
+[TM] Log poisoning-ஐ தாண்டி:
+     (1) SIEM/SOC alert suppression — fake normal events flood
+         பண்ணி real attack activity hide (log drowning).
+     (2) Fake security events — இல்லாத threats பத்தி alerts
+         inject பண்ணி analysts-ஐ wrong direction-ல் investigate
+         பண்ண வை (distraction).
+     (3) Compliance log falsification — compliance requirements
+         satisfy பண்ற fake audit events inject, malicious
+         activity hide பண்றது.
+
+----------------------------------------------------------------
+
+A95.
+[EN] Prerequisites for TFTP config read:
+     (1) TFTP server running on device (some old Cisco IOS
+         has tftp-server flash:startup-config).
+     (2) No TFTP access-list restricting source IPs, or
+         attacker uses trusted source IP via GRE inject.
+     (3) Filename known ("startup-config" is default).
+     If all three met, full device config downloaded including
+     all passwords (type 7 = reversible).
+
+[TM] TFTP config read-க்கு prerequisites:
+     (1) Device-ல் TFTP server running (சில பழைய Cisco IOS-ல்
+         tftp-server flash:startup-config இருக்கும்).
+     (2) Source IPs restrict பண்ற TFTP access-list இல்லை,
+         அல்லது GRE inject வழியா trusted source IP பயன்படுத்து.
+     (3) Filename தெரிந்திருக்கணும் (default: "startup-config").
+     மூன்றும் meet ஆனால் எல்லா passwords உட்பட full device
+     config download ஆகும் (type 7 = reversible).
+
+----------------------------------------------------------------
+
+A96.
+[EN] Fake NBNS response claiming to be WINS server for
+     "FILESERVER" enables: all hosts trying to reach
+     \\FILESERVER are directed to attacker's IP. When hosts
+     connect (SMB), they send NTLM authentication → attacker
+     captures NTLMv2 hashes. This is the Responder tool
+     technique (LLMNR/NBT-NS poisoning). Via GRE+EtherIP,
+     attacker performs this remotely.
+
+[TM] "FILESERVER"-க்கு WINS server என்று claim பண்ற fake
+     NBNS response enable பண்றது: \\FILESERVER reach பண்ண
+     try பண்ற எல்லா hosts-உம் attacker IP-க்கு direct ஆகும்.
+     Hosts connect ஆகும்போது (SMB) NTLM authentication
+     அனுப்பும் → attacker NTLMv2 hashes capture. இது
+     Responder tool technique (LLMNR/NBT-NS poisoning).
+     GRE+EtherIP வழியா attacker இதை remotely பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A97.
+[EN] mDNS is used by: macOS (Bonjour), iOS, Linux (Avahi),
+     Windows 10/11 (limited). Fake mDNS response poisoning
+     affects primarily Apple devices and Linux systems running
+     Avahi. Windows primarily uses LLMNR/NBNS. Fake mDNS can
+     redirect: AirPrint printers, AirPlay targets, service
+     discovery (SSH, HTTP services advertised via mDNS).
+
+[TM] mDNS பயன்படுத்துது: macOS (Bonjour), iOS, Linux (Avahi),
+     Windows 10/11 (limited). Fake mDNS response poisoning
+     primarily Apple devices மற்றும் Avahi run பண்ற Linux
+     systems-ஐ affect பண்றது. Windows primarily LLMNR/NBNS
+     பயன்படுத்துது. Fake mDNS redirect பண்ணலாம்: AirPrint
+     printers, AirPlay targets, service discovery (mDNS வழியா
+     advertise ஆகும் SSH, HTTP services).
+
+----------------------------------------------------------------
+
+A98.
+[EN] WS-Discovery is used by Windows network discovery and
+     some IoT devices (cameras, printers). Fake response
+     claims a device (printer, NAS, camera) exists at attacker
+     IP. Windows File Explorer and IoT management tools
+     auto-connect → potential for credential capture, NTLM
+     relay, or MitM of IoT device management traffic.
+
+[TM] WS-Discovery Windows network discovery மற்றும் சில IoT
+     devices (cameras, printers) பயன்படுத்துது. Fake response
+     attacker IP-ல் ஒரு device (printer, NAS, camera) இருக்கு
+     என்று claim பண்றது. Windows File Explorer மற்றும் IoT
+     management tools auto-connect → credential capture, NTLM
+     relay, அல்லது IoT device management traffic MitM
+     possible.
+
+----------------------------------------------------------------
+
+A99.
+[EN] Two pieces of information needed for BGP RST:
+     (1) TCP sequence number within the acceptable receive
+         window of the BGP session. Can be obtained by
+         sniffing (if on same segment) or guessing (seq
+         numbers are sometimes predictable).
+     (2) Exact Src/Dst IP and port (179) of the BGP session.
+         Src IP must match configured neighbor IP for RST
+         to be accepted by target.
+
+[TM] BGP RST-க்கு தேவையான இரண்டு information:
+     (1) BGP session-ஓட acceptable receive window-ல் TCP
+         sequence number. Same segment-ல் இருந்தால் sniffing
+         வழியா அல்லது guessing வழியா பெறலாம் (seq numbers
+         சில நேரம் predictable).
+     (2) BGP session-ஓட exact Src/Dst IP மற்றும் port (179).
+         RST target-ஆல் accept ஆக Src IP configured neighbor
+         IP-உடன் match ஆகணும்.
+
+----------------------------------------------------------------
+
+A100.
+[EN] Without GRE, using web shell directly:
+     Step 1: Web shell → discover internal LAN.
+     Step 2: Web shell → install scapy or use existing tools.
+     Step 3: Send OSPF Hello from server's own IP directly.
+     Step 4: OSPF neighbor forms → LSA inject direct.
+     Web shell on internal server = no GRE needed because
+     attacker IS already on internal LAN.
+
+[TM] GRE இல்லாம web shell directly பயன்படுத்தி:
+     Step 1: Web shell → internal LAN discover.
+     Step 2: Web shell → scapy install அல்லது existing tools
+     பயன்படுத்து.
+     Step 3: Server-ஓட own IP-லிருந்து directly OSPF Hello
+     அனுப்பு (GRE தேவையில்லை — already internal LAN-ல்).
+     Step 4: OSPF neighbor form → LSA inject direct.
+     Internal server-ல் web shell = attacker already internal
+     LAN-ல் இருக்கான் — GRE தேவையில்லை.
+
+----------------------------------------------------------------
+
+--- SECTION 6: VENDOR-SPECIFIC (A101–A120) ---
+
+A101.
+[EN] CDP advertises four attacker-useful items:
+      (1) Device ID — hostname (naming convention reveals
+          OS/role).
+      (2) IOS/Platform version — specific CVE targeting.
+      (3) Native VLAN — VLAN hopping prerequisite info.
+      (4) IP addresses — management interface IPs for
+          direct attack/brute force on management plane.
+
+[TM] CDP attacker-க்கு useful நான்கு items advertise:
+     (1) Device ID — hostname (naming convention OS/role
+         reveal பண்றது).
+     (2) IOS/Platform version — specific CVE targeting-க்கு.
+     (3) Native VLAN — VLAN hopping prerequisite info.
+     (4) IP addresses — management interface IPs, direct
+         attack/brute force management plane-க்கு.
+
+----------------------------------------------------------------
+
+A102.
+[EN] ip source-route enables LSR/SSR (Loose/Strict Source
+      Routing) IP options. Attacker can specify exact path for
+      packets, forcing them through specific routers for traffic
+      interception. Also enables internal network fingerprinting
+      by routing packets through internal hops to map topology.
+      Disable command: no ip source-route (global config).
+
+[TM] ip source-route LSR/SSR (Loose/Strict Source Routing)
+     IP options enable பண்றது. Attacker packets-க்கு exact
+     path specify பண்ணி specific routers வழியா traffic
+     interception-க்கு force பண்ணலாம். Internal hops வழியா
+     packets route பண்ணி topology map — internal network
+     fingerprinting enable. Disable command:
+     no ip source-route (global config).
+
+----------------------------------------------------------------
+
+A103.
+[EN] Proxy ARP causes router to respond to ARP requests for
+      IPs on other subnets. In GRE MitM scenario: attacker
+      redirects traffic to themselves, then needs to forward
+      to real destination. Proxy ARP on the router helps
+      resolve next-hop MACs for forwarded packets. Also:
+      proxy ARP can confuse ARP tables if attacker uses it
+      to claim ownership of multiple IPs on the segment.
+
+[TM] Proxy ARP router-ஐ மற்ற subnets-ல் IPs-க்கான ARP
+     requests-க்கு respond பண்ண வைக்கிறது. GRE MitM
+     scenario-ல்: attacker traffic-ஐ தன்னிடம் redirect
+     பண்ணி real destination-க்கு forward பண்ணணும்.
+     Router-ல் Proxy ARP forwarded packets-க்கு next-hop
+     MACs resolve பண்ண help பண்றது. கூடுதலாக: attacker
+     segment-ல் multiple IPs ownership claim பண்ண proxy
+     ARP பயன்படுத்தினால் ARP tables confuse ஆகலாம்.
+
+----------------------------------------------------------------
+
+A104.
+[EN] IP directed broadcast: allows broadcast packets destined
+      for a subnet broadcast address to be forwarded as Layer 2
+      broadcasts to all hosts on that subnet. Smurf attack:
+      attacker sends ICMP Echo to many directed broadcast
+      addresses with spoofed Src = victim IP. All hosts reply
+      to victim → amplified DDoS. Disable:
+      no ip directed-broadcast (per interface).
+
+[TM] IP directed broadcast: subnet broadcast address-க்கு
+     destined broadcast packets-ஐ அந்த subnet-ல் எல்லா
+     hosts-க்கும் Layer 2 broadcasts-ஆக forward allow பண்றது.
+     Smurf attack: attacker spoofed Src = victim IP-உடன் பல
+     directed broadcast addresses-க்கு ICMP Echo அனுப்புறான்.
+     எல்லா hosts-உம் victim-க்கு reply → amplified DDoS.
+     Disable: no ip directed-broadcast (per interface).
+
+----------------------------------------------------------------
+
+A105.
+[EN] PPTP uses TCP 1723 for control and GRE (Proto 47) for
+      data. Cisco ASA "inspect pptp" tracks PPTP control
+      connections and automatically opens pinholes for the
+      associated GRE flows. Security risk: if attacker
+      establishes PPTP control connection (TCP 1723) to
+      internal server, ASA automatically permits subsequent
+      GRE traffic from that source — GRE bypass via PPTP
+      inspection.
+
+[TM] PPTP control-க்கு TCP 1723, data-க்கு GRE (Proto 47)
+     பயன்படுத்துது. Cisco ASA "inspect pptp" PPTP control
+     connections track பண்ணி associated GRE flows-க்கு
+     automatically pinholes open பண்றது. Security risk:
+     attacker internal server-க்கு PPTP control connection
+     (TCP 1723) establish பண்ணினால், ASA அந்த source-லிருந்து
+     subsequent GRE traffic automatically permit பண்றது —
+     PPTP inspection வழியா GRE bypass.
+
+----------------------------------------------------------------
+
+A106.
+[EN] VXLAN (UDP 4789) without auth allows injection of
+      Ethernet frames similar to EtherIP. Attacker sends UDP
+      4789 packet to VTEP with correct VNI, containing fake
+      ARP, STP BPDU, or OSPF packets. Impact identical to
+      EtherIP but over UDP. VNI can be discovered via SNMP
+      or CDP.
+
+[TM] Authentication இல்லாம VXLAN (UDP 4789) EtherIP
+     மாதிரியே Ethernet frames injection allow பண்றது.
+     Attacker correct VNI-உடன் VTEP-க்கு UDP 4789 packet
+     அனுப்புறான் — fake ARP, STP BPDU, அல்லது OSPF packets
+     contain பண்றது. Impact EtherIP-க்கு identical, ஆனால்
+     UDP-ல். VNI SNMP அல்லது CDP வழியா discover ஆகலாம்.
+
+----------------------------------------------------------------
+
+A107.
+[EN] RSVP enabled with MPLS: attacker sends flood of RSVP
+      PATH messages via GRE inject, each reserving maximum
+      bandwidth for fake flows. Router maintains RSVP soft-state
+      for each session. 1000s of fake sessions exhaust:
+      (1) RSVP state table memory, (2) bandwidth reservation
+      table, (3) CPU for state maintenance. Legitimate MPLS
+      TE tunnels fail to reserve bandwidth → traffic falls
+      back to best-effort or drops.
+
+[TM] MPLS-உடன் RSVP: attacker GRE inject வழியா RSVP PATH
+     messages flood அனுப்புறான் — ஒவ்வொன்னும் fake flows-க்கு
+     maximum bandwidth reserve பண்றது. Router ஒவ்வொரு
+     session-க்கும் RSVP soft-state maintain பண்றது. 1000s
+     fake sessions exhaust பண்றது: (1) RSVP state table
+     memory, (2) bandwidth reservation table, (3) state
+     maintenance CPU. Legitimate MPLS TE tunnels bandwidth
+     reserve பண்ண fail → traffic best-effort-க்கு fallback
+     அல்லது drop.
+
+----------------------------------------------------------------
+
+A108.
+[EN] Fake LDP Label Mapping for FEC (prefix) X with label
+      value Y creates forwarding entry: "packets for prefix X
+      → swap label to Y → forward out interface Z." If Y is
+      an invalid label or points to null interface, traffic
+      for prefix X is black-holed. If Y points to attacker's
+      label, traffic is redirected. MPLS forwarding bypasses
+      traditional IP routing table.
+
+[TM] FEC (prefix) X-க்கு label value Y-உடன் fake LDP Label
+     Mapping forwarding entry create பண்றது: "prefix X-க்கு
+     packets → label Y-க்கு swap → interface Z-லிருந்து
+     forward." Y invalid label அல்லது null interface point
+     பண்ணினால் prefix X-க்கான traffic black-hole. Y attacker
+     label point பண்ணினால் redirect. MPLS forwarding
+     traditional IP routing table-ஐ bypass பண்றது.
+
+----------------------------------------------------------------
+
+A109.
+[EN] Palo Alto "predict session" for PPTP: when PPTP control
+      session (TCP 1723) is seen, PAN-OS predicts and pre-creates
+      a session entry for the expected GRE data channel. This
+      GRE session is allowed without explicit security policy
+      rule. Attacker initiates PPTP to any internal host that
+      accepts TCP 1723 → PAN-OS automatically permits attacker's
+      GRE traffic → GRE injection possible through Palo Alto.
+
+[TM] Palo Alto PPTP "predict session": PPTP control session
+     (TCP 1723) பார்க்கும்போது PAN-OS expected GRE data
+     channel-க்கு session entry predict பண்ணி pre-create
+     பண்றது. இந்த GRE session explicit security policy rule
+     இல்லாம allow ஆகுது. Attacker TCP 1723 accept பண்ற
+     எந்த internal host-க்கும் PPTP initiate பண்றான் →
+     PAN-OS attacker GRE traffic automatically permit →
+     Palo Alto வழியா GRE injection possible.
+
+----------------------------------------------------------------
+
+A110.
+[EN] FortiGate PPTP session helper: similar to PAN-OS.
+      When TCP 1723 PPTP negotiation is detected, FortiGate
+      adds dynamic session entry for GRE traffic from same
+      source. Bypass method: (1) Send TCP SYN to port 1723
+      of any internal host. (2) FortiGate creates GRE
+      expectation session. (3) Send GRE traffic — FortiGate
+      matches expectation → passes without policy check.
+
+[TM] FortiGate PPTP session helper: PAN-OS மாதிரியே.
+     TCP 1723 PPTP negotiation detect ஆகும்போது FortiGate
+     same source-லிருந்து GRE traffic-க்கு dynamic session
+     entry add பண்றது. Bypass method:
+     (1) எந்த internal host-ஓட port 1723-க்கும் TCP SYN
+         அனுப்பு.
+     (2) FortiGate GRE expectation session create பண்றது.
+     (3) GRE traffic அனுப்பு — FortiGate expectation match
+         பண்ணி policy check இல்லாம pass பண்றது.
+
+----------------------------------------------------------------
+
+A111.
+[EN] Verify loaded modules:
+        lsmod | grep -E 'ipip|ip_gre|sit|ethip'
+      Remove modules:
+        rmmod ipip; rmmod ip_gre; rmmod sit; rmmod ethip
+      Prevent auto-load:
+        echo "blacklist ipip" >> /etc/modprobe.d/blacklist.conf
+        echo "blacklist ip_gre" >> /etc/modprobe.d/blacklist.conf
+        (same for sit and ethip)
+
+[TM] Loaded modules verify பண்ண:
+        lsmod | grep -E 'ipip|ip_gre|sit|ethip'
+     Modules remove பண்ண:
+        rmmod ipip; rmmod ip_gre; rmmod sit; rmmod ethip
+     Auto-load prevent பண்ண:
+        echo "blacklist ipip" >> /etc/modprobe.d/blacklist.conf
+        echo "blacklist ip_gre" >> /etc/modprobe.d/blacklist.conf
+        (sit மற்றும் ethip-க்கும் same)
+
+----------------------------------------------------------------
+
+A112.
+[EN] ISATAP creates automatic IPv6-in-IPv4 tunnels. Windows
+      auto-configures ISATAP interface using IPv4 address
+      embedded in IPv6. Attacker abuse: inject fake IPv6 Router
+      Advertisement via ISATAP tunnel → hosts configure
+      attacker-controlled IPv6 default gateway → all IPv6
+      traffic (which Windows prefers over IPv4) → MitM. IPv6
+      traffic may bypass IPv4-only security tools/ACLs.
+
+[TM] ISATAP automatic IPv6-in-IPv4 tunnels create பண்றது.
+     Windows IPv4 address embedded IPv6-ஐ பயன்படுத்தி
+     ISATAP interface auto-configure பண்றது. Attacker abuse:
+     ISATAP tunnel வழியா fake IPv6 Router Advertisement inject
+     → hosts attacker-controlled IPv6 default gateway configure
+     → Windows prefer பண்ற எல்லா IPv6 traffic → MitM.
+     IPv6 traffic IPv4-only security tools/ACLs bypass
+     பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A113.
+[EN] LLMNR responds to name queries on UDP 5355 multicast
+      (224.0.0.252). Via EtherIP injection, attacker sends fake
+      LLMNR response: "FILESERVER = attacker IP." Windows hosts
+      trying to resolve "FILESERVER" via LLMNR accept fake
+      response → connect to attacker IP via SMB → NTLM
+      authentication presented → attacker captures NTLMv2
+      hash → offline crack or relay.
+
+[TM] LLMNR UDP 5355 multicast (224.0.0.252)-ல் name queries-க்கு
+     respond பண்றது. EtherIP injection வழியா attacker fake
+     LLMNR response அனுப்புறான்: "FILESERVER = attacker IP."
+     LLMNR வழியா "FILESERVER" resolve பண்ண try பண்ற Windows
+     hosts fake response accept → attacker IP-க்கு SMB வழியா
+     connect → NTLM authentication present → attacker NTLMv2
+     hash capture → offline crack அல்லது relay.
+
+----------------------------------------------------------------
+
+A114.
+[EN] NetBIOS Name Service (UDP 137) can be poisoned via NBNS
+      spoofing. Common tool: Responder (Impacket). Attacker
+      receives: NTLMv2 hashes from all hosts that attempt to
+      connect to spoofed names. These can be cracked offline
+      or relayed to other services (SMB relay → code execution
+      if SMB signing not required).
+
+[TM] NetBIOS Name Service (UDP 137) NBNS spoofing வழியா
+     poison ஆகலாம். Common tool: Responder (Impacket).
+     Attacker receive பண்றது: spoofed names-க்கு connect
+     பண்ண try பண்ற எல்லா hosts-லிருந்தும் NTLMv2 hashes.
+     இவற்றை offline crack பண்ணலாம் அல்லது மற்ற services-க்கு
+     relay பண்ணலாம் (SMB relay → SMB signing required இல்லையென்றால்
+     code execution).
+
+----------------------------------------------------------------
+
+A115.
+[EN] OID for default route next-hop:
+      1.3.6.1.2.1.4.21.1.7.0.0.0.0
+      (ipRouteNextHop for destination 0.0.0.0)
+      SNMP SET with value = attacker IP changes default gateway
+      for all traffic. More targeted OIDs exist for specific
+      prefixes: 1.3.6.1.2.1.4.21.1.7.x.x.x.x where x.x.x.x
+      = target prefix.
+
+[TM] Default route next-hop-க்கான OID:
+     1.3.6.1.2.1.4.21.1.7.0.0.0.0
+     (destination 0.0.0.0-க்கு ipRouteNextHop)
+     SNMP SET value = attacker IP என்று set பண்ணினால்
+     எல்லா traffic-க்கும் default gateway மாறும்.
+     Specific prefixes-க்கு more targeted OIDs:
+     1.3.6.1.2.1.4.21.1.7.x.x.x.x (x.x.x.x = target prefix).
+
+----------------------------------------------------------------
+
+A116.
+[EN] Cisco IOS HTTP server (port 80): provides web-based
+      device management. Attacker can: view running config,
+      execute IOS commands via HTTP GET requests, change
+      interface configs, modify routing, add/remove ACLs.
+      Authentication is local username/password — brute
+      forceable. Disable command:
+        no ip http server
+        no ip http secure-server (for HTTPS too)
+
+[TM] Cisco IOS HTTP server (port 80): web-based device
+     management provide பண்றது. Attacker செய்யலாம்: running
+     config view, HTTP GET requests வழியா IOS commands execute,
+     interface configs மாத்து, routing modify, ACLs add/remove.
+     Authentication local username/password — brute force
+     possible. Disable command:
+       no ip http server
+       no ip http secure-server (HTTPS-க்கும்)
+
+----------------------------------------------------------------
+
+A117.
+[EN] Telnet to Cisco ASA from inside provides:
+      (1) Full CLI access (exec mode initially).
+      (2) "enable" password entry → privileged mode.
+      (3) "show run" → full config including VPN keys,
+          pre-shared keys, user passwords (type 7).
+      (4) Ability to modify ACLs, NAT, routing.
+      (5) Access to all connected network segment info.
+      Complete firewall compromise from one Telnet session.
+
+[TM] Inside-லிருந்து Cisco ASA-க்கு Telnet provide பண்றது:
+     (1) Full CLI access (initially exec mode).
+     (2) "enable" password → privileged mode.
+     (3) "show run" → VPN keys, pre-shared keys, user
+         passwords (type 7) உட்பட full config.
+     (4) ACLs, NAT, routing modify பண்ற ability.
+     (5) Connected எல்லா network segment info-க்கு access.
+     ஒரே Telnet session-ல் complete firewall compromise.
+
+----------------------------------------------------------------
+
+A118.
+[EN] LLDP on DMZ interface leaks: (1) Firewall hostname and
+      model number, (2) Interface name facing DMZ, (3) Management
+      IP address, (4) System description including PAN-OS version,
+      (5) Capabilities (router/switch). Attacker with DMZ host
+      access reads LLDP neighbor: exact PAN-OS version → CVE
+      targeting, management IP → direct attack or brute force.
+
+[TM] DMZ interface-ல் LLDP leak பண்றது: (1) Firewall hostname
+     மற்றும் model number, (2) DMZ-facing interface name,
+     (3) Management IP address, (4) PAN-OS version உட்பட
+     system description, (5) Capabilities (router/switch).
+     DMZ host access உள்ள attacker LLDP neighbor read பண்றான்:
+     exact PAN-OS version → CVE targeting, management IP →
+     direct attack அல்லது brute force.
+
+----------------------------------------------------------------
+
+A119.
+[EN] FortiGate DNS inspection can assist the attack. DNS
+      inspection normalizes DNS traffic and in some configs
+      creates dynamic sessions for DNS responses. If DNS
+      inspection expects responses from configured DNS server
+      IPs and attacker spoofs that source, FortiGate may match
+      the dynamic session and pass the spoofed response.
+      Additionally, DNS inspection has had vulnerabilities
+      (CVEs) allowing bypass.
+
+[TM] FortiGate DNS inspection attack-ஐ assist பண்ணலாம்.
+     DNS inspection DNS traffic normalize பண்றது, சில configs-ல்
+     DNS responses-க்கு dynamic sessions create பண்றது.
+     DNS inspection configured DNS server IPs-லிருந்து
+     responses expect பண்றால் attacker அந்த source spoof
+     பண்ண FortiGate dynamic session match பண்ணி spoofed
+     response pass பண்ணலாம். கூடுதலாக DNS inspection-ல்
+     bypass allow பண்ற vulnerabilities (CVEs) இருந்திருக்கு.
+
+----------------------------------------------------------------
+
+A120.
+[EN] Ranked by attack severity (highest to lowest):
+      1. SNMP public (RW) — direct routing table write,
+         config dump, credentials. Immediate full access.
+      2. ip source-route — internal topology mapping + traffic
+         interception via LSR.
+      3. CDP — version/topology disclosure enabling targeted
+         CVE exploitation.
+      4. ip redirects — route redirect, traffic hijack
+         on same segment.
+      5. proxy-arp — ARP confusion, assists MitM but requires
+         attacker already on segment.
+
+[TM] Attack severity அடிப்படையில் rank (highest to lowest):
+     1. SNMP public (RW) — direct routing table write, config
+        dump, credentials. Immediate full access.
+     2. ip source-route — internal topology mapping + LSR
+        வழியா traffic interception.
+     3. CDP — version/topology disclosure → targeted CVE
+        exploitation enable.
+     4. ip redirects — route redirect, same segment-ல் traffic
+        hijack.
+     5. proxy-arp — ARP confusion, MitM assist ஆனால் attacker
+        segment-ல் already இருக்கணும்.
+
+----------------------------------------------------------------
+
+--- SECTION 7: CHAIN ATTACKS (A121–A150) ---
+
+A121.
+[EN] Minimum conditions for OSPF→BGP chain:
+      (1) mGRE or any-source GRE tunnel on whitelist router.
+      (2) OSPF running on internal LAN with no auth.
+      (3) BGP session exists between whitelist router internal
+          IP and target BGP router.
+      (4) Whitelist router internal IP known to attacker.
+      (5) No inbound ACL blocking GRE from internet.
+      (6) No OSPF MD5 authentication.
+
+[TM] OSPF→BGP chain-க்கு minimum conditions:
+     (1) Whitelist router-ல் mGRE அல்லது any-source GRE tunnel.
+     (2) Internal LAN-ல் no auth-உடன் OSPF running.
+     (3) Whitelist router internal IP மற்றும் target BGP router-க்கிடையே
+         BGP session இருக்கு.
+     (4) Whitelist router internal IP attacker-க்கு தெரியும்.
+     (5) Internet-லிருந்து GRE block பண்ற inbound ACL இல்லை.
+     (6) OSPF MD5 authentication இல்லை.
+
+----------------------------------------------------------------
+
+A122.
+[EN] Combined impact:
+      OSPF inject alone: route table poison for specific prefixes
+      → targeted traffic redirect.
+      VRRP takeover alone: default gateway hijack → all host
+      traffic intercepted.
+      Together: OSPF poisons router-to-router traffic (routing
+      plane MitM) AND VRRP captures host-to-gateway traffic
+      (forwarding plane MitM). Complete coverage — both routed
+      traffic AND directly connected host traffic intercepted.
+
+[TM] Combined impact:
+     OSPF inject alone: specific prefixes-க்கு route table
+     poison → targeted traffic redirect.
+     VRRP takeover alone: default gateway hijack → எல்லா host
+     traffic intercepted.
+     சேர்ந்து: OSPF router-to-router traffic poison (routing
+     plane MitM) + VRRP host-to-gateway traffic capture
+     (forwarding plane MitM). Complete coverage — routed
+     traffic-உம் directly connected host traffic-உம்
+     intercepted.
+
+----------------------------------------------------------------
+
+A123.
+[EN] EtherIP ARP poison = L2 MitM (hosts' ARP cache poisoned,
+      traffic at Ethernet frame level redirected).
+      OSPF route inject = L3 MitM (routing table poisoned,
+      routed traffic redirected).
+      Yes, both can be active simultaneously. They operate at
+      different OSI layers. L2 MitM catches local LAN traffic
+      from hosts. L3 MitM catches inter-router and inter-subnet
+      traffic. Combined: total network traffic interception.
+
+[TM] EtherIP ARP poison = L2 MitM (hosts ARP cache poison,
+     Ethernet frame level-ல் traffic redirect).
+     OSPF route inject = L3 MitM (routing table poison,
+     routed traffic redirect).
+     ஆமா, இரண்டும் simultaneously active-ஆ இருக்கலாம்.
+     Different OSI layers-ல் operate பண்றது. L2 MitM local
+     LAN host traffic catch. L3 MitM inter-router மற்றும்
+     inter-subnet traffic catch. சேர்ந்து: total network
+     traffic interception.
+
+----------------------------------------------------------------
+
+A124.
+[EN] STP root bridge takeover affects OSI Layer 2 (Data Link).
+      Impact on L3: all inter-VLAN traffic must traverse the
+      root bridge's position. Attacker can: selectively block
+      ports (isolating routers), cause topology changes that
+      trigger OSPF neighbor drops (STP topology change → MAC
+      flush → OSPF Hello loss), enabling further L3 attack
+      opportunities.
+
+[TM] STP root bridge takeover OSI Layer 2 (Data Link)-ஐ
+     affect பண்றது. L3 impact: எல்லா inter-VLAN traffic-உம்
+     root bridge position traverse பண்ணணும். Attacker:
+     selectively ports block (routers isolate), STP topology
+     change trigger பண்ணி OSPF neighbor drops cause பண்ணலாம்
+     (STP topology change → MAC flush → OSPF Hello loss) →
+     further L3 attack opportunities enable.
+
+----------------------------------------------------------------
+
+A125.
+[EN] After BGP UPDATE advertising 0.0.0.0/0 with better
+      attributes: all internal BGP routers install attacker's
+      route as default. All packets destined for internet (any
+      IP not matched by more specific internal routes) are
+      forwarded toward attacker. Attacker receives all outbound
+      internet traffic: HTTP/S, DNS, email, VPN traffic, cloud
+      API calls.
+
+[TM] Better attributes-உடன் 0.0.0.0/0 advertise பண்ணும் BGP
+     UPDATE-க்கு பிறகு: எல்லா internal BGP routers-உம் attacker
+     route-ஐ default-ஆக install பண்றது. Internet-க்கு destined
+     எல்லா packets-உம் (more specific internal routes match
+     ஆகாத எந்த IP-உம்) attacker-க்கு forward ஆகும். Attacker
+     எல்லா outbound internet traffic receive: HTTP/S, DNS,
+     email, VPN traffic, cloud API calls.
+
+----------------------------------------------------------------
+
+A126.
+[EN] Rogue DHCP with attacker as gateway + DNS:
+      (1) Full MitM: all traffic from new clients routed through
+          attacker (default gateway = attacker).
+      (2) DNS MitM: all DNS queries go to attacker's server →
+          any domain can be redirected.
+      (3) Credential harvest: HTTP login pages served by attacker,
+          HTTPS downgrade possible if HSTS not enforced, NTLM
+          auth captured via SMB/HTTP when redirected.
+
+[TM] Attacker gateway + DNS-ஆக rogue DHCP:
+     (1) Full MitM: புதிய clients-லிருந்து எல்லா traffic attacker
+         வழியா route (default gateway = attacker).
+     (2) DNS MitM: எல்லா DNS queries attacker server-க்கு →
+         எந்த domain-உம் redirect பண்ணலாம்.
+     (3) Credential harvest: attacker HTTP login pages serve,
+         HSTS not enforced இருந்தால் HTTPS downgrade possible,
+         redirect ஆகும்போது SMB/HTTP வழியா NTLM auth capture.
+
+----------------------------------------------------------------
+
+A127.
+[EN] Complete chain:
+      HTTP PUT → upload ASPX webshell
+      → webshell: ipconfig (discover LAN 172.16.0.0/24)
+      → webshell: nmap (find OSPF routers)
+      → webshell + scapy: OSPF Hello (no GRE — already on LAN)
+      → OSPF neighbor formed (no auth)
+      → OSPF LSA inject: 172.16.0.1/32 → web server IP
+      → TCP SYN BGP, Src=172.16.0.1
+      → SYN-ACK routed to web server (poisoned route)
+      → BGP handshake via webshell socket
+      → BGP UPDATE: inject routes
+      GRE not needed — webshell = internal LAN access.
+
+[TM] Complete chain:
+     HTTP PUT → ASPX webshell upload
+     → webshell: ipconfig (LAN 172.16.0.0/24 discover)
+     → webshell: nmap (OSPF routers find)
+     → webshell + scapy: OSPF Hello (GRE தேவையில்லை —
+        already LAN-ல்)
+     → OSPF neighbor form (no auth)
+     → OSPF LSA inject: 172.16.0.1/32 → web server IP
+     → TCP SYN BGP, Src=172.16.0.1
+     → SYN-ACK web server-க்கு route (poisoned route)
+     → BGP handshake via webshell socket
+     → BGP UPDATE: routes inject
+     GRE தேவையில்லை — webshell = internal LAN access.
+
+----------------------------------------------------------------
+
+A128.
+[EN] NTP attack failure order:
+      Immediate (<1 min): NTP client syncs to fake time.
+      ~1-5 min: Kerberos ticket validation fails (5-min skew).
+      ~5-10 min: Existing Kerberos tickets expire.
+      ~10-30 min: Certificate validity period checks fail.
+      ~30+ min: Domain replication breaks.
+      Eventually: full AD operational failure.
+
+[TM] NTP attack failure order:
+     Immediate (<1 min): NTP client fake time-க்கு sync.
+     ~1-5 min: Kerberos ticket validation fail (5-min skew).
+     ~5-10 min: Existing Kerberos tickets expire → file share,
+     Exchange, SQL auth break.
+     ~10-30 min: Certificate validity period checks fail.
+     ~30+ min: Domain replication breaks (Kerberos தேவை).
+     Eventually: full AD operational failure.
+
+----------------------------------------------------------------
+
+A129.
+[EN] After fake LDP label injection for 10.0.0.0/8: MPLS
+      forwarding table entry: FEC 10.0.0.0/8 → label 99999 →
+      forward out interface X. All packets for 10.0.0.0/8 are
+      MPLS-switched using label 99999 — bypassing IP routing
+      table. If label 99999 = black-hole → dropped. If = attacker's
+      label → redirected. IP-based ACLs may not apply to
+      MPLS-switched traffic.
+
+[TM] 10.0.0.0/8-க்கு fake LDP label injection-க்கு பிறகு:
+     MPLS forwarding table entry: FEC 10.0.0.0/8 → label 99999
+     → interface X-லிருந்து forward. 10.0.0.0/8-க்கான எல்லா
+     packets-உம் label 99999 பயன்படுத்தி MPLS-switch ஆகும் —
+     IP routing table bypass. Label 99999 = black-hole →
+     drop. = attacker label → redirect. IP-based ACLs
+     MPLS-switched traffic-க்கு apply ஆகாமல் போகலாம்.
+
+----------------------------------------------------------------
+
+A130.
+[EN] BFD DOWN → OSPF adjacency drop immediately.
+      OSPF reconvergence time: (1) SPF calculation: ~100ms-1s.
+      (2) LSA flooding: ~1-5 seconds. (3) Full convergence:
+      ~5-30 seconds. During reconvergence: routes withdrawn,
+      traffic black-holed for affected prefixes, possible
+      routing loops (micro-loops). BGP sessions over OSPF
+      routes may also drop (BGP hold timer: 90-180 seconds).
+
+[TM] BFD DOWN → OSPF adjacency immediately drop.
+     OSPF reconvergence time: (1) SPF calculation: ~100ms-1s.
+     (2) LSA flooding: ~1-5 seconds. (3) Full convergence:
+     ~5-30 seconds. Reconvergence-ல்: routes withdrawn,
+     affected prefixes-க்கு traffic black-hole, possible routing
+     loops (micro-loops). OSPF routes-ல் BGP sessions-உம்
+     drop ஆகலாம் (BGP hold timer: 90-180 seconds).
+
+----------------------------------------------------------------
+
+A131.
+[EN] After reaching DC VLAN via VLAN hopping:
+      Step 1: Port scan DC (445, 389, 88, 135).
+      Step 2: SMB null session or LDAP anonymous bind for
+      user enumeration.
+      Step 3: Password spray against AD accounts.
+      Step 4: If credentials found → RPC/WMI exec.
+      Step 5: Dump NTDS.dit via VSS shadow copy or DCSync.
+      Step 6: All domain hashes → pass-the-hash everywhere.
+
+[TM] VLAN hopping வழியா DC VLAN reach-க்கு பிறகு:
+     Step 1: DC port scan (445, 389, 88, 135).
+     Step 2: User enumeration-க்கு SMB null session அல்லது
+     LDAP anonymous bind.
+     Step 3: AD accounts-க்கு password spray.
+     Step 4: Credentials கிடைத்தால் → RPC/WMI exec.
+     Step 5: VSS shadow copy அல்லது DCSync வழியா NTDS.dit dump.
+     Step 6: எல்லா domain hashes → எங்கும் pass-the-hash.
+
+----------------------------------------------------------------
+
+A132.
+[EN] NMS (SIEM, SolarWinds, PRTG) impact:
+      (1) Topology map shows fake devices → engineers
+          troubleshoot non-existent equipment.
+      (2) Alerts for fake device failures distract SOC from
+          real attack activity.
+      (3) Config backup tools attempt to backup fake devices
+          → authentication attempts against attacker IPs.
+      (4) SNMP polling to fake device IPs → credentials
+          potentially captured.
+
+[TM] NMS (SIEM, SolarWinds, PRTG) impact:
+     (1) Topology map fake devices காட்டும் → engineers
+         இல்லாத equipment troubleshoot பண்றாங்க.
+     (2) Fake device failures-க்கு alerts SOC-ஐ real attack
+         activity-லிருந்து distract பண்றது.
+     (3) Config backup tools fake devices backup பண்ண try →
+         attacker IPs-க்கு authentication attempts.
+     (4) Fake device IPs-க்கு SNMP polling → credentials
+         potentially captured.
+
+----------------------------------------------------------------
+
+A133.
+[EN] Add security policy rule: source=attacker IP,
+      destination=any, application=any, action=allow.
+      This whitelists attacker's IP for all traffic including
+      GRE (Proto 47), EtherIP (Proto 97), IP-in-IP (Proto 4).
+      All previous encapsulation attacks from internet are
+      now permitted through the firewall. Single rule change
+      = complete attack chain enablement.
+
+[TM] Security policy rule add பண்றது: source=attacker IP,
+     destination=any, application=any, action=allow.
+     இது GRE (Proto 47), EtherIP (Proto 97), IP-in-IP (Proto 4)
+     உட்பட எல்லா traffic-க்கும் attacker IP-ஐ whitelist
+     பண்றது. Internet-லிருந்து முந்தைய எல்லா encapsulation
+     attacks-உம் இப்போ firewall வழியா permit. Single rule
+     change = complete attack chain enablement.
+
+----------------------------------------------------------------
+
+A134.
+[EN] GRE whitelist status is gained after:
+      LDAP enum → find admin accounts →
+      Pass-the-hash to ASA → ASA config read →
+      modify ASA ACL to permit GRE from attacker
+      OR
+      Pass-the-hash to Palo Alto → add permit rule.
+      Attacker becomes GRE-whitelisted after management
+      plane compromise.
+
+[TM] GRE whitelist status இந்த steps-க்கு பிறகு கிடைக்கும்:
+     LDAP enum → admin accounts find →
+     ASA-க்கு pass-the-hash → ASA config read →
+     attacker-லிருந்து GRE permit பண்ண ASA ACL modify
+     அல்லது
+     Palo Alto-க்கு pass-the-hash → permit rule add.
+     Management plane compromise-க்கு பிறகு attacker
+     GRE-whitelisted ஆகுறான்.
+
+----------------------------------------------------------------
+
+A135.
+[EN] IPv6 additional attack surface on dual-stack:
+      (1) IPv6 routing protocols (OSPFv3, BGP4+, EIGRPv6) are
+          separate from IPv4 — may have less security hardening.
+      (2) IPv6 link-local addresses auto-configure → no DHCP
+          needed → harder to track/block.
+      (3) IPv6 RAs allow default gateway injection without
+          VRRP/HSRP.
+      (4) IPv6 ACLs often incomplete on dual-stack devices.
+      (5) NDP (Neighbor Discovery) = IPv6 ARP — no auth,
+          spoofable.
+
+[TM] Dual-stack-ல் IPv6 additional attack surface:
+     (1) IPv6 routing protocols (OSPFv3, BGP4+, EIGRPv6) IPv4-லிருந்து
+         separate — less security hardening இருக்கலாம்.
+     (2) IPv6 link-local addresses auto-configure → DHCP
+         தேவையில்லை → track/block பண்றது harder.
+     (3) IPv6 RAs VRRP/HSRP இல்லாம default gateway injection
+         allow பண்றது.
+     (4) Dual-stack devices-ல் IPv6 ACLs பொதுவாக incomplete.
+     (5) NDP (Neighbor Discovery) = IPv6 ARP — auth இல்லை,
+         spoofable.
+
+----------------------------------------------------------------
+
+A136.
+[EN] VRRP with text authentication is still vulnerable.
+      VRRPv2 text auth = 8-byte plaintext password in
+      advertisement. Visible in Wireshark capture. Once
+      password captured, attacker constructs fake VRRP
+      advertisement with correct auth string. OSPF MD5,
+      EIGRP MD5, BGP MD5 all block their respective attacks.
+      VRRPv3 removes text auth but adds no strong crypto.
+      Defense: implement VRRP within IPSec protected segments.
+
+[TM] Text authentication-உடன் VRRP இன்னும் vulnerable.
+     VRRPv2 text auth = advertisement-ல் 8-byte plaintext
+     password. Wireshark capture-ல் visible. Password capture
+     ஆனதும் attacker correct auth string-உடன் fake VRRP
+     advertisement construct பண்றான். OSPF MD5, EIGRP MD5,
+     BGP MD5 தத்தம் attacks block பண்றது. VRRPv3 text auth
+     remove பண்றது ஆனால் strong crypto add பண்றதில்லை.
+     Defense: IPSec protected segments-ல் VRRP implement.
+
+----------------------------------------------------------------
+
+A137.
+[EN] RSVP bandwidth exhaustion:
+      1000 sessions × 1Gbps = 1000Gbps "reserved."
+      Router has 10Gbps total. After attacker's reservations
+      fill the table, ALL new legitimate RSVP reservations
+      are rejected by admission control. Existing legitimate
+      sessions may survive but cannot be re-established if
+      they flap. New VoIP calls, video conferences, MPLS TE
+      tunnels = fail.
+
+[TM] RSVP bandwidth exhaustion:
+     1000 sessions × 1Gbps = 1000Gbps "reserved."
+     Router total 10Gbps. Attacker reservations table fill
+     பண்ணிய பிறகு admission control ALL new legitimate RSVP
+     reservations reject பண்றது. Existing legitimate sessions
+     survive ஆகலாம் ஆனால் flap ஆனால் re-establish ஆக
+     முடியாது. New VoIP calls, video conferences, MPLS TE
+     tunnels = fail.
+
+----------------------------------------------------------------
+
+A138.
+[EN] NHRP auth failure does NOT prevent OSPF inject.
+      NHRP and inner routing protocols are independent layers.
+      NHRP failure means attacker's address is not registered
+      in NHRP mapping table. But inner OSPF Hello packet, after
+      GRE decap, is processed by OSPF process directly — OSPF
+      has no knowledge of NHRP auth. The packet reaches OSPF
+      engine regardless of NHRP registration failure.
+
+[TM] NHRP auth failure OSPF inject-ஐ prevent பண்றதில்லை.
+     NHRP மற்றும் inner routing protocols independent layers.
+     NHRP failure என்றால் attacker address NHRP mapping table-ல்
+     register ஆகவில்லை. ஆனால் inner OSPF Hello packet GRE
+     decap-க்கு பிறகு directly OSPF process-ஆல் process ஆகும் —
+     OSPF NHRP auth பத்தி தெரியாது. NHRP registration failure
+     இருந்தாலும் packet OSPF engine-ஐ reach பண்றது.
+
+----------------------------------------------------------------
+
+A139.
+[EN] IDS is blind to OSPF payload inside ESP because payload
+      is encrypted. IDS sees: Proto 50 (ESP), SPI, sequence
+      number — no application data. OSPF signatures cannot match
+      encrypted content. Defense: (1) Inline SSL/IPSec
+      inspection (decrypt → inspect → re-encrypt). (2) Anomaly
+      detection: OSPF-inside-ESP traffic from unexpected source
+      may show anomalous session establishment patterns.
+
+[TM] IDS ESP-க்குள் OSPF payload-ஐ பார்க்க முடியாது —
+     payload encrypted. IDS பார்க்குது: Proto 50 (ESP), SPI,
+     sequence number — application data இல்லை. OSPF signatures
+     encrypted content match பண்ண முடியாது. Defense:
+     (1) Inline SSL/IPSec inspection (decrypt → inspect →
+         re-encrypt).
+     (2) Anomaly detection: unexpected source-லிருந்து
+         OSPF-inside-ESP traffic anomalous session establishment
+         patterns காட்டலாம்.
+
+----------------------------------------------------------------
+
+A140.
+[EN] GRE is no longer needed after ASA ASDM access (Step 4 —
+      config read). Once attacker reads ASA config: internal
+      subnets known, ACL rules known. Web shell on DMZ server
+      provides direct IP connectivity to internal 192.168.1.0/24
+      via ASA inside interface. From web shell, attacker directly
+      sends OSPF packets to internal routers without GRE.
+
+[TM] ASA ASDM access-க்கு பிறகு (Step 4 — config read) GRE
+     தேவையில்லை. Attacker ASA config read பண்ணிய பிறகு:
+     internal subnets தெரியும், ACL rules தெரியும். DMZ server-ல்
+     web shell ASA inside interface வழியா internal 192.168.1.0/24-க்கு
+     direct IP connectivity provide பண்றது. Web shell-லிருந்து
+     attacker GRE இல்லாம directly internal routers-க்கு OSPF
+     packets அனுப்புறான்.
+
+----------------------------------------------------------------
+
+A141.
+[EN] No. SNMP v3 with auth+privacy (authPriv mode) authenticates
+      each message (MD5/SHA) and encrypts payload (AES/DES).
+      Without the correct username, auth key, and privacy key,
+      SNMP v3 packets are rejected. Even if attacker sends SNMP
+      v3 SET via GRE, target engine verifies HMAC signature and
+      discards unauthenticated/invalid packets. SNMP v3 properly
+      configured = not vulnerable to this attack.
+
+[TM] இல்லை. SNMP v3 auth+privacy (authPriv mode)-உடன் ஒவ்வொரு
+     message-ஐ authenticate (MD5/SHA) மற்றும் payload encrypt
+     (AES/DES) பண்றது. Correct username, auth key, privacy key
+     இல்லாம SNMP v3 packets reject ஆகும். Attacker GRE வழியா
+     SNMP v3 SET அனுப்பினாலும் target engine HMAC signature
+     verify பண்ணி unauthenticated/invalid packets discard பண்றது.
+     Properly configured SNMP v3 = இந்த attack-க்கு vulnerable
+     இல்லை.
+
+----------------------------------------------------------------
+
+A142.
+[EN] No BGP UPDATE injection without MD5 key. TCP MD5
+      signature option (RFC 2385): every TCP segment carries
+      MD5 hash of segment content + shared key. BGP router
+      verifies every incoming TCP segment's MD5 signature before
+      processing. Forged UPDATE without valid MD5 = TCP segment
+      rejected before BGP sees it. Key cannot be recovered from
+      captured traffic (MD5 is one-way).
+
+[TM] MD5 key இல்லாம BGP UPDATE injection இல்லை. TCP MD5
+     signature option (RFC 2385): ஒவ்வொரு TCP segment-உம்
+     segment content + shared key-ஓட MD5 hash carry பண்றது.
+     BGP router process பண்ணுவதற்கு முன்னாடி ஒவ்வொரு incoming
+     TCP segment-ஓட MD5 signature verify பண்றது. Valid MD5
+     இல்லாம forged UPDATE = BGP பார்ப்பதற்கு முன்னாடியே TCP
+     segment rejected. Captured traffic-லிருந்து key recover
+     பண்ண முடியாது (MD5 one-way).
+
+----------------------------------------------------------------
+
+A143.
+[EN] PIM Register makes attacker the active source for multicast
+      group 239.1.1.1. RP accepts the Register and starts pulling
+      traffic from attacker's source. All receivers subscribed to
+      239.1.1.1 receive attacker's stream instead of real source.
+      Data flowing to attacker: whatever the multicast group
+      carries — trading feeds, video conference, IPTV, internal
+      announcements, real-time telemetry.
+
+[TM] PIM Register attacker-ஐ multicast group 239.1.1.1-க்கு
+     active source-ஆக பண்றது. RP Register accept பண்ணி
+     attacker source-லிருந்து traffic pull பண்ண start பண்றது.
+     239.1.1.1-க்கு subscribed எல்லா receivers-உம் real source
+     பதிலாக attacker stream receive பண்றது. Attacker-க்கு
+     flow ஆகும் data: multicast group carry பண்றது எதுவும் —
+     trading feeds, video conference, IPTV, internal
+     announcements, real-time telemetry.
+
+----------------------------------------------------------------
+
+A144.
+[EN] FortiGate PPTP helper automatically permits GRE traffic
+      associated with established PPTP control sessions. After
+      attacker sends PPTP negotiation through FortiGate,
+      FortiGate creates dynamic GRE expectation. All GRE packets
+      from attacker's source matching this expectation pass
+      FortiGate security policy inspection without matching
+      explicit deny rules. Effective GRE bypass via PPTP
+      helper exploitation.
+
+[TM] FortiGate PPTP helper established PPTP control sessions-உடன்
+     associated GRE traffic automatically permit பண்றது.
+     Attacker FortiGate வழியா PPTP negotiation அனுப்பிய பிறகு
+     FortiGate dynamic GRE expectation create பண்றது. Attacker
+     source-லிருந்து இந்த expectation match பண்ற எல்லா GRE
+     packets FortiGate security policy inspection-ல் explicit
+     deny rules match ஆகாம pass ஆகும். PPTP helper exploitation
+     வழியா effective GRE bypass.
+
+----------------------------------------------------------------
+
+A145.
+[EN] Teredo provides IPv6 connectivity via UDP to Teredo server
+      (NAT traversal). On IPv4-only internal network: Windows
+      auto-configures Teredo IPv6 address. Attacker with Teredo
+      server control: (1) Assign attacker-controlled IPv6
+      addresses. (2) Send IPv6 Router Advertisements via Teredo.
+      (3) Windows prefers IPv6 over IPv4 — routes via attacker's
+      Teredo server for IPv6-capable destinations. IPv4 security
+      tools blind to IPv6 traffic.
+
+[TM] Teredo Teredo server-க்கு UDP வழியா IPv6 connectivity
+     provide பண்றது (NAT traversal). IPv4-only internal network-ல்:
+     Windows auto-configure Teredo IPv6 address. Teredo server
+     control உள்ள attacker: (1) Attacker-controlled IPv6
+     addresses assign. (2) Teredo வழியா IPv6 Router Advertisements
+     அனுப்பு. (3) Windows IPv4-விட IPv6 prefer — IPv6-capable
+     destinations-க்கு attacker Teredo server வழியா route.
+     IPv4 security tools IPv6 traffic-க்கு blind.
+
+----------------------------------------------------------------
+
+A146.
+[EN] With those defenses:
+      STILL VULNERABLE: mGRE access → VRRP inject (VRRP text
+      auth or no auth). HSRP if text auth default. EtherIP if
+      enabled (ARP, STP attacks).
+      BLOCKED: ip source-route disabled → LSR/SSR blocked.
+      CDP disabled → topology recon blocked. OSPF MD5 → OSPF
+      inject blocked (OSPF→BGP chain broken). SNMP public
+      removed → direct routing table write blocked.
+
+[TM] அந்த defenses-உடன்:
+     இன்னும் VULNERABLE: mGRE access → VRRP inject (text auth
+     அல்லது no auth). HSRP text auth default இருந்தால். EtherIP
+     enabled இருந்தால் (ARP, STP attacks).
+     BLOCKED: ip source-route disabled → LSR/SSR blocked.
+     CDP disabled → topology recon blocked. OSPF MD5 → OSPF
+     inject blocked (OSPF→BGP chain broken). SNMP public
+     removed → direct routing table write blocked.
+
+----------------------------------------------------------------
+
+A147.
+[EN] VRRP preempt delay minimum 60 means: even if higher
+      priority advertisement is received, the router waits 60
+      seconds before actually preempting. Attacker must
+      continuously send fake VRRP advertisements with priority=255
+      for at least 60 seconds without interruption. If attacker
+      stops before 60 seconds, timer resets. After 60 seconds
+      of continuous fake adverts, election occurs and attacker
+      wins master role.
+
+[TM] VRRP preempt delay minimum 60 என்றால்: higher priority
+     advertisement receive ஆனாலும் router actually preempt
+     பண்ணுவதற்கு முன்னாடி 60 seconds காக்கும். Attacker
+     குறைந்தது 60 seconds இடைவிடாமல் priority=255 fake VRRP
+     advertisements continuously அனுப்பணும். 60 seconds-க்கு
+     முன்னாடி attacker நிறுத்தினால் timer reset ஆகும்.
+     60 seconds continuous fake adverts-க்கு பிறகு election
+     நடக்கும், attacker master role win ஆவான்.
+
+----------------------------------------------------------------
+
+A148.
+[EN] Full MitM for ALL traffic is achieved at Step 4 (VRRP
+      priority 255 → virtual gateway hijacked). VRRP controls
+      the default gateway for ALL hosts on the subnet. Once
+      virtual gateway = attacker, 100% of host traffic passes
+      through attacker. Steps 5-6 (BGP) only affect router-to-
+      router routing plane. Step 2 (STP) affects L2 paths.
+      Step 4 VRRP = complete first-hop gateway takeover =
+      broadest MitM coverage.
+
+[TM] ALL traffic-க்கு full MitM Step 4-ல் achieve ஆகும்
+     (VRRP priority 255 → virtual gateway hijacked). VRRP
+     subnet-ல் எல்லா hosts-க்கும் default gateway control
+     பண்றது. Virtual gateway = attacker ஆனதும் 100% host
+     traffic attacker வழியா pass ஆகும். Steps 5-6 (BGP)
+     router-to-router routing plane மட்டும் affect. Step 2
+     (STP) L2 paths affect. Step 4 VRRP = complete first-hop
+     gateway takeover = broadest MitM coverage.
+
+----------------------------------------------------------------
+
+A149.
+[EN] Single most effective control: Block ALL encapsulation
+      protocols inbound at internet-facing interface:
+        access-list 101 deny 4   any any  (IP-in-IP)
+        access-list 101 deny 41  any any  (6in4)
+        access-list 101 deny 47  any any  (GRE)
+        access-list 101 deny 97  any any  (EtherIP)
+        access-list 101 permit ip any any
+      Operates at OSI Layer 3 (Network layer). This blocks the
+      ROOT CAUSE — all encapsulation vectors from internet.
+      No encapsulation = no inner packet injection = entire
+      attack chain collapses at Step 1.
+
+[TM] Single most effective control: Internet-facing interface-ல்
+     inbound எல்லா encapsulation protocols block:
+       access-list 101 deny 4   any any  (IP-in-IP)
+       access-list 101 deny 41  any any  (6in4)
+       access-list 101 deny 47  any any  (GRE)
+       access-list 101 deny 97  any any  (EtherIP)
+       access-list 101 permit ip any any
+     OSI Layer 3 (Network layer)-ல் operate. ROOT CAUSE block
+     — internet-லிருந்து எல்லா encapsulation vectors. No
+     encapsulation = no inner packet injection = entire attack
+     chain Step 1-லேயே collapse.
+
+----------------------------------------------------------------
+
+A150.
+[EN] Attacker's likely position: internet-facing, using mGRE-
+      capable whitelist router as pivot into LAN. Evidence:
+      unknown OSPF neighbor (injected via GRE), VRRP master
+      change (VRRP inject via GRE), BGP reset+re-establish
+      (BGP chain via OSPF inject), ARP gateway MAC change
+      (EtherIP ARP inject or VRRP consequence), NTP time jump
+      (NTP UDP inject via GRE). All five = coordinated multi-
+      protocol chain attack. Encapsulation: GRE (Proto 47) +
+      EtherIP (Proto 97). Immediate response: block Proto 47
+      and 97 inbound on internet-facing interface.
+
+[TM] Attacker likely position: internet-facing, mGRE-capable
+     whitelist router-ஐ LAN-க்கு pivot-ஆக பயன்படுத்துறான்.
+     Evidence: unknown OSPF neighbor (GRE inject), VRRP master
+     change (GRE வழியா VRRP inject), BGP reset+re-establish
+     (OSPF inject வழியா BGP chain), ARP gateway MAC change
+     (EtherIP ARP inject அல்லது VRRP consequence), NTP time jump
+     (GRE வழியா NTP UDP inject). ஐந்தும் = coordinated
+     multi-protocol chain attack. Encapsulation: GRE (Proto 47)
+     + EtherIP (Proto 97). Immediate response: internet-facing
+     interface-ல் inbound Proto 47 மற்றும் 97 block.
+
+================================================================
+  END OF BILINGUAL ANSWERS — 150 TOTAL
+  Format: A<N> [EN] English Answer / [TM] Tamil Answer
+  Sections: GRE(15) | Addressing(15) | Routing(25) |
+            Encapsulation(25) | TCP/UDP(20) |
+            Vendor(20) | Chain Attacks(30)
+================================================================

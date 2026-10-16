@@ -1,0 +1,1856 @@
+================================================================
+  INDIRECT PENTEST MODEL — 150 QUESTIONS (BILINGUAL)
+  English + Tamil — One by One
+  Topic: GRE / Encapsulation / Routing Protocol Attack Chains
+================================================================
+
+--- SECTION 1: GRE FUNDAMENTALS (Q1–Q15) ---
+
+Q1.
+[EN] A router is receiving packets with IP Protocol number 47.
+     Without any tunnel interface configured, what does the
+     router do with these packets?
+
+[TM] ஒரு router IP Protocol number 47 உள்ள packets receive
+     பண்றது. எந்த tunnel interface-உம் configure ஆகவில்லை.
+     இந்த packets-ஐ router என்ன செய்யும்?
+
+----------------------------------------------------------------
+
+Q2.
+[EN] You find a router with the following config:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel destination 5.5.5.5
+        tunnel mode gre ip
+     An attacker sends a GRE packet with outer Src=1.2.3.4,
+     outer Dst=10.10.10.1. Will the router decapsulate it?
+
+[TM] ஒரு router-ல் இந்த config இருக்கு:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel destination 5.5.5.5
+        tunnel mode gre ip
+     Attacker outer Src=1.2.3.4, outer Dst=10.10.10.1
+     என்று GRE packet அனுப்புறான். Router decapsulate
+     பண்ணுமா?
+
+----------------------------------------------------------------
+
+Q3.
+[EN] A DMVPN hub router has this config:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel mode gre multipoint
+     No tunnel destination is configured. An attacker from
+     192.168.1.10 sends a GRE packet to 10.10.10.1.
+     What happens?
+
+[TM] DMVPN hub router-ல் இந்த config இருக்கு:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel mode gre multipoint
+     Tunnel destination configure ஆகவில்லை. Attacker
+     192.168.1.10-லிருந்து 10.10.10.1-க்கு GRE packet
+     அனுப்புறான். என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q4.
+[EN] A network has GRE tunnel with IPSec protection:
+       tunnel protection ipsec profile MYPROF
+     An attacker crafts a GRE packet without valid IPSec.
+     What is the result?
+
+[TM] ஒரு network-ல் GRE tunnel-க்கு IPSec protection
+     இருக்கு:
+       tunnel protection ipsec profile MYPROF
+     Attacker valid IPSec இல்லாம GRE packet craft பண்றான்.
+     என்ன result?
+
+----------------------------------------------------------------
+
+Q5.
+[EN] What is the fundamental difference between
+     "a router that forwards GRE packets" and
+     "a router with a GRE tunnel interface"?
+
+[TM] "GRE packets-ஐ forward பண்ற router" மற்றும்
+     "GRE tunnel interface configure பண்ண router"
+     இரண்டுக்கும் என்ன fundamental difference?
+
+----------------------------------------------------------------
+
+Q6.
+[EN] An attacker wants to inject OSPF Hello packets into
+     an internal LAN via a GRE-enabled whitelist router.
+     The whitelist router has:
+       Gi0/0: 203.0.113.1 (external)
+       Gi0/1: 10.0.0.1    (internal)
+     What should the outer Dst IP be in the attacker's packet?
+
+[TM] Attacker ஒரு GRE-enabled whitelist router வழியா
+     internal LAN-ல் OSPF Hello packets inject பண்ண
+     விரும்புறான். Whitelist router:
+       Gi0/0: 203.0.113.1 (external)
+       Gi0/1: 10.0.0.1    (internal)
+     Attacker packet-ல் outer Dst IP என்னவாக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q7.
+[EN] Continuing Q6 — what should the inner Src IP be,
+     and why must it NOT be a public IP address?
+
+[TM] Q6-ஐ தொடர்ந்து — inner Src IP என்னவாக இருக்கணும்,
+     மற்றும் அது ஏன் public IP ஆக இருக்கக்கூடாது?
+
+----------------------------------------------------------------
+
+Q8.
+[EN] An attacker sets inner Src IP = 8.8.8.8 and inner
+     Dst = 224.0.0.5 in a GRE-encapsulated OSPF Hello.
+     Why will the target router reject this Hello?
+
+[TM] Attacker GRE-encapsulated OSPF Hello-ல் inner
+     Src IP = 8.8.8.8, inner Dst = 224.0.0.5 set பண்றான்.
+     Target router இந்த Hello-ஐ ஏன் reject பண்ணும்?
+
+----------------------------------------------------------------
+
+Q9.
+[EN] What IP address range must the inner Src IP belong to
+     for an OSPF Hello to be accepted by a target router
+     on subnet 10.0.0.0/24?
+
+[TM] 10.0.0.0/24 subnet-ல் உள்ள target router-ஓட
+     OSPF Hello accept பண்ண inner Src IP எந்த
+     IP address range-ல் இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q10.
+[EN] A router has mGRE enabled. An attacker injects a packet
+     with inner Src=10.0.0.99 (unused IP) and inner
+     Dst=224.0.0.5. The target runs OSPF with no auth.
+     Describe what happens step by step.
+
+[TM] Router-ல் mGRE enabled. Attacker inner
+     Src=10.0.0.99 (unused IP), inner Dst=224.0.0.5
+     என்று packet inject பண்றான். Target OSPF run
+     பண்றது — auth இல்லை. Step by step என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q11.
+[EN] Why is a /32 host route injected via OSPF more
+     effective than a /24 network route for BGP return
+     path poisoning?
+
+[TM] BGP return path poisoning-க்கு OSPF வழியா inject
+     பண்ற /32 host route, /24 network route-விட ஏன்
+     more effective?
+
+----------------------------------------------------------------
+
+Q12.
+[EN] A pentest finds that outer Dst=10.10.10.1 (GRE endpoint)
+     and inner Src=10.10.10.1 (same IP). What problem
+     does this cause and what should inner Src be instead?
+
+[TM] Pentest-ல் outer Dst=10.10.10.1 (GRE endpoint)
+     மற்றும் inner Src=10.10.10.1 (same IP) என்று
+     தெரிகிறது. இது என்ன problem create பண்றது,
+     inner Src என்னவாக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q13.
+[EN] GRE header Protocol field = 0x0800 means what
+     is encapsulated inside?
+
+[TM] GRE header Protocol field = 0x0800 என்றால்
+     உள்ளே என்ன encapsulate ஆகியிருக்கு?
+
+----------------------------------------------------------------
+
+Q14.
+[EN] An attacker needs to reach an internal OSPF network
+     via GRE. The inner packet TTL is set to 64.
+     What problem will this cause with OSPF?
+
+[TM] Attacker GRE வழியா internal OSPF network-ஐ reach
+     பண்ண வேண்டும். Inner packet TTL = 64 set பண்றான்.
+     OSPF-ல் இது என்ன problem create பண்ணும்?
+
+----------------------------------------------------------------
+
+Q15.
+[EN] What is the correct TTL value for an OSPF Hello
+     inner packet, and why?
+
+[TM] OSPF Hello inner packet-க்கு correct TTL value
+     என்ன, ஏன் அந்த value?
+
+----------------------------------------------------------------
+
+--- SECTION 2: INNER vs OUTER IP ADDRESSING (Q16–Q30) ---
+
+Q16.
+[EN] A whitelist router has:
+       Gi0/0: 203.0.113.1 (external, internet-facing)
+       Gi0/1: 172.16.0.1  (internal, LAN-facing)
+     For a GRE attack packet, which interface IP is used
+     as outer Dst, and which as inner Src?
+
+[TM] Whitelist router:
+       Gi0/0: 203.0.113.1 (external, internet-facing)
+       Gi0/1: 172.16.0.1  (internal, LAN-facing)
+     GRE attack packet-ல் எந்த interface IP outer Dst
+     ஆக பயன்படும், எது inner Src ஆக பயன்படும்?
+
+----------------------------------------------------------------
+
+Q17.
+[EN] Why can the inner Src IP be any unused IP in the
+     target subnet for OSPF, but must be the exact
+     whitelist router internal IP for BGP?
+
+[TM] OSPF-க்கு inner Src IP target subnet-ல் எந்த
+     unused IP-யும் வைக்கலாம், ஆனால் BGP-க்கு
+     exact whitelist router internal IP வேண்டும் — ஏன்?
+
+----------------------------------------------------------------
+
+Q18.
+[EN] A target router has this BGP config:
+       neighbor 172.16.0.1 remote-as 65001
+     An attacker uses inner Src=172.16.0.99. Will the
+     BGP session establish? Why or why not?
+
+[TM] Target router BGP config:
+       neighbor 172.16.0.1 remote-as 65001
+     Attacker inner Src=172.16.0.99 பயன்படுத்துறான்.
+     BGP session establish ஆகுமா? ஏன்?
+
+----------------------------------------------------------------
+
+Q19.
+[EN] For a TCP-based attack (LDAP port 389) via GRE,
+     why must inner Src = whitelist router internal IP
+     rather than a fake unused IP?
+
+[TM] GRE வழியா TCP-based attack (LDAP port 389)-க்கு
+     inner Src = whitelist router internal IP ஆக
+     இருக்கணும் — fake unused IP-ஆக இல்லாம. ஏன்?
+
+----------------------------------------------------------------
+
+Q20.
+[EN] A UDP-based SNMP attack has inner Src=172.16.0.99.
+     The target has this config:
+       snmp-server community public RO 10
+       access-list 10 permit 172.16.0.1
+     Will the SNMP query succeed? What should change?
+
+[TM] UDP-based SNMP attack-ல் inner Src=172.16.0.99.
+     Target config:
+       snmp-server community public RO 10
+       access-list 10 permit 172.16.0.1
+     SNMP query succeed ஆகுமா? என்ன மாத்தணும்?
+
+----------------------------------------------------------------
+
+Q21.
+[EN] An attacker crafts a VRRP advertisement with
+     inner Src=172.16.0.99 and inner Dst=224.0.0.18.
+     The VRRP group has no authentication. Will the
+     real master step down?
+
+[TM] Attacker inner Src=172.16.0.99, inner
+     Dst=224.0.0.18 என்று VRRP advertisement craft
+     பண்றான். VRRP group-க்கு authentication இல்லை.
+     Real master step down ஆகுமா?
+
+----------------------------------------------------------------
+
+Q22.
+[EN] For NTP attack via GRE with no ntp access-group
+     configured on the target, what inner Src IP is
+     most appropriate and why?
+
+[TM] Target-ல் ntp access-group configure ஆகவில்லை.
+     GRE வழியா NTP attack-க்கு inner Src IP என்னவாக
+     இருக்கணும், ஏன்?
+
+----------------------------------------------------------------
+
+Q23.
+[EN] A DNS poisoning attack uses inner Src=172.16.0.99,
+     inner Dst=172.16.0.10 (DNS server), UDP port 53.
+     The DNS server has no ACL. Will this work?
+
+[TM] DNS poisoning attack: inner Src=172.16.0.99,
+     inner Dst=172.16.0.10 (DNS server), UDP port 53.
+     DNS server-ல் ACL இல்லை. இது work ஆகுமா?
+
+----------------------------------------------------------------
+
+Q24.
+[EN] TCP 3-way handshake is required for LDAP.
+     If inner Src=172.16.0.99 (unused/fake IP), where
+     does the SYN-ACK go, and why does the attack fail?
+
+[TM] LDAP-க்கு TCP 3-way handshake வேண்டும்.
+     Inner Src=172.16.0.99 (unused/fake IP) இருந்தால்
+     SYN-ACK எங்கே போகும், attack ஏன் fail ஆகும்?
+
+----------------------------------------------------------------
+
+Q25.
+[EN] How does OSPF route injection solve the TCP return
+     path problem for BGP session hijack?
+
+[TM] OSPF route injection, BGP session hijack-க்கான
+     TCP return path problem-ஐ எப்படி solve பண்றது?
+
+----------------------------------------------------------------
+
+Q26.
+[EN] After OSPF route injection of 172.16.0.1/32 pointing
+     to attacker, a BGP SYN is sent with inner
+     Src=172.16.0.1. The target sends SYN-ACK to
+     172.16.0.1. Where does this packet go now?
+
+[TM] OSPF route injection: 172.16.0.1/32 → attacker.
+     BGP SYN inner Src=172.16.0.1 அனுப்பப்படுது.
+     Target SYN-ACK to 172.16.0.1 அனுப்புது.
+     இந்த packet இப்போ எங்கே போகும்?
+
+----------------------------------------------------------------
+
+Q27.
+[EN] An inner packet has:
+       Src: 172.16.0.1
+       Dst: 8.8.8.8
+     After GRE decap, what does the router do with it?
+
+[TM] Inner packet:
+       Src: 172.16.0.1
+       Dst: 8.8.8.8
+     GRE decap ஆன பிறகு router என்ன செய்யும்?
+
+----------------------------------------------------------------
+
+Q28.
+[EN] An attacker sets inner Dst=192.168.1.100 (internal
+     DB server), but the whitelist router has no route
+     to 192.168.1.100. What happens to the inner packet?
+
+[TM] Attacker inner Dst=192.168.1.100 (internal DB
+     server) set பண்றான். ஆனால் whitelist router-ல்
+     192.168.1.100-க்கு route இல்லை. Inner packet-க்கு
+     என்ன ஆகும்?
+
+----------------------------------------------------------------
+
+Q29.
+[EN] Which inner Dst addresses work for OSPF, EIGRP,
+     VRRP, and HSRP respectively? List all four.
+
+[TM] OSPF, EIGRP, VRRP, HSRP — நான்குக்கும் தனித்தனியா
+     எந்த inner Dst address பயன்படும்? நான்கையும்
+     list பண்ணு.
+
+----------------------------------------------------------------
+
+Q30.
+[EN] A pentest scenario: target has OSPF MD5 auth enabled.
+     Attacker injects OSPF Hello via GRE with no auth.
+     What happens, and what does the attacker need to
+     succeed?
+
+[TM] Pentest scenario: target-ல் OSPF MD5 auth enabled.
+     Attacker auth இல்லாம GRE வழியா OSPF Hello inject
+     பண்றான். என்ன நடக்கும், attacker-க்கு succeed
+     ஆக என்ன வேண்டும்?
+
+----------------------------------------------------------------
+
+--- SECTION 3: ROUTING PROTOCOL ATTACKS (Q31–Q55) ---
+
+Q31.
+[EN] An attacker successfully forms an OSPF neighbor
+     relationship via GRE injection. What four things
+     can the attacker now do?
+
+[TM] Attacker GRE injection வழியா OSPF neighbor
+     relationship form பண்ண success ஆனான். இப்போ
+     attacker என்ன நான்கு செயல்கள் செய்யலாம்?
+
+----------------------------------------------------------------
+
+Q32.
+[EN] OSPF LSA Type 1 is injected with metric=1.
+     The real route has metric=10. Which route wins
+     in SPF calculation, and why?
+
+[TM] OSPF LSA Type 1 metric=1 என்று inject பண்றார்கள்.
+     Real route metric=10. SPF calculation-ல் எந்த
+     route win ஆகும், ஏன்?
+
+----------------------------------------------------------------
+
+Q33.
+[EN] What is the OSPF Router LSA Type number, and what
+     fields must be set to advertise a fake host route
+     pointing to the attacker?
+
+[TM] OSPF Router LSA Type number என்ன, attacker-ஐ
+     point பண்ற fake host route advertise பண்ண
+     என்ன fields set பண்ணணும்?
+
+----------------------------------------------------------------
+
+Q34.
+[EN] A network runs both OSPF and EIGRP with
+     redistribution. An attacker injects a fake route
+     via OSPF. How does this affect EIGRP routing?
+
+[TM] Network-ல் OSPF-உம் EIGRP-உம் redistribution-உடன்
+     run ஆகுது. Attacker OSPF வழியா fake route inject
+     பண்றான். EIGRP routing-ஐ இது எப்படி affect பண்ணும்?
+
+----------------------------------------------------------------
+
+Q35.
+[EN] EIGRP Hello requires K-values to match between
+     neighbors. Default K-values are K1=1, K2=0,
+     K3=1, K4=0, K5=0. An attacker sends Hello with
+     K1=1, K2=1. What happens?
+
+[TM] EIGRP Hello-க்கு neighbors-ல் K-values match
+     ஆகணும். Default: K1=1, K2=0, K3=1, K4=0, K5=0.
+     Attacker K1=1, K2=1 என்று Hello அனுப்புறான்.
+     என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q36.
+[EN] EIGRP AS number must match for neighbor formation.
+     How does an attacker discover the target AS number
+     during reconnaissance?
+
+[TM] EIGRP neighbor formation-க்கு AS number match
+     ஆகணும். Reconnaissance-ல் attacker target AS
+     number-ஐ எப்படி discover பண்ணுவான்?
+
+----------------------------------------------------------------
+
+Q37.
+[EN] After EIGRP neighbor formation via GRE, an attacker
+     sends an EIGRP Update with Delay=1 for prefix
+     10.0.0.0/8. The real route has Delay=100.
+     Which route wins in DUAL algorithm?
+
+[TM] GRE வழியா EIGRP neighbor formation ஆன பிறகு,
+     attacker prefix 10.0.0.0/8-க்கு Delay=1 என்று
+     EIGRP Update அனுப்புறான். Real route Delay=100.
+     DUAL algorithm-ல் எந்த route win ஆகும்?
+
+----------------------------------------------------------------
+
+Q38.
+[EN] BGP requires exact neighbor IP match. An attacker
+     wants to establish a BGP session with a router
+     configured as:
+       neighbor 10.0.0.1 remote-as 65001
+     What must the inner Src IP be in the attacker's
+     GRE-encapsulated TCP SYN?
+
+[TM] BGP exact neighbor IP match தேவை. Attacker ஒரு
+     router-உடன் BGP session establish பண்ண விரும்புறான்:
+       neighbor 10.0.0.1 remote-as 65001
+     Attacker GRE-encapsulated TCP SYN-ல் inner Src IP
+     என்னவாக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q39.
+[EN] Why does BGP over GRE require a two-step attack
+     (OSPF inject first, then BGP SYN) rather than
+     direct BGP SYN?
+
+[TM] GRE வழியா BGP attack-க்கு ஏன் two-step தேவை
+     (முதல் OSPF inject, பிறகு BGP SYN) — direct
+     BGP SYN மட்டும் போதாதா?
+
+----------------------------------------------------------------
+
+Q40.
+[EN] A BGP session is established by the attacker.
+     What is the immediate impact if the attacker
+     advertises a more specific route for 0.0.0.0/0?
+
+[TM] Attacker BGP session establish பண்ணிட்டான்.
+     0.0.0.0/0-க்கு more specific route advertise
+     பண்ணினால் immediate impact என்ன?
+
+----------------------------------------------------------------
+
+Q41.
+[EN] BGP MD5 authentication is enabled on a session.
+     Can an attacker still perform TCP RST injection
+     without knowing the MD5 key? Explain.
+
+[TM] BGP session-ல் MD5 authentication enabled.
+     MD5 key தெரியாம attacker TCP RST injection
+     பண்ண முடியுமா? Explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q42.
+[EN] IS-IS runs directly on Layer 2, not IP.
+     Can IS-IS be attacked via GRE encapsulation?
+     Why or why not?
+
+[TM] IS-IS Layer 2-ல் directly run ஆகுது, IP-ல் இல்லை.
+     GRE encapsulation வழியா IS-IS-ஐ attack பண்ண
+     முடியுமா? ஏன்?
+
+----------------------------------------------------------------
+
+Q43.
+[EN] OSPFv3 runs over IPv6. An attacker uses IPv6-in-IPv4
+     (Proto 41) encapsulation with inner Src=fe80::99.
+     What multicast address should inner Dst be?
+
+[TM] OSPFv3 IPv6-ல் run ஆகுது. Attacker IPv6-in-IPv4
+     (Proto 41) encapsulation, inner Src=fe80::99
+     பயன்படுத்துறான். Inner Dst எந்த multicast
+     address ஆக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q44.
+[EN] A PIM router receives a PIM Join message for
+     group 239.1.1.1 via GRE injection. What is the
+     impact on multicast traffic distribution?
+
+[TM] PIM router GRE injection வழியா group 239.1.1.1-க்கு
+     PIM Join message receive பண்றது. Multicast traffic
+     distribution-ல் என்ன impact?
+
+----------------------------------------------------------------
+
+Q45.
+[EN] RSVP uses IP option Router Alert (Type=0x94).
+     How can an attacker use GRE to send fake RSVP
+     PATH messages, and what is the impact?
+
+[TM] RSVP, IP option Router Alert (Type=0x94)
+     பயன்படுத்துது. Attacker GRE வழியா fake RSVP
+     PATH messages எப்படி அனுப்பலாம், impact என்ன?
+
+----------------------------------------------------------------
+
+Q46.
+[EN] LDP uses TCP port 646 for session establishment.
+     After LDP neighbor discovery via UDP multicast,
+     what must the attacker do to inject fake labels?
+
+[TM] LDP session establishment-க்கு TCP port 646
+     பயன்படுத்துது. UDP multicast வழியா LDP neighbor
+     discovery ஆன பிறகு, fake labels inject பண்ண
+     attacker என்ன செய்யணும்?
+
+----------------------------------------------------------------
+
+Q47.
+[EN] A BFD session has detect multiplier=3 and
+     interval=300ms. An attacker sends a spoofed BFD
+     DOWN packet. How quickly does this affect the
+     linked OSPF adjacency?
+
+[TM] BFD session: detect multiplier=3, interval=300ms.
+     Attacker spoofed BFD DOWN packet அனுப்புறான்.
+     Linked OSPF adjacency எவ்வளவு வேகமா affect ஆகும்?
+
+----------------------------------------------------------------
+
+Q48.
+[EN] A network uses GLBP (UDP 3222). An attacker injects
+     a GLBP Hello via GRE. What advantage does GLBP
+     provide over VRRP from an attacker's perspective?
+
+[TM] Network-ல் GLBP (UDP 3222) பயன்படுத்துது.
+     Attacker GRE வழியா GLBP Hello inject பண்றான்.
+     Attacker perspective-ல் GLBP, VRRP-விட என்ன
+     advantage தருது?
+
+----------------------------------------------------------------
+
+Q49.
+[EN] HSRP v1 uses multicast 224.0.0.2 and UDP 1985.
+     HSRP v2 uses multicast 224.0.0.102. An attacker
+     targets HSRP v2. What destination IP changes
+     in the inner packet?
+
+[TM] HSRP v1: multicast 224.0.0.2, UDP 1985.
+     HSRP v2: multicast 224.0.0.102.
+     Attacker HSRP v2-ஐ target பண்றான். Inner packet-ல்
+     destination IP என்ன மாறும்?
+
+----------------------------------------------------------------
+
+Q50.
+[EN] VRRP TTL must be exactly 255. An attacker sets
+     inner packet TTL=64. What happens at the target?
+
+[TM] VRRP TTL exactly 255 ஆக இருக்கணும். Attacker
+     inner packet TTL=64 set பண்றான். Target-ல்
+     என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q51.
+[EN] After VRRP master takeover with priority=255,
+     what additional step ensures all hosts update
+     their ARP tables immediately?
+
+[TM] Priority=255 என்று VRRP master takeover ஆன பிறகு,
+     எல்லா hosts-உம் ARP table-ஐ உடனே update பண்ண
+     என்ன additional step தேவை?
+
+----------------------------------------------------------------
+
+Q52.
+[EN] A router runs OSPF with authentication type=1
+     (simple plaintext). The password is captured
+     via Wireshark on the LAN. Can an attacker now
+     inject OSPF LSAs via GRE? What field must be set?
+
+[TM] Router OSPF auth type=1 (simple plaintext) run
+     பண்றது. LAN-ல் Wireshark வழியா password capture
+     ஆச்சு. Attacker இப்போ GRE வழியா OSPF LSAs
+     inject பண்ண முடியுமா? எந்த field set பண்ணணும்?
+
+----------------------------------------------------------------
+
+Q53.
+[EN] EIGRP supports both MD5 and SHA-256 authentication.
+     If only MD5 is configured, is the neighbor
+     relationship still vulnerable to any attack?
+
+[TM] EIGRP MD5-உம் SHA-256-உம் support பண்றது.
+     MD5 மட்டும் configure ஆகியிருந்தால், neighbor
+     relationship இன்னும் ஏதாவது attack-க்கு
+     vulnerable-ஆ இருக்குமா?
+
+----------------------------------------------------------------
+
+Q54.
+[EN] A pentest finds OSPF running with no auth, but
+     all GRE inbound is blocked by ACL. What alternative
+     encapsulation protocols could bypass this ACL?
+
+[TM] Pentest: OSPF no auth-ஆ run ஆகுது, ஆனால்
+     GRE inbound எல்லாம் ACL-ல் block ஆகியிருக்கு.
+     இந்த ACL-ஐ bypass பண்ண என்ன alternative
+     encapsulation protocols பயன்படுத்தலாம்?
+
+----------------------------------------------------------------
+
+Q55.
+[EN] An attacker wants to black-hole traffic to
+     10.50.0.0/16 without full OSPF neighbor formation.
+     Which OSPF LSA type allows this, and what
+     fields are needed?
+
+[TM] Attacker full OSPF neighbor formation இல்லாம
+     10.50.0.0/16-க்கான traffic-ஐ black-hole பண்ண
+     விரும்புறான். எந்த OSPF LSA type இதை allow
+     பண்றது, என்ன fields தேவை?
+
+----------------------------------------------------------------
+
+--- SECTION 4: ENCAPSULATION PROTOCOLS (Q56–Q80) ---
+
+Q56.
+[EN] List five IP protocol numbers used for encapsulation
+     and their names.
+
+[TM] Encapsulation-க்காக பயன்படும் ஐந்து IP protocol
+     numbers மற்றும் அவற்றின் பெயர்களை list பண்ணு.
+
+----------------------------------------------------------------
+
+Q57.
+[EN] EtherIP (Proto 97) carries what type of payload,
+     and how is this more dangerous than GRE (Proto 47)?
+
+[TM] EtherIP (Proto 97) என்ன type payload carry
+     பண்றது, மற்றும் இது GRE (Proto 47)-விட ஏன்
+     more dangerous?
+
+----------------------------------------------------------------
+
+Q58.
+[EN] An attacker sends EtherIP packets to a whitelist
+     router. The router decapsulates and forwards the
+     inner Ethernet frame to the LAN. The frame contains
+     a gratuitous ARP. What is the impact?
+
+[TM] Attacker whitelist router-க்கு EtherIP packets
+     அனுப்புறான். Router decapsulate பண்ணி inner
+     Ethernet frame-ஐ LAN-க்கு forward பண்றது.
+     Frame-ல் gratuitous ARP இருக்கு. Impact என்ன?
+
+----------------------------------------------------------------
+
+Q59.
+[EN] EtherIP header is only 2 bytes. What are the two
+     fields, and what are their values?
+
+[TM] EtherIP header 2 bytes மட்டும். இரண்டு fields
+     என்னென்ன, அவற்றின் values என்ன?
+
+----------------------------------------------------------------
+
+Q60.
+[EN] IP-in-IP (Proto 4) has no GRE header. What is the
+     packet structure, and how does the router know
+     where the inner IP header begins?
+
+[TM] IP-in-IP (Proto 4)-க்கு GRE header இல்லை.
+     Packet structure என்ன, router inner IP header
+     எங்கே தொடங்குதுன்னு எப்படி தெரியும்?
+
+----------------------------------------------------------------
+
+Q61.
+[EN] IPv6-in-IPv4 (Proto 41) is used for 6in4 tunnels.
+     An attacker on IPv4 internet injects OSPFv3 via
+     Proto 41. What inner Src IP type must be used?
+
+[TM] IPv6-in-IPv4 (Proto 41) 6in4 tunnels-க்காக
+     பயன்படுத்துது. IPv4 internet-ல் உள்ள attacker
+     Proto 41 வழியா OSPFv3 inject பண்றான். Inner
+     Src IP என்ன type ஆக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q62.
+[EN] IPSec ESP (Proto 50) encrypts the payload. How can
+     an attacker abuse ESP to hide attack traffic from
+     IDS/IPS systems?
+
+[TM] IPSec ESP (Proto 50) payload-ஐ encrypt பண்றது.
+     Attacker ESP-ஐ எப்படி abuse பண்ணி IDS/IPS-லிருந்து
+     attack traffic-ஐ hide பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q63.
+[EN] IPSec AH (Proto 51) authenticates the IP header.
+     Why does AH break NAT, and how does this affect
+     GRE+AH tunnel attacks?
+
+[TM] IPSec AH (Proto 51) IP header-ஐ authenticate
+     பண்றது. AH ஏன் NAT-ஐ break பண்றது, இது
+     GRE+AH tunnel attacks-ஐ எப்படி affect பண்றது?
+
+----------------------------------------------------------------
+
+Q64.
+[EN] A firewall has this rule:
+       permit ip any any proto 47
+     And this rule:
+       deny ip any any proto 4
+     Which encapsulation attack is blocked, and which
+     can still proceed?
+
+[TM] Firewall rules:
+       permit ip any any proto 47
+       deny ip any any proto 4
+     எந்த encapsulation attack block ஆகும், எது
+     இன்னும் proceed ஆகலாம்?
+
+----------------------------------------------------------------
+
+Q65.
+[EN] EtherIP is used to inject an STP BPDU with
+     Bridge Priority=0. The real root bridge has
+     priority=32768. What is the result?
+
+[TM] EtherIP வழியா STP BPDU Bridge Priority=0
+     என்று inject பண்றார்கள். Real root bridge
+     priority=32768. Result என்ன?
+
+----------------------------------------------------------------
+
+Q66.
+[EN] After STP root bridge takeover via EtherIP, what
+     is the impact on all Layer 2 traffic in the domain?
+
+[TM] EtherIP வழியா STP root bridge takeover ஆன பிறகு,
+     domain-ல் உள்ள எல்லா Layer 2 traffic-க்கும்
+     என்ன impact?
+
+----------------------------------------------------------------
+
+Q67.
+[EN] An attacker uses EtherIP to inject double-tagged
+     802.1Q frames (outer VLAN=1, inner VLAN=100).
+     What attack is this, and what is the prerequisite?
+
+[TM] Attacker EtherIP வழியா double-tagged 802.1Q
+     frames (outer VLAN=1, inner VLAN=100) inject
+     பண்றான். இது என்ன attack, prerequisite என்ன?
+
+----------------------------------------------------------------
+
+Q68.
+[EN] CDP frames use multicast MAC 01:00:0C:CC:CC:CC.
+     An attacker injects fake CDP via EtherIP. What
+     information can be poisoned in the neighbor table?
+
+[TM] CDP frames multicast MAC 01:00:0C:CC:CC:CC
+     பயன்படுத்துது. Attacker EtherIP வழியா fake CDP
+     inject பண்றான். Neighbor table-ல் என்ன
+     information poison ஆகலாம்?
+
+----------------------------------------------------------------
+
+Q69.
+[EN] LLDP is IEEE standard 802.1AB. Can LLDP also be
+     injected via EtherIP in the same way as CDP?
+     What is the multicast MAC for LLDP?
+
+[TM] LLDP IEEE standard 802.1AB. CDP மாதிரியே LLDP-ஐ
+     EtherIP வழியா inject பண்ண முடியுமா? LLDP-க்கான
+     multicast MAC என்ன?
+
+----------------------------------------------------------------
+
+Q70.
+[EN] A pentest finds EtherIP enabled but STP BPDU Guard
+     is configured on all access ports. Does this block
+     the STP root bridge attack via EtherIP on trunk
+     ports? Explain.
+
+[TM] Pentest: EtherIP enabled, ஆனால் STP BPDU Guard
+     எல்லா access ports-லயும் configure ஆகியிருக்கு.
+     Trunk ports-ல் EtherIP வழியா STP root bridge
+     attack block ஆகுமா? Explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q71.
+[EN] VXLAN (UDP 4789) encapsulates Ethernet frames over
+     UDP/IP. How is a VXLAN injection attack different
+     from an EtherIP injection attack?
+
+[TM] VXLAN (UDP 4789) Ethernet frames-ஐ UDP/IP-ல்
+     encapsulate பண்றது. VXLAN injection attack,
+     EtherIP injection attack-விட எப்படி வேறுபடுது?
+
+----------------------------------------------------------------
+
+Q72.
+[EN] GRE keepalives are enabled on a tunnel. An attacker
+     injects GRE packets but cannot send keepalives.
+     Does this affect the attack?
+
+[TM] Tunnel-ல் GRE keepalives enabled. Attacker GRE
+     packets inject பண்றான் ஆனால் keepalives
+     அனுப்ப முடியல. இது attack-ஐ affect பண்ணுமா?
+
+----------------------------------------------------------------
+
+Q73.
+[EN] A tunnel has:
+       tunnel key 12345
+     An attacker sends GRE packets without the key field.
+     What happens?
+
+[TM] Tunnel config:
+       tunnel key 12345
+     Attacker key field இல்லாம GRE packets அனுப்புறான்.
+     என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q74.
+[EN] Proto 94 (IPIP) and Proto 4 (IP-in-IP) are both
+     used for IP encapsulation. What is the operational
+     difference between them?
+
+[TM] Proto 94 (IPIP) மற்றும் Proto 4 (IP-in-IP)
+     இரண்டும் IP encapsulation-க்காக பயன்படுத்துது.
+     Operational difference என்ன?
+
+----------------------------------------------------------------
+
+Q75.
+[EN] An attacker wants to encapsulate OSPF inside
+     IPv6-in-IPv4 (Proto 41). The inner IPv6 Src must
+     be what type of address for OSPF link-local scope?
+
+[TM] Attacker OSPF-ஐ IPv6-in-IPv4 (Proto 41)-க்குள்
+     encapsulate பண்ண விரும்புறான். OSPF link-local
+     scope-க்கு inner IPv6 Src என்ன type address
+     ஆக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q76.
+[EN] A DMVPN network uses Phase 2 (spoke-to-spoke).
+     NHRP authentication key is unknown to attacker.
+     Can the attacker still inject inner OSPF/EIGRP
+     packets without valid NHRP? Explain.
+
+[TM] DMVPN network Phase 2 (spoke-to-spoke) பயன்படுத்துது.
+     NHRP authentication key attacker-க்கு தெரியல.
+     Valid NHRP இல்லாம attacker inner OSPF/EIGRP
+     packets inject பண்ண முடியுமா? Explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q77.
+[EN] GRE sequence number checking is enabled:
+       tunnel sequence-datagrams
+     How does this affect packet injection attacks?
+
+[TM] GRE sequence number checking enabled:
+       tunnel sequence-datagrams
+     Packet injection attacks-ஐ இது எப்படி affect
+     பண்றது?
+
+----------------------------------------------------------------
+
+Q78.
+[EN] Recursive routing — a GRE tunnel Src and Dst are
+     both in the same routing table as the tunnel itself.
+     How can an attacker trigger this to cause a DoS?
+
+[TM] Recursive routing — GRE tunnel Src மற்றும் Dst
+     இரண்டும் tunnel-ஓட routing table-ல் இருக்கு.
+     Attacker இதை எப்படி trigger பண்ணி DoS cause
+     பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q79.
+[EN] A pentest discovers IP-in-IP tunnel is enabled but
+     has no explicit access-list. The inner packet
+     protocol is OSPF. What is the complete attack path?
+
+[TM] Pentest: IP-in-IP tunnel enabled, explicit
+     access-list இல்லை. Inner packet protocol OSPF.
+     Complete attack path என்ன?
+
+----------------------------------------------------------------
+
+Q80.
+[EN] EtherIP vs GRE — for DHCP starvation attack,
+     which encapsulation is required and why?
+
+[TM] EtherIP vs GRE — DHCP starvation attack-க்கு
+     எந்த encapsulation தேவை, ஏன்?
+
+----------------------------------------------------------------
+
+--- SECTION 5: TCP/UDP APPLICATION ATTACKS (Q81–Q100) ---
+
+Q81.
+[EN] A DNS server at 10.0.0.10 has no ACL configured.
+     An attacker injects a spoofed DNS reply via GRE
+     with inner Src=10.0.0.99. Why does UDP make this
+     easier than TCP?
+
+[TM] 10.0.0.10-ல் DNS server — ACL இல்லை. Attacker
+     inner Src=10.0.0.99 என்று GRE வழியா spoofed DNS
+     reply inject பண்றான். UDP ஏன் TCP-விட இதை
+     easier பண்றது?
+
+----------------------------------------------------------------
+
+Q82.
+[EN] SNMP v1/v2 community string is "public". An attacker
+     uses SNMP SET via GRE to modify OID
+     1.3.6.1.2.1.4.21.1.7 (ipRouteNextHop). What is
+     the impact?
+
+[TM] SNMP v1/v2 community string "public". Attacker
+     GRE வழியா SNMP SET பண்ணி OID
+     1.3.6.1.2.1.4.21.1.7 (ipRouteNextHop) modify
+     பண்றான். Impact என்ன?
+
+----------------------------------------------------------------
+
+Q83.
+[EN] Why does SNMP attack require inner Src = whitelist
+     router internal IP when an ACL is configured, but
+     DNS attack can use any subnet IP?
+
+[TM] ACL configure ஆகியிருக்கும்போது SNMP attack-க்கு
+     inner Src = whitelist router internal IP வேண்டும்,
+     ஆனால் DNS attack-க்கு எந்த subnet IP-யும் போதும்
+     — ஏன்?
+
+----------------------------------------------------------------
+
+Q84.
+[EN] NTP stratum field value=1 means what, and why does
+     an attacker set it to 1 in a fake NTP response?
+
+[TM] NTP stratum field value=1 என்றால் என்ன அர்த்தம்,
+     attacker fake NTP response-ல் ஏன் அதை 1 ஆக
+     set பண்றான்?
+
+----------------------------------------------------------------
+
+Q85.
+[EN] NTP time skew causes Kerberos to fail. What is
+     the default Kerberos clock skew tolerance, and
+     what happens when it is exceeded?
+
+[TM] NTP time skew Kerberos-ஐ fail பண்றது. Default
+     Kerberos clock skew tolerance என்ன, அது exceed
+     ஆனால் என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q86.
+[EN] An LDAP bind with empty DN and empty password
+     is called what type of bind? What information
+     can be queried after this bind?
+
+[TM] Empty DN மற்றும் empty password-உடன் LDAP bind
+     பண்றதை என்ன type bind என்று சொல்வாங்க? இந்த
+     bind-க்கு பிறகு என்ன information query பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q87.
+[EN] LDAP runs on TCP 389. For LDAP attack via GRE,
+     the attacker needs the TCP 3-way handshake.
+     List the two prerequisites that make this possible.
+
+[TM] LDAP TCP 389-ல் run ஆகுது. GRE வழியா LDAP
+     attack-க்கு TCP 3-way handshake வேண்டும்.
+     இதை possible பண்ற இரண்டு prerequisites-ஐ
+     list பண்ணு.
+
+----------------------------------------------------------------
+
+Q88.
+[EN] A Domain Controller has a firewall rule:
+       permit tcp 10.0.0.1 any eq 389
+     An attacker uses inner Src=10.0.0.99 for LDAP.
+     Will this work? What should the inner Src be?
+
+[TM] Domain Controller firewall rule:
+       permit tcp 10.0.0.1 any eq 389
+     Attacker LDAP-க்கு inner Src=10.0.0.99 பயன்படுத்துறான்.
+     இது work ஆகுமா? Inner Src என்னவாக இருக்கணும்?
+
+----------------------------------------------------------------
+
+Q89.
+[EN] After LDAP anonymous bind succeeds, an attacker
+     queries sAMAccountName and memberOf attributes.
+     What information does this reveal for further attack?
+
+[TM] LDAP anonymous bind success ஆன பிறகு, attacker
+     sAMAccountName மற்றும் memberOf attributes query
+     பண்றான். Further attack-க்கு என்ன information
+     reveal ஆகும்?
+
+----------------------------------------------------------------
+
+Q90.
+[EN] RPC (TCP 135) endpoint mapper can be queried to
+     discover what information about internal services?
+
+[TM] RPC (TCP 135) endpoint mapper-ஐ query பண்ணி
+     internal services பத்தி என்ன information
+     discover பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q91.
+[EN] A web application on internal server 10.0.0.50
+     runs on TCP 8080. An attacker injects TCP SYN
+     via GRE. The SYN-ACK goes to inner Src IP.
+     What OSPF injection is needed for return path?
+
+[TM] Internal server 10.0.0.50-ல் web app TCP 8080-ல்
+     run ஆகுது. Attacker GRE வழியா TCP SYN inject
+     பண்றான். SYN-ACK inner Src IP-க்கு போகும்.
+     Return path-க்கு என்ன OSPF injection வேண்டும்?
+
+----------------------------------------------------------------
+
+Q92.
+[EN] SMB (TCP 445) is accessible on an internal server.
+     An attacker injects SMB negotiate request via GRE
+     to capture NTLM challenge. What is the next step?
+
+[TM] Internal server-ல் SMB (TCP 445) accessible.
+     Attacker GRE வழியா SMB negotiate request inject
+     பண்ணி NTLM challenge capture பண்றான். Next
+     step என்ன?
+
+----------------------------------------------------------------
+
+Q93.
+[EN] DHCP uses UDP broadcast (255.255.255.255).
+     After EtherIP injection of DHCP Discover with
+     random MAC addresses, what two follow-up attacks
+     become possible?
+
+[TM] DHCP UDP broadcast (255.255.255.255) பயன்படுத்துது.
+     EtherIP வழியா random MAC addresses-உடன் DHCP
+     Discover inject ஆன பிறகு, என்ன இரண்டு
+     follow-up attacks possible ஆகும்?
+
+----------------------------------------------------------------
+
+Q94.
+[EN] A syslog server receives UDP 514 packets from any
+     source. An attacker injects fake syslog messages
+     via GRE. What is the impact beyond log poisoning?
+
+[TM] Syslog server எந்த source-லிருந்தும் UDP 514
+     packets receive பண்றது. Attacker GRE வழியா fake
+     syslog messages inject பண்றான். Log poisoning-ஐ
+     தாண்டி impact என்ன?
+
+----------------------------------------------------------------
+
+Q95.
+[EN] TFTP (UDP 69) is running on a network device.
+     An attacker injects TFTP read request for
+     "startup-config" via GRE. What is the prerequisite
+     for this to succeed?
+
+[TM] Network device-ல் TFTP (UDP 69) run ஆகுது.
+     Attacker GRE வழியா "startup-config"-க்கு TFTP
+     read request inject பண்றான். Succeed ஆக
+     என்ன prerequisite வேண்டும்?
+
+----------------------------------------------------------------
+
+Q96.
+[EN] NetBIOS Name Service runs on UDP 137. An attacker
+     injects fake NBNS response via GRE claiming to
+     be the WINS server for "FILESERVER". What attack
+     does this enable?
+
+[TM] NetBIOS Name Service UDP 137-ல் run ஆகுது. Attacker
+     GRE வழியா "FILESERVER"-க்கு WINS server என்று
+     claim பண்ணி fake NBNS response inject பண்றான்.
+     இது என்ன attack-ஐ enable பண்றது?
+
+----------------------------------------------------------------
+
+Q97.
+[EN] mDNS (UDP 5353, multicast 224.0.0.251) has no
+     authentication. An attacker injects fake mDNS
+     response via GRE. Which operating systems are
+     most affected?
+
+[TM] mDNS (UDP 5353, multicast 224.0.0.251)-க்கு
+     authentication இல்லை. Attacker GRE வழியா fake
+     mDNS response inject பண்றான். எந்த operating
+     systems most affected ஆகும்?
+
+----------------------------------------------------------------
+
+Q98.
+[EN] WS-Discovery (UDP 3702) is used by Windows for
+     network device discovery. An attacker injects
+     fake WS-Discovery response via GRE. What is
+     the potential impact?
+
+[TM] WS-Discovery (UDP 3702) Windows network device
+     discovery-க்காக பயன்படுத்துது. Attacker GRE
+     வழியா fake WS-Discovery response inject பண்றான்.
+     Potential impact என்ன?
+
+----------------------------------------------------------------
+
+Q99.
+[EN] BGP RST injection does not require TCP session
+     establishment. What two pieces of information
+     does the attacker need to kill an existing
+     BGP session via RST?
+
+[TM] BGP RST injection-க்கு TCP session establishment
+     தேவையில்லை. Existing BGP session-ஐ RST வழியா
+     kill பண்ண attacker-க்கு என்ன இரண்டு information
+     தேவை?
+
+----------------------------------------------------------------
+
+Q100.
+[EN] A pentest has web shell on a DMZ server. The
+      server can reach internal 10.0.0.0/24. How
+      can the attacker combine web shell + OSPF
+      inject for full internal access without GRE?
+
+[TM] Pentest-ல் DMZ server-ல் web shell இருக்கு.
+     Server internal 10.0.0.0/24-ஐ reach பண்ண முடியும்.
+     GRE இல்லாம attacker web shell + OSPF inject
+     எப்படி combine பண்ணி full internal access பெறலாம்?
+
+----------------------------------------------------------------
+
+--- SECTION 6: VENDOR-SPECIFIC & DEFAULT PROTOCOLS (Q101–Q120) ---
+
+Q101.
+[EN] Cisco IOS has CDP enabled by default on all
+      interfaces. What four types of information does
+      CDP advertise that are useful to an attacker?
+
+[TM] Cisco IOS-ல் CDP எல்லா interfaces-லயும் default-ஆ
+     enabled. Attacker-க்கு useful-ஆன என்ன நான்கு
+     types of information CDP advertise பண்றது?
+
+----------------------------------------------------------------
+
+Q102.
+[EN] A Cisco router has:
+        ip source-route
+      enabled by default. What attack does this enable,
+      and what is the disable command?
+
+[TM] Cisco router-ல்:
+        ip source-route
+     default-ஆ enabled. இது என்ன attack enable பண்றது,
+     disable command என்ன?
+
+----------------------------------------------------------------
+
+Q103.
+[EN] Cisco IOS Proxy ARP is enabled by default.
+      How does this assist an attacker in a
+      GRE-based MITM scenario?
+
+[TM] Cisco IOS Proxy ARP default-ஆ enabled.
+     GRE-based MITM scenario-ல் attacker-க்கு இது
+     எப்படி assist பண்றது?
+
+----------------------------------------------------------------
+
+Q104.
+[EN] ip directed-broadcast is enabled on old Cisco IOS.
+      What DDoS attack does this enable?
+
+[TM] பழைய Cisco IOS-ல் ip directed-broadcast enabled.
+     இது என்ன DDoS attack-ஐ enable பண்றது?
+
+----------------------------------------------------------------
+
+Q105.
+[EN] Cisco ASA has "inspect pptp" enabled by default.
+      How does PPTP inspection relate to GRE, and
+      what is the security risk?
+
+[TM] Cisco ASA-ல் "inspect pptp" default-ஆ enabled.
+     PPTP inspection GRE-உடன் எப்படி relate ஆகுது,
+     security risk என்ன?
+
+----------------------------------------------------------------
+
+Q106.
+[EN] Cisco NX-OS has VXLAN support. If VXLAN is
+      enabled without authentication, what attack
+      is possible similar to EtherIP?
+
+[TM] Cisco NX-OS-ல் VXLAN support இருக்கு.
+     Authentication இல்லாம VXLAN enabled இருந்தால்,
+     EtherIP மாதிரி என்ன attack possible?
+
+----------------------------------------------------------------
+
+Q107.
+[EN] Juniper SRX has RSVP enabled by default when MPLS
+      is configured. How can an attacker abuse RSVP
+      via GRE for a DoS?
+
+[TM] Juniper SRX-ல் MPLS configure ஆகும்போது RSVP
+     default-ஆ enabled. Attacker GRE வழியா RSVP-ஐ
+     எப்படி abuse பண்ணி DoS பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q108.
+[EN] Juniper SRX has LDP enabled with MPLS. An attacker
+      injects fake LDP label mapping via GRE. What
+      MPLS forwarding table entry is created?
+
+[TM] Juniper SRX-ல் MPLS-உடன் LDP enabled. Attacker
+     GRE வழியா fake LDP label mapping inject பண்றான்.
+     என்ன MPLS forwarding table entry create ஆகும்?
+
+----------------------------------------------------------------
+
+Q109.
+[EN] Palo Alto has "predict session" for PPTP enabled
+      by default. How does this create a GRE bypass?
+
+[TM] Palo Alto-ல் PPTP-க்கு "predict session" default-ஆ
+     enabled. இது GRE bypass எப்படி create பண்றது?
+
+----------------------------------------------------------------
+
+Q110.
+[EN] FortiGate session helper for PPTP assists GRE
+      session tracking. An attacker abuses this to
+      bypass stateful inspection. Explain the method.
+
+[TM] FortiGate PPTP session helper GRE session tracking-ஐ
+     assist பண்றது. Attacker இதை abuse பண்ணி stateful
+     inspection bypass பண்றான். Method-ஐ explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q111.
+[EN] Linux kernel loads ipip, ip_gre, sit, and ethip
+      modules automatically in some distributions.
+      What command verifies these modules are loaded,
+      and what command removes them?
+
+[TM] Linux kernel சில distributions-ல் ipip, ip_gre,
+     sit, ethip modules automatically load பண்றது.
+     இந்த modules loaded-ஆ இருக்கான்னு verify பண்ண
+     என்ன command, remove பண்ண என்ன command?
+
+----------------------------------------------------------------
+
+Q112.
+[EN] Windows Server has ISATAP enabled by default.
+      ISATAP is an IPv6-in-IPv4 tunnel mechanism.
+      How can an attacker abuse this for IPv6 attacks
+      on an IPv4-only network?
+
+[TM] Windows Server-ல் ISATAP default-ஆ enabled.
+     ISATAP என்பது IPv6-in-IPv4 tunnel mechanism.
+     IPv4-only network-ல் attacker IPv6 attacks-க்கு
+     இதை எப்படி abuse பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q113.
+[EN] Windows LLMNR (UDP 5355) responds to name queries
+      on the local subnet. How can an attacker abuse
+      LLMNR via EtherIP injection for credential capture?
+
+[TM] Windows LLMNR (UDP 5355) local subnet-ல் name
+     queries-க்கு respond பண்றது. Attacker EtherIP
+     injection வழியா LLMNR-ஐ எப்படி abuse பண்ணி
+     credentials capture பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q114.
+[EN] NetBIOS over TCP/IP is enabled by default on
+      Windows. What tool commonly abuses this, and
+      what does the attacker receive from victim hosts?
+
+[TM] Windows-ல் NetBIOS over TCP/IP default-ஆ enabled.
+     பொதுவா இதை abuse பண்ற tool என்ன, attacker victim
+     hosts-லிருந்து என்ன receive பண்றான்?
+
+----------------------------------------------------------------
+
+Q115.
+[EN] A Cisco router has SNMP community "public" with
+      write access (RW). An attacker uses SNMP SET
+      to modify the default route. What OID is targeted?
+
+[TM] Cisco router-ல் SNMP community "public" write
+     access (RW) உடன் இருக்கு. Attacker SNMP SET
+     வழியா default route modify பண்றான்.
+     எந்த OID target பண்றான்?
+
+----------------------------------------------------------------
+
+Q116.
+[EN] HTTP server is enabled on old Cisco IOS by default
+      (port 80). What can an attacker do with this
+      access, and what is the disable command?
+
+[TM] பழைய Cisco IOS-ல் HTTP server default-ஆ enabled
+     (port 80). Attacker இந்த access வழியா என்ன
+     செய்யலாம், disable command என்ன?
+
+----------------------------------------------------------------
+
+Q117.
+[EN] Cisco ASA allows Telnet from inside by default.
+      An attacker with web shell on DMZ pivots to
+      ASA inside interface. What does Telnet access
+      to ASA provide?
+
+[TM] Cisco ASA inside-லிருந்து Telnet default-ஆ
+     allow பண்றது. DMZ-ல் web shell உள்ள attacker
+     ASA inside interface-க்கு pivot பண்றான்.
+     ASA-க்கு Telnet access என்ன provide பண்றது?
+
+----------------------------------------------------------------
+
+Q118.
+[EN] A Palo Alto firewall has LLDP enabled on the
+      DMZ interface. What information does this leak
+      to an attacker who has compromised a DMZ host?
+
+[TM] Palo Alto firewall-ல் DMZ interface-ல் LLDP
+     enabled. DMZ host-ஐ compromise பண்ண attacker-க்கு
+     இது என்ன information leak பண்றது?
+
+----------------------------------------------------------------
+
+Q119.
+[EN] FortiGate has DNS inspection (session helper)
+      enabled. An attacker injects DNS response via
+      GRE. Does FortiGate's DNS inspection prevent
+      or assist this attack?
+
+[TM] FortiGate-ல் DNS inspection (session helper)
+     enabled. Attacker GRE வழியா DNS response inject
+     பண்றான். FortiGate-ஓட DNS inspection இந்த
+     attack-ஐ prevent பண்றதா அல்லது assist பண்றதா?
+
+----------------------------------------------------------------
+
+Q120.
+[EN] A pentest audit finds these Cisco IOS defaults
+      still enabled: CDP, proxy-arp, ip redirects,
+      ip source-route, SNMP public. Rank these by
+      attack severity from highest to lowest.
+
+[TM] Pentest audit: Cisco IOS-ல் இந்த defaults
+     இன்னும் enabled — CDP, proxy-arp, ip redirects,
+     ip source-route, SNMP public. Attack severity
+     அடிப்படையில் highest to lowest-ஆ rank பண்ணு.
+
+----------------------------------------------------------------
+
+--- SECTION 7: CHAIN ATTACKS & ADVANCED SCENARIOS (Q121–Q150) ---
+
+Q121.
+[EN] Full OSPF→BGP chain attack requires what minimum
+      conditions on the target network? List all.
+
+[TM] Full OSPF→BGP chain attack-க்கு target network-ல்
+     என்ன minimum conditions தேவை? எல்லாத்தையும்
+     list பண்ணு.
+
+----------------------------------------------------------------
+
+Q122.
+[EN] OSPF route injection + VRRP takeover are performed
+      simultaneously. What is the combined impact
+      compared to each attack alone?
+
+[TM] OSPF route injection + VRRP takeover simultaneously
+     perform பண்றார்கள். தனித்தனியா ஒவ்வொரு attack-உடன்
+     compare பண்ணும்போது combined impact என்ன?
+
+----------------------------------------------------------------
+
+Q123.
+[EN] EtherIP ARP poison + OSPF route inject are used
+      together. Which provides L2 MitM and which
+      provides L3 MitM? Can both be active at once?
+
+[TM] EtherIP ARP poison + OSPF route inject சேர்ந்து
+     பயன்படுத்துறாங்க. எது L2 MitM provide பண்றது,
+     எது L3 MitM? இரண்டும் ஒரே நேரத்தில் active-ஆ
+     இருக்க முடியுமா?
+
+----------------------------------------------------------------
+
+Q124.
+[EN] STP root bridge takeover via EtherIP affects which
+      layer of the OSI model, and how does this enable
+      attacks on Layer 3 routing protocols?
+
+[TM] EtherIP வழியா STP root bridge takeover OSI model-ல்
+     எந்த layer-ஐ affect பண்றது, இது Layer 3 routing
+     protocols-ல் attacks-ஐ எப்படி enable பண்றது?
+
+----------------------------------------------------------------
+
+Q125.
+[EN] An attacker chains: GRE→OSPF inject→BGP hijack→
+      route advertisement. The final BGP advertisement
+      attracts traffic for 0.0.0.0/0. Where does
+      all internet-bound traffic now flow?
+
+[TM] Attacker chain: GRE→OSPF inject→BGP hijack→
+     route advertisement. Final BGP advertisement
+     0.0.0.0/0-க்கான traffic attract பண்றது.
+     இப்போ எல்லா internet-bound traffic-உம் எங்கே போகும்?
+
+----------------------------------------------------------------
+
+Q126.
+[EN] DHCP starvation via EtherIP exhausts the IP pool.
+      The attacker then sends rogue DHCP Offer with
+      gateway=attacker IP and DNS=attacker IP.
+      What three attack capabilities does this provide?
+
+[TM] EtherIP வழியா DHCP starvation IP pool exhaust
+     பண்றது. Attacker rogue DHCP Offer அனுப்புறான்:
+     gateway=attacker IP, DNS=attacker IP.
+     இது என்ன மூன்று attack capabilities provide பண்றது?
+
+----------------------------------------------------------------
+
+Q127.
+[EN] A pentest scope includes a public HTTP workgroup
+      server, Cisco ASA, Linux server, and Palo Alto.
+      The attack chain progresses: HTTP PUT webshell→
+      SAM dump→pass-hash→ASA ASDM→config read→internal
+      subnet discover→OSPF inject via pivot. At which
+      step is GRE no longer needed?
+
+[TM] Pentest scope: public HTTP workgroup server,
+     Cisco ASA, Linux server, Palo Alto.
+     Attack chain: HTTP PUT webshell→SAM dump→
+     pass-hash→ASA ASDM→config read→internal subnet
+     discover→OSPF inject via pivot. எந்த step-ல்
+     GRE இனி தேவையில்லை?
+
+----------------------------------------------------------------
+
+Q128.
+[EN] NTP skew attack via GRE causes Kerberos failure.
+      Which specific services break first, and in
+      what order do they fail?
+
+[TM] GRE வழியா NTP skew attack Kerberos failure
+     cause பண்றது. எந்த specific services முதலில்
+     break ஆகும், எந்த order-ல் fail ஆகும்?
+
+----------------------------------------------------------------
+
+Q129.
+[EN] LDP label injection changes MPLS forwarding for
+      prefix 10.0.0.0/8. What happens to all packets
+      destined for 10.0.0.0/8 after this attack?
+
+[TM] LDP label injection prefix 10.0.0.0/8-க்கான
+     MPLS forwarding-ஐ மாத்துது. இந்த attack-க்கு
+     பிறகு 10.0.0.0/8-க்கு destined packets-க்கு
+     என்ன ஆகும்?
+
+----------------------------------------------------------------
+
+Q130.
+[EN] BFD spoofed DOWN packet causes OSPF adjacency
+      drop. How long does it take for OSPF to
+      reconverge, and what happens to traffic
+      during reconvergence?
+
+[TM] BFD spoofed DOWN packet OSPF adjacency drop
+     cause பண்றது. OSPF reconverge ஆக எவ்வளவு
+     நேரம் ஆகும், reconvergence-ல் traffic-க்கு
+     என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q131.
+[EN] VLAN hopping via EtherIP (double-tagging) reaches
+      VLAN 100 where the DC resides. What is the
+      next attack step after reaching the DC VLAN?
+
+[TM] EtherIP வழியா VLAN hopping (double-tagging)
+     DC இருக்கற VLAN 100-ஐ reach பண்றது. DC VLAN
+     reach பண்ண next attack step என்ன?
+
+----------------------------------------------------------------
+
+Q132.
+[EN] CDP injection via EtherIP poisons the NMS
+      (Network Management System) neighbor table.
+      What operational impact does this have on
+      the network operations team?
+
+[TM] EtherIP வழியா CDP injection NMS (Network
+     Management System) neighbor table poison
+     பண்றது. Network operations team-க்கு
+     operational impact என்ன?
+
+----------------------------------------------------------------
+
+Q133.
+[EN] An attacker has compromised Palo Alto firewall
+      config access. What single config change unlocks
+      all previous GRE/encapsulation attack chains
+      from internet?
+
+[TM] Attacker Palo Alto firewall config access
+     compromise பண்ணிட்டான். Internet-லிருந்து முந்தைய
+     எல்லா GRE/encapsulation attack chains-ஐ unlock
+     பண்ற single config change என்ன?
+
+----------------------------------------------------------------
+
+Q134.
+[EN] A chain attack uses: EtherIP→ARP→STP→VLAN hop→
+      LDAP→AD enumeration→pass-the-hash→ASA access→
+      GRE whitelist. At which step does the attacker
+      gain the GRE whitelist status?
+
+[TM] Chain attack: EtherIP→ARP→STP→VLAN hop→LDAP→
+     AD enumeration→pass-the-hash→ASA access→GRE whitelist.
+     எந்த step-ல் attacker GRE whitelist status பெறுவான்?
+
+----------------------------------------------------------------
+
+Q135.
+[EN] IPv6-in-IPv4 tunnel inject targets OSPFv3.
+      The target network is dual-stack. What additional
+      attack surface does IPv6 provide that IPv4
+      routing does not?
+
+[TM] IPv6-in-IPv4 tunnel inject OSPFv3-ஐ target பண்றது.
+     Target network dual-stack. IPv4 routing-ல் இல்லாம
+     IPv6 provide பண்ற additional attack surface என்ன?
+
+----------------------------------------------------------------
+
+Q136.
+[EN] A network uses OSPF with MD5 auth, EIGRP with
+      MD5 auth, BGP with MD5 auth, and VRRP with
+      text auth. Which protocol is still vulnerable
+      to GRE injection attack?
+
+[TM] Network: OSPF MD5 auth, EIGRP MD5 auth,
+     BGP MD5 auth, VRRP text auth. எந்த protocol
+     இன்னும் GRE injection attack-க்கு vulnerable-ஆ
+     இருக்கும்?
+
+----------------------------------------------------------------
+
+Q137.
+[EN] RSVP bandwidth exhaustion sends 1000 fake PATH
+      messages each reserving 1Gbps. The router has
+      10Gbps total. What happens to legitimate
+      RSVP reservations?
+
+[TM] RSVP bandwidth exhaustion: 1000 fake PATH messages,
+     ஒவ்வொன்னும் 1Gbps reserve பண்றது. Router total
+     10Gbps. Legitimate RSVP reservations-க்கு என்ன
+     நடக்கும்?
+
+----------------------------------------------------------------
+
+Q138.
+[EN] mGRE + NHRP without IPSec: NHRP auth fails for
+      the attacker. However, inner OSPF Hello has no
+      NHRP dependency. Does NHRP auth failure prevent
+      the OSPF inject? Explain.
+
+[TM] mGRE + NHRP without IPSec: attacker-க்கு NHRP
+     auth fail ஆகுது. ஆனால் inner OSPF Hello-க்கு
+     NHRP dependency இல்லை. NHRP auth failure OSPF
+     inject-ஐ prevent பண்றதா? Explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q139.
+[EN] An attacker uses ESP (Proto 50) to wrap OSPF
+      inject packets. The firewall "permits ESP" for
+      VPN traffic. Does the IDS see the OSPF payload?
+      What is the defense?
+
+[TM] Attacker ESP (Proto 50) வழியா OSPF inject packets
+     wrap பண்றான். Firewall VPN traffic-க்காக "ESP
+     permit" பண்றது. IDS OSPF payload-ஐ பார்க்குமா?
+     Defense என்ன?
+
+----------------------------------------------------------------
+
+Q140.
+[EN] A pentest scope includes a public HTTP workgroup
+      server, Cisco ASA, Linux server, and Palo Alto.
+      The attack chain progresses: HTTP PUT webshell→
+      SAM dump→pass-hash→ASA ASDM→config read→internal
+      subnet discover→OSPF inject via pivot. At which
+      step is GRE no longer needed?
+
+[TM] Pentest scope: HTTP workgroup server, Cisco ASA,
+     Linux server, Palo Alto. Attack chain: HTTP PUT
+     webshell→SAM dump→pass-hash→ASA ASDM→config read→
+     internal subnet→OSPF inject via pivot.
+     எந்த step-ல் GRE தேவையில்லாமல் போகுது?
+
+----------------------------------------------------------------
+
+Q141.
+[EN] SNMP v3 uses authentication (MD5/SHA) and
+      privacy (AES/DES). Does GRE encapsulation
+      of SNMP v3 packets still allow routing table
+      modification? Explain.
+
+[TM] SNMP v3 authentication (MD5/SHA) மற்றும்
+     privacy (AES/DES) பயன்படுத்துது. GRE encapsulation
+     of SNMP v3 packets routing table modification-ஐ
+     இன்னும் allow பண்றதா? Explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q142.
+[EN] A BGP session has MD5 auth. An attacker captures
+      the TCP stream. Without the MD5 key, can the
+      attacker inject BGP UPDATE messages? Why?
+
+[TM] BGP session MD5 auth இருக்கு. Attacker TCP stream
+     capture பண்றான். MD5 key இல்லாம BGP UPDATE
+     messages inject பண்ண முடியுமா? ஏன்?
+
+----------------------------------------------------------------
+
+Q143.
+[EN] PIM RP (Rendezvous Point) is attacked via GRE
+      PIM Register injection. The attacker becomes
+      the source for multicast group 239.1.1.1.
+      What data would flow to the attacker?
+
+[TM] PIM RP (Rendezvous Point) GRE PIM Register
+     injection வழியா attack ஆகுது. Attacker multicast
+     group 239.1.1.1-க்கு source ஆகுறான்.
+     Attacker-க்கு என்ன data flow ஆகும்?
+
+----------------------------------------------------------------
+
+Q144.
+[EN] A pentest finds FortiGate with PPTP session helper
+      enabled. An attacker establishes PPTP tunnel
+      to a compromised internal server. What does
+      FortiGate automatically allow through its
+      stateful inspection for GRE?
+
+[TM] Pentest: FortiGate-ல் PPTP session helper enabled.
+     Attacker compromised internal server-க்கு PPTP
+     tunnel establish பண்றான். FortiGate stateful
+     inspection-ல் GRE-க்கு automatically என்ன
+     allow பண்ணும்?
+
+----------------------------------------------------------------
+
+Q145.
+[EN] Windows Server has Teredo enabled. Teredo is a
+      UDP-based IPv6 tunnel over IPv4. How does an
+      attacker abuse Teredo on an IPv4-only internal
+      network for lateral movement?
+
+[TM] Windows Server-ல் Teredo enabled. Teredo
+     UDP-based IPv6 tunnel over IPv4. IPv4-only
+     internal network-ல் attacker lateral movement-க்கு
+     Teredo-ஐ எப்படி abuse பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q146.
+[EN] A router has:
+        no ip source-route
+        no cdp run
+        ip ospf authentication message-digest
+        no snmp-server community public
+      An attacker has mGRE access. Which attack chain
+      is still possible, and which are blocked?
+
+[TM] Router config:
+        no ip source-route
+        no cdp run
+        ip ospf authentication message-digest
+        no snmp-server community public
+     Attacker-க்கு mGRE access இருக்கு. எந்த attack
+     chain இன்னும் possible, எது blocked?
+
+----------------------------------------------------------------
+
+Q147.
+[EN] An attacker performs VRRP takeover (priority 255)
+      but the VRRP master has preempt delay configured:
+        vrrp 1 preempt delay minimum 60
+      How long does the attacker need to maintain the
+      fake advertisement before winning the election?
+
+[TM] Attacker VRRP takeover (priority 255) பண்றான்,
+     ஆனால் VRRP master-ல் preempt delay configure
+     ஆகியிருக்கு:
+        vrrp 1 preempt delay minimum 60
+     Election win பண்ண attacker fake advertisement
+     எவ்வளவு நேரம் maintain பண்ணணும்?
+
+----------------------------------------------------------------
+
+Q148.
+[EN] A full chain attack sequence is:
+      Step 1: EtherIP → ARP poison (gateway)
+      Step 2: EtherIP → STP root takeover
+      Step 3: GRE → OSPF inject (172.16.0.1/32 → attacker)
+      Step 4: GRE → VRRP priority 255 (virtual GW hijack)
+      Step 5: GRE → TCP SYN BGP (inner Src=172.16.0.1)
+      Step 6: BGP UPDATE → inject 0.0.0.0/0 → attacker
+      At which step is full MitM for ALL traffic achieved?
+
+[TM] Full chain attack sequence:
+     Step 1: EtherIP → ARP poison (gateway)
+     Step 2: EtherIP → STP root takeover
+     Step 3: GRE → OSPF inject (172.16.0.1/32 → attacker)
+     Step 4: GRE → VRRP priority 255 (virtual GW hijack)
+     Step 5: GRE → TCP SYN BGP (inner Src=172.16.0.1)
+     Step 6: BGP UPDATE → inject 0.0.0.0/0 → attacker
+     எந்த step-ல் ALL traffic-க்கு full MitM achieve ஆகும்?
+
+----------------------------------------------------------------
+
+Q149.
+[EN] A pentest report must include remediations.
+      One fix blocks the entire chain in Q148.
+      What is the single most effective control,
+      and at which OSI layer does it operate?
+
+[TM] Pentest report-ல் remediations இருக்கணும்.
+     Q148-ல் உள்ள entire chain-ஐ block பண்ற ஒரே
+     fix என்ன, அது எந்த OSI layer-ல் operate பண்றது?
+
+----------------------------------------------------------------
+
+Q150.
+[EN] A blue team analyst sees these logs simultaneously:
+        - OSPF neighbor up: 10.0.0.99 (unknown IP)
+        - VRRP master change: priority 255 winner
+        - BGP session reset + re-established
+        - ARP table: gateway MAC changed
+        - NTP: large time jump detected
+      What is the attacker's likely position in the
+      network, and which encapsulation protocol is
+      being used?
+
+[TM] Blue team analyst இந்த logs simultaneously பார்க்குறான்:
+        - OSPF neighbor up: 10.0.0.99 (unknown IP)
+        - VRRP master change: priority 255 winner
+        - BGP session reset + re-established
+        - ARP table: gateway MAC changed
+        - NTP: large time jump detected
+     Network-ல் attacker-ஓட likely position என்ன,
+     எந்த encapsulation protocol பயன்படுத்தப்படுது?
+
+================================================================
+  END OF BILINGUAL QUESTIONS — 150 TOTAL
+  Format: Q<N> [EN] English Question / [TM] Tamil Question
+  Sections: GRE(15) | Addressing(15) | Routing(25) |
+            Encapsulation(25) | TCP/UDP(20) |
+            Vendor(20) | Chain Attacks(30)
+================================================================
