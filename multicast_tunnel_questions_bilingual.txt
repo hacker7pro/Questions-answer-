@@ -1,0 +1,771 @@
+================================================================
+  INDIRECT PENTEST MODEL — 55 QUESTIONS (BILINGUAL)
+  English + Tamil — One by One
+  Topic: Multicast over Tunnels / GRE Inner Layer /
+         PIM Requirement / Tunnel Destination Errors
+================================================================
+
+--- SECTION 1: TUNNEL DESTINATION ERRORS (Q1–Q12) ---
+
+Q1.
+[EN] A network admin types the following command on a Cisco router:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel destination 224.0.0.5
+     What happens when the router processes this config,
+     and will the tunnel come up?
+
+[TM] ஒரு network admin Cisco router-ல் இந்த command type
+     பண்றான்:
+       interface Tunnel0
+        tunnel source 10.10.10.1
+        tunnel destination 224.0.0.5
+     Router இந்த config-ஐ process பண்ணும்போது என்ன நடக்கும்,
+     tunnel up ஆகுமா?
+
+----------------------------------------------------------------
+
+Q2.
+[EN] A GRE tunnel is configured with:
+       tunnel destination 224.0.0.10
+     Packets are sent through the tunnel. The TTL of
+     224.0.0.10 is link-local (TTL=1). What happens to
+     those packets at the first router hop?
+
+[TM] GRE tunnel:
+       tunnel destination 224.0.0.10
+     Tunnel வழியா packets அனுப்பப்படுது. 224.0.0.10-ஓட
+     TTL link-local (TTL=1). முதல் router hop-ல் அந்த
+     packets-க்கு என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q3.
+[EN] An engineer sets tunnel destination = 224.0.0.5
+     (OSPF multicast) on a GRE tunnel interface.
+     What specific conflict arises between the tunnel
+     traffic and OSPF protocol traffic?
+
+[TM] ஒரு engineer GRE tunnel interface-ல்
+     tunnel destination = 224.0.0.5 (OSPF multicast) set
+     பண்றான். Tunnel traffic மற்றும் OSPF protocol traffic
+     இடையே என்ன specific conflict உருவாகும்?
+
+----------------------------------------------------------------
+
+Q4.
+[EN] What is the fundamental reason why a multicast IP
+     address cannot be used as a GRE tunnel destination,
+     from a networking architecture perspective?
+
+[TM] Networking architecture perspective-ல் GRE tunnel
+     destination-ஆக multicast IP address ஏன் use பண்ண
+     முடியாது என்பதற்கு fundamental reason என்ன?
+
+----------------------------------------------------------------
+
+Q5.
+[EN] A Cisco IOS router accepts the command:
+       tunnel destination 239.1.1.1
+     without throwing a syntax error. However, the tunnel
+     never comes up. Explain why the command is accepted
+     but the tunnel fails.
+
+[TM] Cisco IOS router:
+       tunnel destination 239.1.1.1
+     என்ற command-ஐ syntax error இல்லாம accept பண்றது.
+     ஆனால் tunnel எப்போதும் up ஆவதில்லை. Command accept
+     ஆகி tunnel fail ஆவதற்கு காரணம் explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q6.
+[EN] Tunnel destination is set to 224.0.0.18 (VRRP
+     multicast). What routing loop scenario can this
+     create, and why?
+
+[TM] Tunnel destination 224.0.0.18 (VRRP multicast)-ஆக
+     set ஆகியிருக்கு. இது என்ன routing loop scenario
+     create பண்ணலாம், ஏன்?
+
+----------------------------------------------------------------
+
+Q7.
+[EN] An attacker observes that a misconfigured GRE tunnel
+     has destination = 224.0.0.5. What does this tell the
+     attacker about the network's OSPF configuration, and
+     how might the attacker exploit this misconfig?
+
+[TM] Attacker ஒரு misconfigured GRE tunnel-ல் destination
+     = 224.0.0.5 என்று observe பண்றான். இது network-ஓட
+     OSPF configuration பத்தி attacker-க்கு என்ன சொல்கிறது,
+     attacker இந்த misconfig-ஐ எப்படி exploit பண்ணலாம்?
+
+----------------------------------------------------------------
+
+Q8.
+[EN] What is the difference between configuring a multicast
+     IP as the OUTER tunnel destination versus the INNER
+     packet destination in a GRE tunnel?
+
+[TM] GRE tunnel-ல் OUTER tunnel destination-ஆக multicast
+     IP configure பண்றதற்கும், INNER packet destination-ஆக
+     multicast IP வைப்பதற்கும் என்ன difference?
+
+----------------------------------------------------------------
+
+Q9.
+[EN] A router has:
+       tunnel destination 224.0.0.10
+     EIGRP is also running on the same router. Describe
+     two separate problems this creates.
+
+[TM] Router-ல்:
+       tunnel destination 224.0.0.10
+     EIGRP-உம் same router-ல் running. இது create பண்ற
+     இரண்டு separate problems describe பண்ணு.
+
+----------------------------------------------------------------
+
+Q10.
+[EN] Why does a GRE tunnel require a unicast IP address
+     as its destination, and what does "point-to-point"
+     mean in this context?
+
+[TM] GRE tunnel-க்கு ஏன் destination-ஆக unicast IP address
+     தேவை, இந்த context-ல் "point-to-point" என்றால் என்ன?
+
+----------------------------------------------------------------
+
+Q11.
+[EN] A network engineer accidentally configures:
+       tunnel destination 224.0.0.2
+     (HSRP multicast). The router is also running HSRP.
+     What three issues can occur simultaneously?
+
+[TM] ஒரு network engineer தவறாக configure பண்றான்:
+       tunnel destination 224.0.0.2
+     (HSRP multicast). Router HSRP-உம் running. ஒரே
+     நேரத்தில் என்ன மூன்று issues occur ஆகலாம்?
+
+----------------------------------------------------------------
+
+Q12.
+[EN] From a security assessment perspective, if you discover
+     a tunnel with destination set to a protocol multicast
+     address (224.0.0.x), what does this indicate about
+     the network's security posture?
+
+[TM] Security assessment perspective-ல் ஒரு tunnel-ஓட
+     destination protocol multicast address (224.0.0.x)-ஆக
+     set ஆகியிருந்தால், network-ஓட security posture பத்தி
+     இது என்ன indicate பண்றது?
+
+----------------------------------------------------------------
+
+--- SECTION 2: INNER PACKET MULTICAST via TUNNEL (Q13–Q25) ---
+
+Q13.
+[EN] A GRE tunnel has:
+       tunnel source 10.10.10.1
+       tunnel destination 10.10.10.2  (unicast — correct)
+     The inner packet has:
+       Inner Src = 172.16.0.1
+       Inner Dst = 224.0.0.5 (OSPF multicast)
+     Will this work? Describe what happens at each step.
+
+[TM] GRE tunnel:
+       tunnel source 10.10.10.1
+       tunnel destination 10.10.10.2  (unicast — correct)
+     Inner packet:
+       Inner Src = 172.16.0.1
+       Inner Dst = 224.0.0.5 (OSPF multicast)
+     இது work ஆகுமா? ஒவ்வொரு step-லயும் என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q14.
+[EN] Why is setting the inner packet destination to a
+     multicast address (like 224.0.0.5) completely valid,
+     while setting the tunnel destination to the same
+     address is not?
+
+[TM] Inner packet destination-ஐ multicast address (224.0.0.5
+     போன்ற)-ஆக set பண்றது completely valid, ஆனால் tunnel
+     destination-ஐ same address-ஆக set பண்றது valid இல்லை —
+     ஏன்?
+
+----------------------------------------------------------------
+
+Q15.
+[EN] An OSPF Hello packet is encapsulated inside a GRE
+     tunnel. The outer packet travels as unicast across
+     the internet. At the receiving tunnel endpoint, what
+     happens to the inner OSPF multicast packet after
+     decapsulation?
+
+[TM] OSPF Hello packet GRE tunnel-க்குள் encapsulate
+     ஆகியிருக்கு. Outer packet internet-ல் unicast-ஆக
+     travel பண்றது. Receiving tunnel endpoint-ல் decapsulation
+     ஆன பிறகு inner OSPF multicast packet-க்கு என்ன ஆகும்?
+
+----------------------------------------------------------------
+
+Q16.
+[EN] What is the concept of "Multicast over Tunnel" and
+     in which real-world networking scenarios is it used?
+
+[TM] "Multicast over Tunnel" என்ற concept என்னன்னா,
+     real-world networking scenarios-ல் இது எங்கே
+     பயன்படுத்தப்படுது?
+
+----------------------------------------------------------------
+
+Q17.
+[EN] An attacker wants to inject OSPF Hello packets into
+     an internal LAN via GRE. The inner packet uses:
+       Inner Dst = 224.0.0.5
+     Does this require PIM to be enabled on the internal
+     network for the attack to succeed?
+
+[TM] Attacker GRE வழியா internal LAN-ல் OSPF Hello packets
+     inject பண்ண விரும்புறான். Inner packet:
+       Inner Dst = 224.0.0.5
+     Attack succeed ஆக internal network-ல் PIM enabled
+     ஆக இருக்கணுமா?
+
+----------------------------------------------------------------
+
+Q18.
+[EN] Explain the encapsulation process when an EIGRP
+     packet (inner Dst = 224.0.0.10) is sent through
+     a GRE tunnel. What does the outer packet look like,
+     and what does the inner packet look like?
+
+[TM] EIGRP packet (inner Dst = 224.0.0.10) GRE tunnel
+     வழியா அனுப்பும்போது encapsulation process explain
+     பண்ணு. Outer packet எப்படி இருக்கும், inner packet
+     எப்படி இருக்கும்?
+
+----------------------------------------------------------------
+
+Q19.
+[EN] A GRE tunnel delivers an inner packet with
+     Dst = 239.255.1.1 (application multicast) to the
+     remote tunnel endpoint. What additional infrastructure
+     is needed at the remote end to deliver this multicast
+     to all group members?
+
+[TM] GRE tunnel Dst = 239.255.1.1 (application multicast)
+     உள்ள inner packet-ஐ remote tunnel endpoint-க்கு
+     deliver பண்றது. Remote end-ல் இந்த multicast-ஐ எல்லா
+     group members-க்கும் deliver பண்ண என்ன additional
+     infrastructure தேவை?
+
+----------------------------------------------------------------
+
+Q20.
+[EN] A VRRP advertisement packet (inner Dst = 224.0.0.18,
+     TTL = 255) is sent through a GRE tunnel. At the
+     remote end, the decapsulated packet has TTL = 255.
+     Does VRRP accept this packet? What check does VRRP
+     perform on TTL?
+
+[TM] VRRP advertisement packet (inner Dst = 224.0.0.18,
+     TTL = 255) GRE tunnel வழியா அனுப்பப்படுது. Remote
+     end-ல் decapsulated packet TTL = 255. VRRP இந்த
+     packet-ஐ accept பண்ணுமா? VRRP TTL-ல் என்ன check
+     perform பண்றது?
+
+----------------------------------------------------------------
+
+Q21.
+[EN] How does the physical network treat a GRE packet
+     that contains a multicast inner payload? Does the
+     intermediate router know that the payload is multicast?
+
+[TM] Multicast inner payload contain பண்ற GRE packet-ஐ
+     physical network எப்படி treat பண்றது? Intermediate
+     router payload multicast-ன்னு தெரியுமா?
+
+----------------------------------------------------------------
+
+Q22.
+[EN] What is the difference between:
+     (a) GRE with inner Dst = 224.0.0.5 (link-local multicast)
+     (b) GRE with inner Dst = 239.1.1.1 (application multicast)
+     in terms of what happens after decapsulation?
+
+[TM] இந்த இரண்டுக்கும் என்ன difference — decapsulation
+     ஆன பிறகு என்ன நடக்கும்:
+     (a) GRE inner Dst = 224.0.0.5 (link-local multicast)
+     (b) GRE inner Dst = 239.1.1.1 (application multicast)
+
+----------------------------------------------------------------
+
+Q23.
+[EN] An HSRP active router sends its Hello packet (inner
+     Dst = 224.0.0.2, UDP 1985) through a GRE tunnel.
+     The remote router receives and decapsulates it.
+     Does the remote router's HSRP process accept this Hello
+     even though it arrived via a tunnel?
+
+[TM] HSRP active router தன்னோட Hello packet (inner
+     Dst = 224.0.0.2, UDP 1985) GRE tunnel வழியா அனுப்புது.
+     Remote router receive பண்ணி decapsulate பண்றது.
+     Tunnel வழியா வந்தாலும் remote router-ஓட HSRP process
+     இந்த Hello-ஐ accept பண்ணுமா?
+
+----------------------------------------------------------------
+
+Q24.
+[EN] In an attack scenario, an attacker sends GRE packets
+     with inner Dst = 224.0.0.5. The target router has
+     OSPF running but PIM is NOT configured. Does PIM
+     being absent affect the success of the OSPF injection
+     attack? Explain why or why not.
+
+[TM] Attack scenario-ல் attacker inner Dst = 224.0.0.5
+     என்று GRE packets அனுப்புறான். Target router-ல் OSPF
+     running ஆனால் PIM configure ஆகவில்லை. PIM absent
+     ஆக இருப்பது OSPF injection attack-ஓட success-ஐ
+     affect பண்றதா? ஏன் என்று explain பண்ணு.
+
+----------------------------------------------------------------
+
+Q25.
+[EN] Why do routing protocol multicast addresses
+     (224.0.0.5, 224.0.0.10) work inside GRE tunnels
+     without PIM, but video streaming multicast addresses
+     (239.x.x.x) require PIM? What is the key technical
+     difference?
+
+[TM] Routing protocol multicast addresses (224.0.0.5,
+     224.0.0.10) GRE tunnels-க்குள் PIM இல்லாம ஏன் work
+     ஆகுது, ஆனால் video streaming multicast addresses
+     (239.x.x.x)-க்கு PIM தேவை? Key technical difference
+     என்ன?
+
+----------------------------------------------------------------
+
+--- SECTION 3: PIM REQUIREMENT (Q26–Q38) ---
+
+Q26.
+[EN] A network uses OSPF running over a GRE tunnel.
+     An admin asks: "Do I need to configure PIM on the
+     tunnel interface for OSPF to work?" What is the
+     correct answer and why?
+
+[TM] Network GRE tunnel-ல் OSPF run பண்றது. Admin கேட்கிறான்:
+     "OSPF work ஆக tunnel interface-ல் PIM configure
+     பண்ணணுமா?" Correct answer என்னன்னா, ஏன்?
+
+----------------------------------------------------------------
+
+Q27.
+[EN] EIGRP is configured on a GRE tunnel interface.
+     Neighbor relationship forms successfully. The admin
+     never configured PIM. Why did EIGRP work without PIM?
+
+[TM] GRE tunnel interface-ல் EIGRP configure ஆகியிருக்கு.
+     Neighbor relationship successfully form ஆகியிருக்கு.
+     Admin PIM configure பண்ணவே இல்லை. PIM இல்லாம EIGRP
+     ஏன் work ஆச்சு?
+
+----------------------------------------------------------------
+
+Q28.
+[EN] What three conditions must be met for multicast
+     traffic to work inside a GRE tunnel WITHOUT requiring
+     PIM?
+
+[TM] GRE tunnel-க்குள் multicast traffic PIM தேவையில்லாம
+     work ஆக என்ன மூன்று conditions meet ஆகணும்?
+
+----------------------------------------------------------------
+
+Q29.
+[EN] PIM sparse-mode is configured on a tunnel interface.
+     What type of multicast traffic does this enable that
+     would NOT work without it?
+
+[TM] Tunnel interface-ல் PIM sparse-mode configure ஆகியிருக்கு.
+     இது இல்லாம work ஆகாத என்ன type multicast traffic-ஐ
+     இது enable பண்றது?
+
+----------------------------------------------------------------
+
+Q30.
+[EN] What is an RP (Rendezvous Point) in multicast routing,
+     and why is it required for application-level multicast
+     (239.x.x.x) but not for link-local routing protocol
+     multicast (224.0.0.x)?
+
+[TM] Multicast routing-ல் RP (Rendezvous Point) என்னன்னா,
+     application-level multicast (239.x.x.x)-க்கு ஏன்
+     தேவை, ஆனால் link-local routing protocol multicast
+     (224.0.0.x)-க்கு ஏன் தேவையில்லை?
+
+----------------------------------------------------------------
+
+Q31.
+[EN] A pentest finds that OSPF is running over a GRE tunnel
+     on a DMVPN hub. PIM is NOT configured on the tunnel.
+     Can the attacker still inject OSPF LSAs via the GRE
+     tunnel? What does the absence of PIM mean for the attack?
+
+[TM] Pentest: DMVPN hub-ல் GRE tunnel-ல் OSPF running.
+     PIM configure ஆகவில்லை. Attacker GRE tunnel வழியா
+     OSPF LSAs inject பண்ண முடியுமா? PIM absent ஆக
+     இருப்பது attack-க்கு என்ன mean?
+
+----------------------------------------------------------------
+
+Q32.
+[EN] NHRP multicast mapping in DMVPN requires configuration:
+       ip nhrp map multicast dynamic
+     Why does OSPF/EIGRP multicast NOT need this config,
+     but NHRP multicast mapping DOES need it?
+
+[TM] DMVPN-ல் NHRP multicast mapping-க்கு config தேவை:
+       ip nhrp map multicast dynamic
+     OSPF/EIGRP multicast-க்கு இந்த config தேவையில்லை,
+     ஆனால் NHRP multicast mapping-க்கு தேவை — ஏன்?
+
+----------------------------------------------------------------
+
+Q33.
+[EN] A network admin wants to stream IPTV (239.255.0.1)
+     over a GRE tunnel to remote sites. What specific
+     configuration steps are required beyond just creating
+     the tunnel?
+
+[TM] Network admin GRE tunnel வழியா remote sites-க்கு
+     IPTV (239.255.0.1) stream பண்ண விரும்புறான். Just
+     tunnel create பண்றதை தாண்டி என்ன specific configuration
+     steps தேவை?
+
+----------------------------------------------------------------
+
+Q34.
+[EN] Routing protocol multicast has TTL=1. This means
+     it is link-local. When an OSPF packet with TTL=1
+     is encapsulated in GRE and sent across the internet,
+     what happens to the TTL=1 value? Does it cause problems?
+
+[TM] Routing protocol multicast TTL=1 இருக்கு. இது
+     link-local-ன்னு அர்த்தம். TTL=1-உடன் OSPF packet
+     GRE-ல் encapsulate ஆகி internet-ல் அனுப்பப்படும்போது
+     TTL=1 value-க்கு என்ன நடக்கும்? Problems create
+     பண்ணுமா?
+
+----------------------------------------------------------------
+
+Q35.
+[EN] What is "Any-Source Multicast (ASM)" and "Source-
+     Specific Multicast (SSM)"? Which one requires PIM
+     and an RP when used over a GRE tunnel?
+
+[TM] "Any-Source Multicast (ASM)" மற்றும் "Source-Specific
+     Multicast (SSM)" என்னன்னா? GRE tunnel-ல் பயன்படுத்தும்போது
+     எதற்கு PIM மற்றும் RP தேவை?
+
+----------------------------------------------------------------
+
+Q36.
+[EN] An attacker injects VRRP advertisement packets
+     (inner Dst = 224.0.0.18) via GRE. The internal
+     network does NOT have PIM configured. Does the
+     VRRP attack succeed or fail? Why?
+
+[TM] Attacker GRE வழியா VRRP advertisement packets
+     (inner Dst = 224.0.0.18) inject பண்றான். Internal
+     network-ல் PIM configure ஆகவில்லை. VRRP attack
+     succeed ஆகுமா fail ஆகுமா? ஏன்?
+
+----------------------------------------------------------------
+
+Q37.
+[EN] A security audit finds a GRE tunnel with:
+       ip pim sparse-mode
+     configured on the tunnel interface. What does this
+     tell you about what multicast traffic flows through
+     this tunnel?
+
+[TM] Security audit-ல் GRE tunnel-ல்:
+       ip pim sparse-mode
+     configure ஆகியிருக்குன்னு கண்டுபிடிக்கிறாங்க.
+     இந்த tunnel வழியா என்ன multicast traffic flow
+     ஆகுதுன்னு இது என்ன சொல்கிறது?
+
+----------------------------------------------------------------
+
+Q38.
+[EN] Why is HSRP/VRRP multicast classified similarly to
+     routing protocol multicast (works without PIM) rather
+     than application multicast (requires PIM)? What is
+     the common characteristic?
+
+[TM] HSRP/VRRP multicast ஏன் routing protocol multicast
+     மாதிரியே classify ஆகுது (PIM இல்லாம works) —
+     application multicast மாதிரி (PIM தேவை) இல்லாம?
+     Common characteristic என்ன?
+
+----------------------------------------------------------------
+
+--- SECTION 4: MULTICAST TYPE CLASSIFICATION (Q39–Q50) ---
+
+Q39.
+[EN] Classify the following multicast addresses as
+     "Works without PIM in GRE tunnel" or "Requires PIM":
+     224.0.0.5, 224.0.0.10, 224.0.0.2, 224.0.0.18,
+     239.1.1.1, 239.255.0.1, 224.0.0.251
+
+[TM] இந்த multicast addresses-ஐ "GRE tunnel-ல் PIM இல்லாம
+     works" அல்லது "PIM தேவை" என்று classify பண்ணு:
+     224.0.0.5, 224.0.0.10, 224.0.0.2, 224.0.0.18,
+     239.1.1.1, 239.255.0.1, 224.0.0.251
+
+----------------------------------------------------------------
+
+Q40.
+[EN] RIPv2 uses multicast 224.0.0.9. If RIPv2 is configured
+     on a GRE tunnel interface, does it require PIM?
+     What type of multicast address is 224.0.0.9?
+
+[TM] RIPv2 multicast 224.0.0.9 பயன்படுத்துது. GRE tunnel
+     interface-ல் RIPv2 configure ஆகியிருந்தால் PIM தேவையா?
+     224.0.0.9 என்ன type multicast address?
+
+----------------------------------------------------------------
+
+Q41.
+[EN] mDNS uses 224.0.0.251 (UDP 5353). If an attacker
+     injects fake mDNS via GRE tunnel, does PIM need to
+     be running on the internal network for the injection
+     to reach mDNS-capable hosts?
+
+[TM] mDNS 224.0.0.251 (UDP 5353) பயன்படுத்துது.
+     Attacker GRE tunnel வழியா fake mDNS inject பண்ணினால்,
+     injection mDNS-capable hosts-ஐ reach பண்ண internal
+     network-ல் PIM running ஆக வேண்டுமா?
+
+----------------------------------------------------------------
+
+Q42.
+[EN] OSPF uses 224.0.0.5 and 224.0.0.6. What is the
+     difference between these two addresses in terms
+     of which OSPF router types receive each?
+
+[TM] OSPF 224.0.0.5 மற்றும் 224.0.0.6 பயன்படுத்துது.
+     எந்த OSPF router types ஒவ்வொன்னையும் receive பண்றது
+     என்ற அடிப்படையில் இரண்டுக்கும் என்ன difference?
+
+----------------------------------------------------------------
+
+Q43.
+[EN] GLBP uses multicast 224.0.0.102 (UDP 3222). Is this
+     a link-local multicast? Does injecting GLBP Hello via
+     GRE tunnel require PIM to be configured? Explain.
+
+[TM] GLBP multicast 224.0.0.102 (UDP 3222) பயன்படுத்துது.
+     இது link-local multicast-ஆ? GRE tunnel வழியா GLBP
+     Hello inject பண்ண PIM configure ஆக வேண்டுமா? Explain.
+
+----------------------------------------------------------------
+
+Q44.
+[EN] PIM-SM (Sparse Mode) versus PIM-DM (Dense Mode) —
+     which is required for streaming multicast (239.x.x.x)
+     over a GRE tunnel, and what is the practical difference
+     between them?
+
+[TM] PIM-SM (Sparse Mode) vs PIM-DM (Dense Mode) —
+     GRE tunnel-ல் streaming multicast (239.x.x.x)-க்கு
+     எது தேவை, practical difference என்ன?
+
+----------------------------------------------------------------
+
+Q45.
+[EN] A network has OSPF running on a GRE tunnel without
+     PIM. An attacker injects a fake OSPF LSA. The LSA
+     advertises a route for 10.0.0.0/8 via the attacker's
+     IP. Does PIM play any role in whether this attack
+     succeeds or fails?
+
+[TM] Network-ல் GRE tunnel-ல் PIM இல்லாம OSPF running.
+     Attacker fake OSPF LSA inject பண்றான். LSA 10.0.0.0/8-க்கு
+     attacker IP வழியா route advertise பண்றது. இந்த attack
+     success-ஆகுதா fail-ஆகுதான்னு PIM ஏதாவது role play
+     பண்றதா?
+
+----------------------------------------------------------------
+
+Q46.
+[EN] In a DMVPN network, OSPF Hellos must reach all spokes
+     from the hub. Why does this require:
+       ip nhrp map multicast dynamic
+     on the hub, but NOT require PIM? What does NHRP
+     multicast mapping do differently?
+
+[TM] DMVPN network-ல் hub-லிருந்து எல்லா spokes-க்கும்
+     OSPF Hellos reach ஆகணும். இதற்கு hub-ல் ஏன்:
+       ip nhrp map multicast dynamic
+     தேவை, ஆனால் PIM தேவையில்லை? NHRP multicast mapping
+     என்ன differently செய்கிறது?
+
+----------------------------------------------------------------
+
+Q47.
+[EN] BFD uses UDP 3784/4784. BFD packets are unicast,
+     not multicast. If a BFD session runs over a GRE tunnel,
+     does it require PIM? Why is this different from OSPF?
+
+[TM] BFD UDP 3784/4784 பயன்படுத்துது. BFD packets unicast,
+     multicast இல்லை. GRE tunnel-ல் BFD session run
+     ஆகினால் PIM தேவையா? இது OSPF-விட ஏன் different?
+
+----------------------------------------------------------------
+
+Q48.
+[EN] An attacker injects a PIM Join message (Proto 103)
+     for group 239.1.1.1 via GRE. PIM IS configured on
+     the internal network. What happens to multicast traffic
+     for 239.1.1.1 after this injection?
+
+[TM] Attacker GRE வழியா group 239.1.1.1-க்கு PIM Join
+     message (Proto 103) inject பண்றான். Internal network-ல்
+     PIM configure ஆகியிருக்கு. Injection-க்கு பிறகு
+     239.1.1.1-க்கான multicast traffic-க்கு என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q49.
+[EN] If PIM is NOT configured on an internal network, can
+     an attacker still abuse multicast-based routing protocols
+     (OSPF, EIGRP, VRRP, HSRP) via GRE injection?
+     What does this tell you about the importance of PIM
+     as a security control?
+
+[TM] Internal network-ல் PIM configure ஆகவில்லை என்றால்,
+     attacker GRE injection வழியா multicast-based routing
+     protocols (OSPF, EIGRP, VRRP, HSRP)-ஐ இன்னும் abuse
+     பண்ண முடியுமா? Security control-ஆக PIM-ஓட importance
+     பத்தி இது என்ன சொல்கிறது?
+
+----------------------------------------------------------------
+
+Q50.
+[EN] Complete the following table by filling in the missing
+     entries:
+     Protocol  | Multicast Addr | Needs PIM? | Works in GRE?
+     OSPF      | 224.0.0.5      | ?          | ?
+     EIGRP     | 224.0.0.10     | ?          | ?
+     HSRP v1   | 224.0.0.2      | ?          | ?
+     VRRP      | 224.0.0.18     | ?          | ?
+     RIPv2     | 224.0.0.9      | ?          | ?
+     mDNS      | 224.0.0.251    | ?          | ?
+     IPTV      | 239.255.0.1    | ?          | ?
+     PIM       | 224.0.0.13     | ?          | ?
+
+[TM] கீழ்க்கண்ட table-ஐ missing entries நிரப்பி complete
+     பண்ணு:
+     Protocol  | Multicast Addr | PIM தேவையா? | GRE-ல் works?
+     OSPF      | 224.0.0.5      | ?            | ?
+     EIGRP     | 224.0.0.10     | ?            | ?
+     HSRP v1   | 224.0.0.2      | ?            | ?
+     VRRP      | 224.0.0.18     | ?            | ?
+     RIPv2     | 224.0.0.9      | ?            | ?
+     mDNS      | 224.0.0.251    | ?            | ?
+     IPTV      | 239.255.0.1    | ?            | ?
+     PIM       | 224.0.0.13     | ?            | ?
+
+----------------------------------------------------------------
+
+--- SECTION 5: ADVANCED CHAIN & SECURITY (Q51–Q55) ---
+
+Q51.
+[EN] An attacker crafts the following GRE packet:
+     Outer: Src=1.2.3.4, Dst=10.10.10.1 (whitelist router)
+     Inner: Src=172.16.0.99, Dst=224.0.0.5, Proto=89, TTL=1
+     The target internal LAN has no PIM, no OSPF auth.
+     Step by step, describe what happens from the moment
+     the attacker sends the packet to the moment an OSPF
+     neighbor forms.
+
+[TM] Attacker இந்த GRE packet craft பண்றான்:
+     Outer: Src=1.2.3.4, Dst=10.10.10.1 (whitelist router)
+     Inner: Src=172.16.0.99, Dst=224.0.0.5, Proto=89, TTL=1
+     Target internal LAN-ல் PIM இல்லை, OSPF auth இல்லை.
+     Attacker packet அனுப்பிய moment-லிருந்து OSPF neighbor
+     form ஆகும் moment வரை step by step என்ன நடக்கும்?
+
+----------------------------------------------------------------
+
+Q52.
+[EN] An attacker uses EIGRP injection via GRE to poison
+     the routing table. The internal network has PIM
+     sparse-mode configured. Does PIM affect the success
+     of the EIGRP injection? Could an attacker additionally
+     abuse PIM to extend the attack?
+
+[TM] Attacker GRE வழியா EIGRP injection பண்ணி routing
+     table poison பண்றான். Internal network-ல் PIM
+     sparse-mode configure ஆகியிருக்கு. PIM EIGRP injection
+     success-ஐ affect பண்றதா? Attacker attack-ஐ extend
+     பண்ண additionally PIM-ஐ abuse பண்ண முடியுமா?
+
+----------------------------------------------------------------
+
+Q53.
+[EN] A security engineer wants to block ALL GRE-based
+     multicast injection attacks (OSPF, EIGRP, VRRP, HSRP).
+     They add this ACL:
+       deny ip any 224.0.0.0 0.0.0.255
+     on the GRE tunnel interface. Does this block the
+     attacks? What is the limitation of this approach?
+
+[TM] Security engineer எல்லா GRE-based multicast injection
+     attacks (OSPF, EIGRP, VRRP, HSRP) block பண்ண விரும்புறான்.
+     GRE tunnel interface-ல் இந்த ACL add பண்றான்:
+       deny ip any 224.0.0.0 0.0.0.255
+     Attacks block ஆகுமா? இந்த approach-ஓட limitation என்ன?
+
+----------------------------------------------------------------
+
+Q54.
+[EN] Tunnel destination is incorrectly set to a multicast
+     address. An attacker notices this during reconnaissance.
+     What does the attacker infer about the admin's skill
+     level, and what other misconfigurations might exist
+     on the same device?
+
+[TM] Tunnel destination தவறாக multicast address-ஆக set
+     ஆகியிருக்கு. Attacker reconnaissance-ல் இதை notice
+     பண்றான். Admin-ஓட skill level பத்தி attacker என்ன
+     infer பண்றான், same device-ல் வேற என்ன misconfigurations
+     இருக்கலாம்?
+
+----------------------------------------------------------------
+
+Q55.
+[EN] A pentest report must summarize the risk of allowing
+     GRE tunnels with mGRE (multipoint) configuration and
+     no authentication, combined with routing protocols
+     that use multicast (OSPF, EIGRP). Write a one-paragraph
+     risk summary covering: attack path, multicast role,
+     PIM dependency, and recommended fix.
+
+[TM] Pentest report-ல் mGRE (multipoint) configuration மற்றும்
+     no authentication உள்ள GRE tunnels allow பண்றதோட risk-ஐ,
+     multicast பயன்படுத்தும் routing protocols (OSPF, EIGRP)-உடன்
+     combine பண்ணி summarize பண்ணணும். Attack path, multicast
+     role, PIM dependency, recommended fix cover பண்ணி
+     one-paragraph risk summary எழுது.
+
+================================================================
+  END OF BILINGUAL QUESTIONS — 55 TOTAL
+  Sections: Tunnel Dst Errors(12) | Inner Multicast(13) |
+            PIM Requirement(13) | Multicast Types(12) |
+            Advanced Chain(5)
+================================================================

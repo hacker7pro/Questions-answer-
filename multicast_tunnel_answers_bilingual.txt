@@ -1,0 +1,1581 @@
+================================================================
+  INDIRECT PENTEST MODEL — 55 ANSWERS (BILINGUAL)
+  English + Tamil — One by One
+  Topic: Multicast over Tunnels / GRE Inner Layer /
+         PIM Requirement / Tunnel Destination Errors
+================================================================
+
+--- SECTION 1: TUNNEL DESTINATION ERRORS (A1–A12) ---
+
+A1.
+[EN] Some Cisco IOS versions accept the command without
+     a syntax error because the parser does not always
+     validate that the tunnel destination is a valid unicast
+     IP. However, the tunnel will NEVER come up because:
+     (1) 224.0.0.5 is a link-local multicast address
+         with TTL=1 — it cannot traverse routers.
+     (2) GRE tunnel requires a point-to-point unicast
+         destination to establish the virtual link.
+     (3) The router has no mechanism to deliver a packet
+         to a multicast group address as a tunnel endpoint.
+     Result: Tunnel stays in DOWN/DOWN state permanently.
+
+[TM] சில Cisco IOS versions syntax error இல்லாம command
+     accept பண்றது — parser எப்போதும் tunnel destination
+     valid unicast IP-ஆ இருக்கான்னு validate பண்றதில்லை.
+     ஆனால் tunnel NEVER up ஆகாது, ஏனென்றால்:
+     (1) 224.0.0.5 link-local multicast address, TTL=1 —
+         routers-ஐ traverse பண்ண முடியாது.
+     (2) GRE tunnel virtual link establish பண்ண point-to-point
+         unicast destination தேவை.
+     (3) Tunnel endpoint-ஆக multicast group address-க்கு
+         packet deliver பண்ண router-க்கு mechanism இல்லை.
+     Result: Tunnel DOWN/DOWN state-ல் permanently இருக்கும்.
+
+----------------------------------------------------------------
+
+A2.
+[EN] The packets are immediately dropped. TTL=1 means the
+     packet is link-local — it can only exist on the directly
+     connected segment. When the router tries to forward the
+     GRE-encapsulated packet toward 224.0.0.10, the routing
+     lookup fails because 224.0.0.10 is not a routable
+     unicast destination. Even if a default route existed,
+     the multicast TTL check would cause the packet to be
+     dropped at the first router that processes it.
+
+[TM] Packets உடனே drop ஆகும். TTL=1 என்றால் packet
+     link-local — directly connected segment-ல் மட்டுமே
+     exist ஆக முடியும். Router GRE-encapsulated packet-ஐ
+     224.0.0.10-நோக்கி forward பண்ண try பண்ணும்போது
+     routing lookup fail ஆகும் — 224.0.0.10 routable
+     unicast destination இல்லை. Default route இருந்தாலும்
+     multicast TTL check பண்ணும் first router-ல் packet
+     drop ஆகும்.
+
+----------------------------------------------------------------
+
+A3.
+[EN] Two conflicts arise:
+     (1) OSPF itself sends Hello packets to 224.0.0.5 on
+         the same interface. The tunnel also tries to send
+         GRE traffic to 224.0.0.5. Both compete for the
+         same multicast address, creating unpredictable
+         behavior — OSPF may receive its own GRE-wrapped
+         packets or process them incorrectly.
+     (2) Routing loops: the router may try to route the
+         tunnel traffic via the OSPF routing table, which
+         itself depends on the tunnel — infinite recursion
+         causing CPU spikes and network instability.
+
+[TM] இரண்டு conflicts உருவாகும்:
+     (1) OSPF itself same interface-ல் 224.0.0.5-க்கு Hello
+         packets அனுப்புது. Tunnel-உம் 224.0.0.5-க்கு GRE
+         traffic அனுப்ப try பண்றது. இரண்டும் same multicast
+         address-க்காக compete — unpredictable behavior —
+         OSPF தன்னோட GRE-wrapped packets receive பண்ணலாம்
+         அல்லது incorrectly process பண்ணலாம்.
+     (2) Routing loops: router tunnel traffic-ஐ OSPF routing
+         table வழியா route பண்ண try பண்றது, அது tunnel-ஐயே
+         depend பண்றது — infinite recursion → CPU spikes →
+         network instability.
+
+----------------------------------------------------------------
+
+A4.
+[EN] A GRE tunnel is a point-to-point virtual link — it
+     connects exactly ONE source to ONE destination.
+     Multicast addresses by definition represent a GROUP
+     of receivers (one-to-many). There is no single
+     physical device that "owns" a multicast address as
+     its interface IP. The router cannot establish a
+     virtual circuit to a group address. GRE requires a
+     specific unicast endpoint to know where to deliver
+     the encapsulated packet.
+
+[TM] GRE tunnel point-to-point virtual link — exactly ONE
+     source-ஐ ONE destination-உடன் connect பண்றது. Multicast
+     addresses by definition ஒரு GROUP of receivers-ஐ
+     represent பண்றது (one-to-many). Multicast address-ஐ
+     interface IP-ஆக "own" பண்ற single physical device
+     இல்லை. Router ஒரு group address-க்கு virtual circuit
+     establish பண்ண முடியாது. Encapsulated packet எங்கே
+     deliver பண்றதுன்னு தெரிய GRE-க்கு specific unicast
+     endpoint தேவை.
+
+----------------------------------------------------------------
+
+A5.
+[EN] Cisco IOS accepts the command because the CLI parser
+     performs only syntax validation (correct IP format),
+     not semantic validation (is this a valid tunnel
+     destination type?). The tunnel fails because:
+     (1) 239.1.1.1 is an application multicast (scope >
+         link-local), but still not a unicast address.
+     (2) No device "owns" 239.1.1.1 as an interface IP.
+     (3) The router cannot resolve an ARP/neighbor entry
+         for a multicast address to establish the GRE
+         point-to-point link.
+     The gap between CLI acceptance and runtime failure
+     is a known IOS behavior with multicast destinations.
+
+[TM] Cisco IOS command accept பண்றது — CLI parser syntax
+     validation மட்டும் பண்றது (correct IP format), semantic
+     validation இல்லை (இது valid tunnel destination type-ஆ?).
+     Tunnel fail ஆகுது ஏனென்றால்:
+     (1) 239.1.1.1 application multicast (scope > link-local),
+         ஆனால் unicast address இல்லை.
+     (2) 239.1.1.1-ஐ interface IP-ஆக "own" பண்ற device இல்லை.
+     (3) GRE point-to-point link establish பண்ண multicast
+         address-க்கு ARP/neighbor entry resolve பண்ண
+         முடியாது.
+     CLI acceptance-உம் runtime failure-உம் இடையே உள்ள gap
+     multicast destinations-உடன் known IOS behavior.
+
+----------------------------------------------------------------
+
+A6.
+[EN] Three issues occur simultaneously:
+     (1) Tunnel fails — 224.0.0.2 is HSRP multicast,
+         not a unicast tunnel endpoint. Tunnel stays DOWN.
+     (2) HSRP conflict — HSRP itself uses 224.0.0.2 for
+         its own Hello messages on the same interface.
+         The tunnel config attempts to "send to" the same
+         address HSRP uses, creating ambiguity in the
+         protocol stack.
+     (3) CPU exhaustion — the router may repeatedly attempt
+         tunnel establishment toward 224.0.0.2, receive
+         HSRP responses, try to process them as tunnel
+         control traffic, creating a processing loop.
+
+[TM] மூன்று issues ஒரே நேரத்தில் occur:
+     (1) Tunnel fail — 224.0.0.2 HSRP multicast, unicast
+         tunnel endpoint இல்லை. Tunnel DOWN-ஆ இருக்கும்.
+     (2) HSRP conflict — HSRP itself same interface-ல்
+         தன்னோட Hello messages-க்கு 224.0.0.2 பயன்படுத்துது.
+         Tunnel config HSRP use பண்ற same address-க்கு "send"
+         பண்ண attempt — protocol stack-ல் ambiguity.
+     (3) CPU exhaustion — router 224.0.0.2-நோக்கி tunnel
+         establishment repeatedly attempt பண்றது, HSRP
+         responses receive பண்றது, tunnel control traffic-ஆ
+         process பண்ண try — processing loop create ஆகும்.
+
+----------------------------------------------------------------
+
+A7.
+[EN] This tells the attacker:
+     (1) The admin is inexperienced — basic misconfiguration
+         indicates poor security hygiene elsewhere.
+     (2) OSPF is running on the network (224.0.0.5 is
+         OSPF-specific) — attacker now knows the routing
+         protocol in use.
+     (3) GRE tunnels exist and are poorly secured — likely
+         no authentication or ACLs.
+     Exploitation: attacker sends properly crafted GRE
+     packets (outer Dst = router's REAL external IP,
+     inner Dst = 224.0.0.5) to inject OSPF LSAs. The
+     misconfigured tunnel destination reveals the target
+     network's routing protocol, making OSPF injection
+     targeting precise.
+
+[TM] இது attacker-க்கு சொல்றது:
+     (1) Admin inexperienced — basic misconfiguration
+         வேற எங்கும் poor security hygiene indicate பண்றது.
+     (2) Network-ல் OSPF running (224.0.0.5 OSPF-specific) —
+         attacker use பண்ற routing protocol தெரிஞ்சுக்கிறான்.
+     (3) GRE tunnels exist, poorly secured — auth அல்லது
+         ACLs இல்லை likely.
+     Exploitation: attacker properly crafted GRE packets
+     அனுப்புறான் (outer Dst = router's REAL external IP,
+     inner Dst = 224.0.0.5) OSPF LSAs inject பண்ண.
+     Misconfigured tunnel destination target network-ஓட
+     routing protocol reveal பண்றது — OSPF injection
+     targeting precise ஆகும்.
+
+----------------------------------------------------------------
+
+A8.
+[EN] OUTER tunnel destination = multicast:
+     The multicast address IS the delivery address for the
+     GRE packet itself. Router cannot route to a multicast
+     group as a unicast tunnel endpoint. TUNNEL FAILS.
+     INNER packet destination = multicast:
+     The multicast address is the payload's destination
+     INSIDE the tunnel. The outer GRE packet still has a
+     valid unicast Dst. The tunnel delivers the packet to
+     the remote endpoint, which then processes the inner
+     multicast payload normally. WORKS CORRECTLY.
+     These are two completely different fields with
+     completely different functions.
+
+[TM] OUTER tunnel destination = multicast:
+     Multicast address GRE packet-க்கே delivery address.
+     Router unicast tunnel endpoint-ஆக multicast group-க்கு
+     route பண்ண முடியாது. TUNNEL FAILS.
+     INNER packet destination = multicast:
+     Multicast address tunnel-க்குள் payload-ஓட destination.
+     Outer GRE packet-க்கு இன்னும் valid unicast Dst இருக்கு.
+     Tunnel packet-ஐ remote endpoint-க்கு deliver பண்றது,
+     அது inner multicast payload-ஐ normally process பண்றது.
+     WORKS CORRECTLY.
+     இரண்டும் completely different fields, completely different
+     functions.
+
+----------------------------------------------------------------
+
+A9.
+[EN] Two separate problems:
+     (1) Tunnel establishment fails: 224.0.0.10 is EIGRP's
+         multicast address — a group address, not a unicast
+         host. Router cannot create a point-to-point GRE
+         link to a group address. Tunnel stays DOWN permanently.
+     (2) EIGRP self-conflict: EIGRP running on the same
+         router sends its own Hello packets to 224.0.0.10.
+         The misconfigured tunnel attempts to deliver to
+         the same address. EIGRP may receive its own
+         tunnel-destined packets as EIGRP protocol traffic,
+         causing false neighbor events or duplicate packet
+         processing.
+
+[TM] இரண்டு separate problems:
+     (1) Tunnel establishment fail: 224.0.0.10 EIGRP-ஓட
+         multicast address — group address, unicast host இல்லை.
+         Router group address-க்கு point-to-point GRE link
+         create பண்ண முடியாது. Tunnel permanently DOWN.
+     (2) EIGRP self-conflict: Same router-ல் running EIGRP
+         224.0.0.10-க்கு தன்னோட Hello packets அனுப்புது.
+         Misconfigured tunnel same address-க்கு deliver
+         attempt பண்றது. EIGRP தன்னோட tunnel-destined packets-ஐ
+         EIGRP protocol traffic-ஆக receive பண்ணலாம் — false
+         neighbor events அல்லது duplicate packet processing.
+
+----------------------------------------------------------------
+
+A10.
+[EN] GRE requires unicast destination because it is a
+     point-to-point protocol — it creates a virtual wire
+     between exactly two specific devices. "Point-to-point"
+     means: one specific source sends to one specific
+     destination. The router must know the exact IP address
+     of the remote tunnel endpoint to:
+     (1) Build the outer IP header with a specific Dst.
+     (2) Route the GRE-encapsulated packet across the network.
+     (3) Receive and process only packets from that specific
+         peer (for fixed-destination tunnels).
+     Multicast = one-to-many = incompatible with this model.
+
+[TM] GRE unicast destination தேவை ஏனென்றால் இது
+     point-to-point protocol — exactly இரண்டு specific
+     devices-க்கிடையே virtual wire create பண்றது.
+     "Point-to-point" என்றால்: one specific source →
+     one specific destination. Router remote tunnel endpoint-ஓட
+     exact IP address தெரிஞ்சிருக்கணும்:
+     (1) Specific Dst-உடன் outer IP header build பண்ண.
+     (2) Network-ல் GRE-encapsulated packet route பண்ண.
+     (3) Specific peer-லிருந்து மட்டும் packets receive,
+         process பண்ண (fixed-destination tunnels-க்கு).
+     Multicast = one-to-many = இந்த model-உடன் incompatible.
+
+----------------------------------------------------------------
+
+A11.
+[EN] Recursive routing: router tries to route tunnel traffic
+     via 224.0.0.18 → VRRP multicast group → no unicast
+     route exists → tunnel traffic sent to VRRP process →
+     loop. This triggers "recursive routing detected" and
+     tunnel is shut down by IOS, causing network disruption.
+
+[TM] Recursive routing: router tunnel traffic-ஐ 224.0.0.18
+     வழியா route பண்ண try → VRRP multicast group → unicast
+     route இல்லை → tunnel traffic VRRP process-க்கு sent →
+     loop. இது "recursive routing detected" trigger பண்றது,
+     IOS tunnel-ஐ shut down பண்றது → network disruption.
+
+----------------------------------------------------------------
+
+A12.
+[EN] This indicates:
+     (1) Poor change management — commands were applied
+         without testing or peer review.
+     (2) Likely no ACL on tunnel interfaces — if basic
+         destination validation was missed, ACL hardening
+         was probably skipped too.
+     (3) Probable absence of authentication on routing
+         protocols (OSPF, EIGRP) — same admin who made
+         this error likely skipped protocol auth too.
+     (4) GRE tunnels may be mGRE without IPSec — the
+         combination of mGRE + no auth + routing protocol
+         no auth = full injection attack chain possible.
+     Security posture: HIGH RISK — multiple controls
+     likely absent.
+
+[TM] இது indicate பண்றது:
+     (1) Poor change management — testing அல்லது peer review
+         இல்லாம commands apply.
+     (2) Tunnel interfaces-ல் ACL இல்லை likely — basic
+         destination validation miss ஆனால் ACL hardening-உம்
+         skip ஆனது probable.
+     (3) Routing protocols-ல் (OSPF, EIGRP) auth இல்லை
+         probable — இந்த error பண்ண admin protocol auth-உம்
+         skip பண்ணியிருக்கான் likely.
+     (4) GRE tunnels IPSec இல்லாம mGRE-ஆ இருக்கலாம் —
+         mGRE + no auth + routing protocol no auth = full
+         injection attack chain possible.
+     Security posture: HIGH RISK — multiple controls likely absent.
+
+----------------------------------------------------------------
+
+--- SECTION 2: INNER PACKET MULTICAST via TUNNEL (A13–A25) ---
+
+A13.
+[EN] Yes, this works. Step by step:
+     Step 1: Attacker/source creates OSPF Hello with
+     Inner Src=172.16.0.1, Inner Dst=224.0.0.5, TTL=1.
+     Step 2: GRE encapsulates — Outer Src=10.10.10.1,
+     Outer Dst=10.10.10.2 (unicast). Outer TTL=64.
+     Step 3: Outer packet travels across network as
+     normal unicast — intermediate routers see unicast
+     GRE, forward normally.
+     Step 4: 10.10.10.2 receives GRE, decapsulates.
+     Inner packet exposed: Src=172.16.0.1, Dst=224.0.0.5,
+     Proto=89, TTL=1.
+     Step 5: Router forwards inner packet to its internal
+     LAN interface. OSPF routers on that LAN receive the
+     Hello (TTL=1 is fine here — link-local delivery).
+     Step 6: OSPF neighbor negotiation begins if no auth.
+
+[TM] ஆமா, இது works. Step by step:
+     Step 1: Attacker/source OSPF Hello create — Inner
+     Src=172.16.0.1, Inner Dst=224.0.0.5, TTL=1.
+     Step 2: GRE encapsulate — Outer Src=10.10.10.1,
+     Outer Dst=10.10.10.2 (unicast). Outer TTL=64.
+     Step 3: Outer packet normal unicast-ஆக network traverse
+     — intermediate routers unicast GRE பார்க்கும், normally
+     forward.
+     Step 4: 10.10.10.2 GRE receive, decapsulate. Inner
+     packet expose: Src=172.16.0.1, Dst=224.0.0.5,
+     Proto=89, TTL=1.
+     Step 5: Router inner packet-ஐ internal LAN interface-க்கு
+     forward. அந்த LAN-ல் OSPF routers Hello receive
+     (TTL=1 fine — link-local delivery).
+     Step 6: Auth இல்லையென்றால் OSPF neighbor negotiation start.
+
+----------------------------------------------------------------
+
+A14.
+[EN] The outer tunnel destination is used for DELIVERY —
+     it tells the network HOW to get the GRE packet to the
+     remote router. This MUST be unicast because the network
+     needs a specific target to route toward.
+     The inner packet destination is the APPLICATION
+     PAYLOAD destination — it tells the remote router's
+     OSPF/EIGRP/VRRP process where to send the protocol
+     message AFTER decapsulation. At this point, the packet
+     is already "inside" the LAN, so multicast is valid
+     for link-local delivery on that segment.
+     Two different layers, two different purposes.
+
+[TM] Outer tunnel destination DELIVERY-க்காக — GRE packet-ஐ
+     remote router-க்கு எப்படி get பண்றதுன்னு network-க்கு
+     சொல்கிறது. இது MUST unicast — network route பண்ண
+     specific target தேவை.
+     Inner packet destination APPLICATION PAYLOAD destination
+     — decapsulation-க்கு பிறகு remote router-ஓட
+     OSPF/EIGRP/VRRP process protocol message எங்கே அனுப்பணும்
+     என்று சொல்கிறது. இந்த point-ல் packet already LAN-க்குள்
+     "inside" இருக்கு, அதனால் அந்த segment-ல் link-local
+     delivery-க்கு multicast valid.
+     Two different layers, two different purposes.
+
+----------------------------------------------------------------
+
+A15.
+[EN] After decapsulation at the receiving tunnel endpoint:
+     (1) Outer IP header and GRE header are stripped.
+     (2) Inner OSPF packet exposed: Dst=224.0.0.5, TTL=1,
+         Proto=89.
+     (3) The receiving router's OSPF process recognizes
+         224.0.0.5 as AllSPFRouters multicast.
+     (4) The router delivers the packet to its OSPF process
+         on the appropriate interface.
+     (5) OSPF processes the Hello as if it arrived directly
+         on that LAN interface — neighbor discovery begins.
+     (6) TTL=1 is valid here because the packet is now on
+         the local LAN segment, not traversing routers.
+
+[TM] Receiving tunnel endpoint-ல் decapsulation-க்கு பிறகு:
+     (1) Outer IP header மற்றும் GRE header strip ஆகும்.
+     (2) Inner OSPF packet expose: Dst=224.0.0.5, TTL=1,
+         Proto=89.
+     (3) Receiving router-ஓட OSPF process 224.0.0.5-ஐ
+         AllSPFRouters multicast-ஆக recognize பண்றது.
+     (4) Router packet-ஐ appropriate interface-ல் தன்னோட
+         OSPF process-க்கு deliver.
+     (5) OSPF Hello-ஐ அந்த LAN interface-ல் directly வந்தது
+         மாதிரியே process — neighbor discovery begin.
+     (6) TTL=1 valid — packet இப்போ local LAN segment-ல்
+         இருக்கு, routers traverse பண்றதில்லை.
+
+----------------------------------------------------------------
+
+A16.
+[EN] "Multicast over Tunnel" = encapsulating multicast
+     payloads inside unicast tunnel packets (GRE, IP-in-IP,
+     IPSec) so multicast traffic can traverse networks that
+     don't natively support multicast routing.
+     Real-world uses:
+     (1) DMVPN — routing protocol Hellos (OSPF/EIGRP)
+         across WAN links.
+     (2) Multicast VPN (mVPN) — carrying multicast streams
+         between customer VPN sites over MPLS.
+     (3) GRE over IPSec — securing routing protocol
+         multicast across internet.
+     (4) Video conferencing / IPTV distribution across
+         non-multicast-capable WAN links.
+
+[TM] "Multicast over Tunnel" = multicast payloads-ஐ unicast
+     tunnel packets-க்குள் (GRE, IP-in-IP, IPSec) encapsulate
+     பண்றது, multicast routing natively support பண்றதில்லாத
+     networks-ல் multicast traffic traverse பண்ண.
+     Real-world uses:
+     (1) DMVPN — WAN links-ல் routing protocol Hellos
+         (OSPF/EIGRP).
+     (2) Multicast VPN (mVPN) — MPLS-ல் customer VPN sites-க்கிடையே
+         multicast streams carry.
+     (3) GRE over IPSec — internet-ல் routing protocol
+         multicast secure பண்றது.
+     (4) non-multicast-capable WAN links-ல் video conferencing /
+         IPTV distribution.
+
+----------------------------------------------------------------
+
+A17.
+[EN] No, PIM is NOT required. The inner OSPF Hello uses
+     224.0.0.5 which is a link-local multicast with TTL=1.
+     Link-local multicast does not use PIM for distribution —
+     it is delivered directly on the local LAN segment by
+     the receiving router's network stack. PIM is only needed
+     for multi-hop multicast distribution (streaming, IPTV).
+     The OSPF injection attack succeeds purely on the
+     basis of OSPF's own protocol mechanics — no PIM
+     dependency whatsoever.
+
+[TM] இல்லை, PIM தேவையில்லை. Inner OSPF Hello 224.0.0.5
+     பயன்படுத்துது — TTL=1-உடன் link-local multicast. Link-local
+     multicast distribution-க்கு PIM பயன்படுத்துவதில்லை —
+     receiving router-ஓட network stack-ஆல் local LAN segment-ல்
+     directly deliver ஆகும். PIM multi-hop multicast distribution
+     (streaming, IPTV)-க்கு மட்டும் தேவை. OSPF injection attack
+     purely OSPF-ஓட own protocol mechanics basis-ல் success
+     ஆகும் — PIM dependency இல்லவே இல்லை.
+
+----------------------------------------------------------------
+
+A18.
+[EN] Encapsulation process:
+     INNER PACKET (what EIGRP sees):
+       IP Src: 172.16.0.99 (or whitelist router internal IP)
+       IP Dst: 224.0.0.10 (EIGRP multicast)
+       IP Proto: 88 (EIGRP)
+       TTL: 1
+       Payload: EIGRP Hello (opcode=5, AS=100, K-values)
+     OUTER PACKET (what the network sees):
+       IP Src: 192.168.1.10 (attacker's real IP)
+       IP Dst: 10.10.10.1 (whitelist router external IP)
+       IP Proto: 47 (GRE)
+       TTL: 64
+       GRE Header: Protocol = 0x0800 (IPv4 inside)
+       Payload: [entire inner packet above]
+     The outer packet looks like ordinary unicast GRE —
+     intermediate routers have no idea EIGRP is inside.
+
+[TM] Encapsulation process:
+     INNER PACKET (EIGRP பார்க்குது):
+       IP Src: 172.16.0.99 (அல்லது whitelist router internal IP)
+       IP Dst: 224.0.0.10 (EIGRP multicast)
+       IP Proto: 88 (EIGRP)
+       TTL: 1
+       Payload: EIGRP Hello (opcode=5, AS=100, K-values)
+     OUTER PACKET (network பார்க்குது):
+       IP Src: 192.168.1.10 (attacker real IP)
+       IP Dst: 10.10.10.1 (whitelist router external IP)
+       IP Proto: 47 (GRE)
+       TTL: 64
+       GRE Header: Protocol = 0x0800 (IPv4 inside)
+       Payload: [மேலே உள்ள entire inner packet]
+     Outer packet ordinary unicast GRE மாதிரி தெரியும் —
+     intermediate routers-க்கு உள்ளே EIGRP இருக்குன்னு
+     தெரியாது.
+
+----------------------------------------------------------------
+
+A19.
+[EN] Additional infrastructure required at the remote end:
+     (1) PIM (Protocol Independent Multicast) must be
+         enabled on the tunnel interface AND the LAN
+         interfaces — ip pim sparse-mode or dense-mode.
+     (2) An RP (Rendezvous Point) must be configured or
+         discovered (static or dynamic via Auto-RP or BSR).
+         239.255.1.1 requires an RP for ASM (Any-Source
+         Multicast) to work.
+     (3) IGMP must be running on the LAN interfaces so
+         group members can join 239.255.1.1.
+     Without PIM and RP, the decapsulated 239.255.1.1
+     packet arrives at the router but has no multicast
+     forwarding table entry — it is dropped silently.
+
+[TM] Remote end-ல் தேவையான additional infrastructure:
+     (1) Tunnel interface AND LAN interfaces-ல் PIM enable
+         ஆக வேண்டும் — ip pim sparse-mode அல்லது dense-mode.
+     (2) RP (Rendezvous Point) configure அல்லது discover
+         ஆக வேண்டும் (static அல்லது Auto-RP அல்லது BSR
+         வழியா dynamic). 239.255.1.1-க்கு ASM work ஆக
+         RP தேவை.
+     (3) Group members 239.255.1.1 join ஆக LAN interfaces-ல்
+         IGMP running ஆக வேண்டும்.
+     PIM மற்றும் RP இல்லாம decapsulated 239.255.1.1 packet
+     router-ஐ reach பண்ணும் ஆனால் multicast forwarding
+     table entry இல்லை — silently drop ஆகும்.
+
+----------------------------------------------------------------
+
+A20.
+[EN] VRRP accepts the packet. VRRP TTL check: RFC 3768
+     states that VRRP MUST discard packets where TTL ≠ 255.
+     The inner packet was crafted with TTL=255, and when
+     decapsulated, the inner TTL value (255) is preserved —
+     the outer packet's TTL was decremented across hops,
+     but the inner packet's TTL is untouched until it
+     reaches the VRRP process after decapsulation.
+     VRRP sees TTL=255 → accepts the advertisement →
+     processes priority comparison → potential master
+     election change.
+
+[TM] VRRP packet-ஐ accept பண்றது. VRRP TTL check: RFC 3768
+     சொல்றது TTL ≠ 255 ஆக இருக்கும் VRRP packets MUST
+     discard. Inner packet TTL=255-ஆ craft ஆகியிருக்கு,
+     decapsulate ஆகும்போது inner TTL value (255) preserved —
+     outer packet-ஓட TTL hops-ல் decrement ஆகியிருந்தாலும்
+     decapsulation-க்கு பிறகு VRRP process-ஐ reach பண்ணும்
+     வரை inner packet TTL untouched.
+     VRRP TTL=255 பார்க்குது → advertisement accept →
+     priority comparison process → potential master election
+     change.
+
+----------------------------------------------------------------
+
+A21.
+[EN] The physical network treats the GRE packet as a normal
+     unicast IP packet. Intermediate routers see:
+       Outer IP: Src=attacker, Dst=whitelist_router, Proto=47
+     They perform a routing table lookup on the OUTER Dst IP
+     and forward accordingly. They do NOT inspect the GRE
+     payload. They do NOT know the inner payload is multicast.
+     The inner packet is completely opaque to intermediate
+     routers — it is just bytes in the GRE data field.
+     Only the final tunnel endpoint (decapsulating router)
+     sees and processes the inner multicast payload.
+
+[TM] Physical network GRE packet-ஐ normal unicast IP packet-ஆக
+     treat பண்றது. Intermediate routers பார்க்குது:
+       Outer IP: Src=attacker, Dst=whitelist_router, Proto=47
+     OUTER Dst IP-ல் routing table lookup பண்ணி forward.
+     GRE payload inspect பண்றதில்லை. Inner payload multicast-ன்னு
+     தெரியாது. Inner packet intermediate routers-க்கு completely
+     opaque — GRE data field-ல் just bytes. Final tunnel
+     endpoint (decapsulating router) மட்டும் inner multicast
+     payload பார்க்கும், process பண்ணும்.
+
+----------------------------------------------------------------
+
+A22.
+[EN] (a) GRE inner Dst = 224.0.0.5 (link-local multicast):
+     After decapsulation, the router delivers the inner
+     packet to its OSPF process on the local LAN segment.
+     TTL=1 means no further forwarding. OSPF neighbor
+     discovery begins. No PIM needed. Works immediately.
+     (b) GRE inner Dst = 239.1.1.1 (application multicast):
+     After decapsulation, router performs multicast routing
+     table lookup for 239.1.1.1. If PIM is not configured,
+     no (S,G) or (*,G) entry exists → packet DROPPED.
+     If PIM + RP configured, packet is forwarded to all
+     registered group members via PIM distribution tree.
+
+[TM] (a) GRE inner Dst = 224.0.0.5 (link-local multicast):
+     Decapsulation-க்கு பிறகு router inner packet-ஐ local LAN
+     segment-ல் OSPF process-க்கு deliver. TTL=1 further
+     forwarding இல்லை. OSPF neighbor discovery begin. PIM
+     தேவையில்லை. Immediately works.
+     (b) GRE inner Dst = 239.1.1.1 (application multicast):
+     Decapsulation-க்கு பிறகு router 239.1.1.1-க்கு multicast
+     routing table lookup. PIM configure ஆகவில்லையென்றால்
+     (S,G) அல்லது (*,G) entry இல்லை → packet DROPPED.
+     PIM + RP configure ஆகியிருந்தால் PIM distribution tree
+     வழியா registered group members-க்கு forward.
+
+----------------------------------------------------------------
+
+A23.
+[EN] Yes, HSRP accepts it. HSRP performs these checks:
+     (1) UDP destination port = 1985 ✅
+     (2) Destination IP = 224.0.0.2 (HSRPv1 multicast) ✅
+     (3) TTL = 1 (HSRP uses TTL=1 for link-local) ✅
+     (4) Group number matches ✅
+     (5) Authentication string matches (if configured)
+     HSRP does not check whether the packet arrived via
+     a tunnel or directly on the interface. It only
+     examines the inner packet fields. If all checks pass,
+     the HSRP state machine processes the Hello and
+     performs priority comparison — potential active router
+     election change.
+
+[TM] ஆமா, HSRP accept பண்றது. HSRP இந்த checks perform:
+     (1) UDP destination port = 1985 ✅
+     (2) Destination IP = 224.0.0.2 (HSRPv1 multicast) ✅
+     (3) TTL = 1 (HSRP link-local-க்கு TTL=1 பயன்படுத்துது) ✅
+     (4) Group number match ✅
+     (5) Authentication string match (configure ஆகியிருந்தால்)
+     HSRP packet tunnel வழியா வந்ததா interface-ல் directly
+     வந்ததான்னு check பண்றதில்லை. Inner packet fields மட்டும்
+     examine. எல்லாமே pass ஆனால் HSRP state machine Hello
+     process, priority comparison — potential active router
+     election change.
+
+----------------------------------------------------------------
+
+A24.
+[EN] PIM being absent does NOT affect the success of the
+     OSPF injection attack. Here's why: OSPF uses 224.0.0.5
+     which is a link-local multicast (TTL=1, 224.0.0.0/24
+     range). Link-local multicast is handled by the network
+     stack itself — it does NOT consult the PIM multicast
+     routing table. PIM manages multi-hop multicast routing.
+     Link-local multicast never needs multi-hop routing.
+     The OSPF injection works on the local LAN segment
+     regardless of PIM presence or absence.
+
+[TM] PIM absent ஆக இருப்பது OSPF injection attack-ஓட
+     success-ஐ affect பண்றதில்லை. ஏன்னா: OSPF 224.0.0.5
+     பயன்படுத்துது — link-local multicast (TTL=1,
+     224.0.0.0/24 range). Link-local multicast network stack
+     itself handle பண்றது — PIM multicast routing table
+     consult பண்றதில்லை. PIM multi-hop multicast routing
+     manage பண்றது. Link-local multicast-க்கு multi-hop
+     routing தேவையே இல்லை. OSPF injection local LAN segment-ல்
+     PIM இருந்தாலும் இல்லாட்டியும் works.
+
+----------------------------------------------------------------
+
+A25.
+[EN] Key technical difference: TTL and scope.
+     Routing protocol multicast (224.0.0.5, 224.0.0.10):
+     TTL=1, link-local scope. These addresses are in the
+     224.0.0.0/24 "local network control" block (IANA).
+     They are delivered by the network stack to the local
+     segment only. No routing decision needed. No PIM.
+     Video streaming multicast (239.x.x.x):
+     TTL > 1, administratively scoped. These addresses
+     need to cross multiple router hops to reach all
+     receivers. PIM builds a distribution tree (SPT or
+     RPT) across the network. Without PIM, the router
+     has no forwarding entry for 239.x.x.x — packet dropped.
+
+[TM] Key technical difference: TTL மற்றும் scope.
+     Routing protocol multicast (224.0.0.5, 224.0.0.10):
+     TTL=1, link-local scope. இந்த addresses 224.0.0.0/24
+     "local network control" block (IANA)-ல். Network stack
+     local segment-க்கு மட்டும் deliver. Routing decision
+     தேவையில்லை. PIM இல்லை.
+     Video streaming multicast (239.x.x.x):
+     TTL > 1, administratively scoped. இந்த addresses
+     எல்லா receivers-ஐ reach பண்ண multiple router hops
+     cross பண்ணணும். PIM network-ல் distribution tree (SPT
+     அல்லது RPT) build பண்றது. PIM இல்லாம router-க்கு
+     239.x.x.x-க்கு forwarding entry இல்லை — packet drop.
+
+----------------------------------------------------------------
+
+--- SECTION 3: PIM REQUIREMENT (A26–A38) ---
+
+A26.
+[EN] Correct answer: NO, PIM is NOT needed.
+     Reason: OSPF uses 224.0.0.5 (link-local multicast,
+     TTL=1). Link-local multicast is handled directly by
+     the interface's network stack — it is delivered to
+     all devices on the directly connected segment without
+     any multicast routing protocol. PIM is a multicast
+     ROUTING protocol — it is needed when multicast traffic
+     must traverse multiple router hops. Since OSPF Hellos
+     only need to reach directly connected OSPF neighbors
+     (one hop), PIM is irrelevant. Simply enabling OSPF
+     on the tunnel interface (network command) is sufficient.
+
+[TM] Correct answer: இல்லை, PIM தேவையில்லை.
+     காரணம்: OSPF 224.0.0.5 (link-local multicast, TTL=1)
+     பயன்படுத்துது. Link-local multicast interface-ஓட
+     network stack directly handle — multicast routing
+     protocol இல்லாம directly connected segment-ல் எல்லா
+     devices-க்கும் deliver. PIM multicast ROUTING protocol —
+     multicast traffic multiple router hops traverse பண்ணணும்போது
+     தேவை. OSPF Hellos directly connected OSPF neighbors-ஐ
+     மட்டும் reach பண்ண வேண்டும் (one hop), PIM irrelevant.
+     Tunnel interface-ல் OSPF enable பண்றது (network command)
+     மட்டும் sufficient.
+
+----------------------------------------------------------------
+
+A27.
+[EN] EIGRP worked without PIM because EIGRP uses 224.0.0.10
+     which is a link-local multicast address (224.0.0.0/24
+     range, TTL=1). The GRE tunnel interface acts as a
+     point-to-point link. When EIGRP sends its Hello to
+     224.0.0.10 on the tunnel interface, the GRE mechanism
+     encapsulates it and sends to the remote unicast endpoint.
+     At the remote end, after decapsulation, the inner
+     EIGRP multicast is delivered locally — no multi-hop
+     routing needed. PIM only applies when multicast must
+     traverse beyond the directly connected link.
+
+[TM] EIGRP PIM இல்லாம work ஆச்சு ஏனென்றால் EIGRP 224.0.0.10
+     பயன்படுத்துது — link-local multicast address
+     (224.0.0.0/24 range, TTL=1). GRE tunnel interface
+     point-to-point link-ஆக act பண்றது. EIGRP tunnel
+     interface-ல் 224.0.0.10-க்கு Hello அனுப்பும்போது GRE
+     mechanism encapsulate பண்ணி remote unicast endpoint-க்கு
+     அனுப்புது. Remote end-ல் decapsulation-க்கு பிறகு inner
+     EIGRP multicast locally deliver — multi-hop routing
+     தேவையில்லை. PIM multicast directly connected link-க்கு
+     அப்பால் traverse பண்ணணும்போது மட்டும் apply.
+
+----------------------------------------------------------------
+
+A28.
+[EN] Three conditions for multicast to work in GRE without PIM:
+     (1) The multicast address must be link-local (224.0.0.0/24
+         range) with TTL=1. This means delivery only to the
+         local segment — no multi-hop routing needed.
+     (2) The protocol using the multicast must handle its
+         own neighbor discovery (OSPF, EIGRP, HSRP, VRRP
+         all do this internally via Hello mechanisms).
+     (3) The GRE tunnel must deliver the inner packet to
+         a segment where the protocol's receivers reside
+         (i.e., the tunnel endpoint must be on the same
+         LAN as the target protocol neighbors).
+
+[TM] GRE-ல் PIM இல்லாம multicast work ஆக மூன்று conditions:
+     (1) Multicast address link-local (224.0.0.0/24 range)
+         TTL=1 ஆக இருக்கணும். Local segment-க்கு மட்டும்
+         delivery — multi-hop routing தேவையில்லை.
+     (2) Multicast பயன்படுத்தும் protocol தன்னோட neighbor
+         discovery handle பண்ணணும் (OSPF, EIGRP, HSRP,
+         VRRP எல்லாமே Hello mechanisms வழியா internally
+         பண்றது).
+     (3) GRE tunnel inner packet-ஐ protocol receivers இருக்கும்
+         segment-க்கு deliver பண்ணணும் (tunnel endpoint
+         target protocol neighbors-ஓட same LAN-ல் இருக்கணும்).
+
+----------------------------------------------------------------
+
+A29.
+[EN] PIM sparse-mode on a tunnel interface enables:
+     (1) Application-level multicast (239.x.x.x range) —
+         video streaming, IPTV, trading feeds, real-time
+         data distribution — to be routed through the tunnel.
+     (2) Any-Source Multicast (ASM) group distribution
+         via Rendezvous Point (RP).
+     (3) Source-Specific Multicast (SSM) with PIM-SSM.
+     Without PIM, all of these would be silently dropped
+     after decapsulation because the router has no multicast
+     forwarding entries for these addresses.
+
+[TM] Tunnel interface-ல் PIM sparse-mode enable பண்றது:
+     (1) Application-level multicast (239.x.x.x range) —
+         video streaming, IPTV, trading feeds, real-time
+         data distribution — tunnel வழியா route ஆக.
+     (2) Rendezvous Point (RP) வழியா Any-Source Multicast
+         (ASM) group distribution.
+     (3) PIM-SSM-உடன் Source-Specific Multicast (SSM).
+     PIM இல்லாம இவை எல்லாமே decapsulation-க்கு பிறகு
+     silently drop — router-க்கு இந்த addresses-க்கு
+     multicast forwarding entries இல்லை.
+
+----------------------------------------------------------------
+
+A30.
+[EN] RP (Rendezvous Point) is a router that acts as the
+     meeting point for multicast sources and receivers in
+     PIM sparse-mode. Sources register with the RP; receivers
+     join via the RP.
+     Why needed for 239.x.x.x: These are application multicast
+     addresses that cross multiple hops. PIM sparse-mode
+     assumes receivers are sparse — it only forwards when
+     there's explicit demand. RP coordinates source-to-receiver
+     path building across multiple routers.
+     Why NOT needed for 224.0.0.x (link-local): These are
+     delivered locally on one segment (TTL=1). No routing
+     decision. No tree building. No RP needed — the network
+     stack delivers them directly.
+
+[TM] RP (Rendezvous Point) PIM sparse-mode-ல் multicast
+     sources மற்றும் receivers-க்கு meeting point-ஆக act
+     பண்ற router. Sources RP-உடன் register; receivers RP வழியா
+     join.
+     239.x.x.x-க்கு ஏன் தேவை: இவை multiple hops cross
+     பண்ற application multicast addresses. PIM sparse-mode
+     receivers sparse என்று assume — explicit demand இருந்தால்
+     மட்டும் forward. RP multiple routers-ல் source-to-receiver
+     path building coordinate பண்றது.
+     224.0.0.x-க்கு (link-local) ஏன் தேவையில்லை: One segment-ல்
+     locally deliver (TTL=1). Routing decision இல்லை. Tree
+     building இல்லை. Network stack directly deliver — RP
+     தேவையில்லை.
+
+----------------------------------------------------------------
+
+A31.
+[EN] Yes, attacker CAN inject OSPF LSAs regardless of
+     PIM. PIM absence means nothing for this attack because:
+     OSPF uses 224.0.0.5 (link-local multicast, TTL=1).
+     This is NOT a PIM-managed address. It is delivered
+     by the network stack to the local segment immediately
+     after GRE decapsulation. PIM is completely irrelevant
+     to link-local multicast delivery.
+     PIM absence means: application multicast (239.x.x.x)
+     would not work. But OSPF is not application multicast.
+     The OSPF injection attack chain (OSPF→BGP) proceeds
+     exactly the same with or without PIM.
+
+[TM] ஆமா, PIM இல்லாமலும் attacker OSPF LSAs inject பண்ண
+     முடியும். PIM absent ஆக இருப்பது இந்த attack-க்கு
+     nothing mean பண்றது ஏனென்றால்: OSPF 224.0.0.5
+     (link-local multicast, TTL=1) பயன்படுத்துது. இது
+     PIM-managed address இல்லை. GRE decapsulation-க்கு
+     பிறகு network stack local segment-க்கு immediately
+     deliver. PIM link-local multicast delivery-க்கு
+     completely irrelevant.
+     PIM absent என்றால்: application multicast (239.x.x.x)
+     work ஆகாது. ஆனால் OSPF application multicast இல்லை.
+     OSPF injection attack chain (OSPF→BGP) PIM உடனும்
+     இல்லாமலும் exactly same.
+
+----------------------------------------------------------------
+
+A32.
+[EN] OSPF/EIGRP do NOT need ip nhrp map multicast dynamic
+     because these protocols handle their own neighbor
+     discovery via Hello packets — they discover neighbors
+     on whatever interface they're enabled on. The GRE/mGRE
+     tunnel interface IS that interface.
+     NHRP multicast mapping IS needed because NHRP itself
+     needs to map multicast packets to specific unicast
+     destinations for delivery. In mGRE, the hub must
+     know which spokes to send multicast to — NHRP provides
+     this mapping. Without it, multicast routing protocol
+     Hellos would not be replicated to all spokes.
+
+[TM] OSPF/EIGRP-க்கு ip nhrp map multicast dynamic தேவையில்லை
+     ஏனென்றால் இந்த protocols Hello packets வழியா தங்களோட
+     neighbor discovery handle பண்றது — enable ஆகிய எந்த
+     interface-லயும் neighbors discover பண்றது. GRE/mGRE
+     tunnel interface அந்த interface-தான்.
+     NHRP multicast mapping தேவை ஏனென்றால் NHRP itself
+     delivery-க்கு multicast packets-ஐ specific unicast
+     destinations-க்கு map பண்ணணும். mGRE-ல் hub எந்த
+     spokes-க்கு multicast அனுப்பணும்னு தெரிஞ்சிருக்கணும் —
+     NHRP இந்த mapping provide பண்றது. இல்லாம multicast
+     routing protocol Hellos எல்லா spokes-க்கும் replicate
+     ஆகாது.
+
+----------------------------------------------------------------
+
+A33.
+[EN] Configuration steps beyond just creating the tunnel:
+     (1) Enable PIM on tunnel interface:
+           ip pim sparse-mode
+     (2) Enable PIM on all LAN interfaces at remote sites:
+           ip pim sparse-mode
+     (3) Configure or discover RP for the 239.x.x.x group:
+           ip pim rp-address <RP_IP>   (static)
+           OR configure Auto-RP or BSR
+     (4) Configure IGMP on LAN interfaces for group membership:
+           ip igmp join-group 239.255.0.1 (or client-side IGMP)
+     (5) Ensure MTU is adequate (GRE adds 24 bytes overhead).
+     (6) Verify RPF (Reverse Path Forwarding) check passes
+         for the multicast source.
+
+[TM] Just tunnel create பண்றதை தாண்டிய configuration steps:
+     (1) Tunnel interface-ல் PIM enable:
+           ip pim sparse-mode
+     (2) Remote sites-ல் எல்லா LAN interfaces-லயும் PIM enable:
+           ip pim sparse-mode
+     (3) 239.x.x.x group-க்கு RP configure அல்லது discover:
+           ip pim rp-address <RP_IP>   (static)
+           அல்லது Auto-RP அல்லது BSR configure
+     (4) Group membership-க்கு LAN interfaces-ல் IGMP configure:
+           ip igmp join-group 239.255.0.1 (அல்லது client-side IGMP)
+     (5) MTU adequate-ஆ இருக்கணும் (GRE 24 bytes overhead add).
+     (6) Multicast source-க்கு RPF (Reverse Path Forwarding)
+         check pass ஆகுதுன்னு verify.
+
+----------------------------------------------------------------
+
+A34.
+[EN] The TTL=1 of the inner OSPF packet does NOT cause
+     problems across the GRE tunnel. Here is why:
+     The TTL=1 belongs to the INNER packet. The OUTER
+     GRE packet has its own TTL (typically 64 or 255).
+     Intermediate routers decrement the OUTER TTL, not
+     the inner one. The inner packet is invisible to
+     intermediate routers (it's payload data). Only when
+     the final router decapsulates the GRE packet does
+     the inner TTL=1 become active — and at that point
+     the packet is already on the LAN segment, so TTL=1
+     is perfectly appropriate (link-local delivery).
+
+[TM] Inner OSPF packet-ஓட TTL=1 GRE tunnel-ல் problems
+     cause பண்றதில்லை. ஏன்னா:
+     TTL=1 INNER packet-க்கு சொந்தமானது. OUTER GRE packet-க்கு
+     தன்னோட TTL இருக்கு (typically 64 அல்லது 255).
+     Intermediate routers OUTER TTL-ஐ decrement பண்றது, inner-ஐ
+     இல்லை. Inner packet intermediate routers-க்கு invisible
+     (payload data-தான்). Final router GRE packet decapsulate
+     பண்ணும்போது மட்டும் inner TTL=1 active ஆகுது — அந்த
+     point-ல் packet already LAN segment-ல் இருக்கு, TTL=1
+     perfectly appropriate (link-local delivery).
+
+----------------------------------------------------------------
+
+A35.
+[EN] ASM (Any-Source Multicast): Any source can send to
+     a multicast group. Receivers join via (*,G) — they
+     receive from ANY source. Uses PIM + RP.
+     SSM (Source-Specific Multicast): Receivers specify
+     both the group AND the specific source (S,G). No RP
+     needed — uses PIM-SSM with IGMP v3.
+     Over GRE tunnel:
+     ASM requires PIM sparse-mode + RP configuration
+     on tunnel and all LAN interfaces.
+     SSM requires PIM-SSM + IGMPv3 — no RP needed but
+     PIM still required. Neither works without PIM for
+     application-level multicast (239.x.x.x).
+
+[TM] ASM (Any-Source Multicast): எந்த source-உம் multicast
+     group-க்கு அனுப்பலாம். Receivers (*,G) வழியா join —
+     ANY source-லிருந்து receive. PIM + RP பயன்படுத்துது.
+     SSM (Source-Specific Multicast): Receivers group-உம்
+     specific source-உம் (S,G) specify பண்றது. RP தேவையில்லை
+     — IGMPv3-உடன் PIM-SSM பயன்படுத்துது.
+     GRE tunnel-ல்:
+     ASM-க்கு tunnel மற்றும் எல்லா LAN interfaces-ல்
+     PIM sparse-mode + RP configuration தேவை.
+     SSM-க்கு PIM-SSM + IGMPv3 — RP தேவையில்லை ஆனால் PIM
+     தேவை. Application-level multicast (239.x.x.x)-க்கு
+     PIM இல்லாம இரண்டும் work ஆகாது.
+
+----------------------------------------------------------------
+
+A36.
+[EN] VRRP attack SUCCEEDS. PIM is not needed.
+     VRRP uses 224.0.0.18 which is a link-local multicast
+     (224.0.0.0/24 range, TTL=255). VRRP's TTL requirement
+     is 255 (not 1 like OSPF), but it is still a link-local
+     scope address — it does not require PIM for delivery.
+     After GRE decapsulation, the inner VRRP packet is
+     delivered to the local LAN by the network stack.
+     The VRRP process receives it, checks: VRID match,
+     priority=255, no auth → real master steps down.
+     PIM plays zero role in VRRP multicast delivery.
+
+[TM] VRRP attack SUCCEED ஆகும். PIM தேவையில்லை.
+     VRRP 224.0.0.18 — link-local multicast (224.0.0.0/24
+     range, TTL=255) பயன்படுத்துது. VRRP-ஓட TTL requirement
+     255 (OSPF மாதிரி 1 இல்லை), ஆனால் இன்னும் link-local
+     scope address — delivery-க்கு PIM தேவையில்லை.
+     GRE decapsulation-க்கு பிறகு inner VRRP packet network
+     stack-ஆல் local LAN-க்கு deliver. VRRP process receive
+     பண்ணி check: VRID match, priority=255, no auth → real
+     master steps down. VRRP multicast delivery-ல் PIM
+     zero role.
+
+----------------------------------------------------------------
+
+A37.
+[EN] ip pim sparse-mode on a tunnel interface tells you:
+     (1) Application-level multicast (239.x.x.x range) flows
+         through this tunnel — likely video, audio, trading
+         data, or real-time streaming.
+     (2) The network has a Rendezvous Point (RP) configured
+         somewhere — this is a more complex multicast setup.
+     (3) This tunnel carries more than just routing protocol
+         control traffic — it likely transports business-critical
+         application data.
+     (4) From an attack perspective: if an attacker can
+         inject PIM Join messages via this tunnel (since PIM
+         is enabled), they can hijack multicast streams.
+
+[TM] Tunnel interface-ல் ip pim sparse-mode சொல்றது:
+     (1) Application-level multicast (239.x.x.x range) இந்த
+         tunnel வழியா flow — likely video, audio, trading data,
+         அல்லது real-time streaming.
+     (2) Network-ல் somewhere RP configure ஆகியிருக்கு —
+         more complex multicast setup.
+     (3) Tunnel routing protocol control traffic மட்டுமில்லாம
+         carry பண்றது — business-critical application data
+         transport likely.
+     (4) Attack perspective: PIM enabled என்பதால் attacker
+         இந்த tunnel வழியா PIM Join messages inject பண்ணினால்
+         multicast streams hijack பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A38.
+[EN] Common characteristic: both HSRP/VRRP and routing
+     protocol multicast (OSPF/EIGRP) use addresses in the
+     224.0.0.0/24 "Local Network Control" block (IANA
+     reserved). ALL addresses in this block have these
+     properties:
+     (1) TTL=1 (or TTL=255 for VRRP — still link-local scope).
+     (2) Delivered by the network stack to the local segment
+         only — NOT routed by PIM.
+     (3) Used by infrastructure protocols for neighbor/group
+         discovery on directly connected links only.
+     Application multicast (239.x.x.x) is "Administratively
+     Scoped" — designed to cross multiple hops, requiring
+     PIM routing.
+
+[TM] Common characteristic: HSRP/VRRP-உம் routing protocol
+     multicast (OSPF/EIGRP)-உம் 224.0.0.0/24 "Local Network
+     Control" block (IANA reserved)-ல் உள்ள addresses
+     பயன்படுத்துது. இந்த block-ல் எல்லா addresses-க்கும்
+     இந்த properties:
+     (1) TTL=1 (VRRP-க்கு TTL=255 — still link-local scope).
+     (2) Network stack local segment-க்கு மட்டும் deliver —
+         PIM route பண்றதில்லை.
+     (3) Directly connected links-ல் neighbor/group discovery-க்காக
+         infrastructure protocols பயன்படுத்துது.
+     Application multicast (239.x.x.x) "Administratively
+     Scoped" — multiple hops cross பண்ண designed, PIM routing
+     தேவை.
+
+----------------------------------------------------------------
+
+--- SECTION 4: MULTICAST TYPE CLASSIFICATION (A39–A50) ---
+
+A39.
+[EN] Classification:
+     224.0.0.5  (OSPF)    → Works without PIM ✅ (link-local)
+     224.0.0.10 (EIGRP)   → Works without PIM ✅ (link-local)
+     224.0.0.2  (HSRP v1) → Works without PIM ✅ (link-local)
+     224.0.0.18 (VRRP)    → Works without PIM ✅ (link-local)
+     239.1.1.1  (App)     → Requires PIM ❌ (app multicast)
+     239.255.0.1(IPTV)    → Requires PIM ❌ (app multicast)
+     224.0.0.251(mDNS)    → Works without PIM ✅ (link-local)
+     Note: All 224.0.0.x addresses in the 224.0.0.0/24
+     range are link-local and work without PIM.
+     All 239.x.x.x addresses require PIM + RP.
+
+[TM] Classification:
+     224.0.0.5  (OSPF)    → PIM இல்லாம works ✅ (link-local)
+     224.0.0.10 (EIGRP)   → PIM இல்லாம works ✅ (link-local)
+     224.0.0.2  (HSRP v1) → PIM இல்லாம works ✅ (link-local)
+     224.0.0.18 (VRRP)    → PIM இல்லாம works ✅ (link-local)
+     239.1.1.1  (App)     → PIM தேவை ❌ (app multicast)
+     239.255.0.1(IPTV)    → PIM தேவை ❌ (app multicast)
+     224.0.0.251(mDNS)    → PIM இல்லாம works ✅ (link-local)
+     Note: 224.0.0.0/24 range-ல் எல்லா 224.0.0.x addresses-உம்
+     link-local, PIM இல்லாம works.
+     எல்லா 239.x.x.x addresses-க்கும் PIM + RP தேவை.
+
+----------------------------------------------------------------
+
+A40.
+[EN] RIPv2 with 224.0.0.9 on a GRE tunnel: PIM NOT required.
+     224.0.0.9 is in the 224.0.0.0/24 "Local Network Control"
+     block — it is a link-local multicast address (TTL=1).
+     Type: "Local Network Control" (IANA Class D reserved
+     for routing protocols and infrastructure). RIPv2 will
+     form neighbors across the GRE tunnel purely via its
+     own Hello/Response mechanism, just like OSPF and EIGRP.
+     No PIM needed.
+
+[TM] GRE tunnel-ல் 224.0.0.9-உடன் RIPv2: PIM தேவையில்லை.
+     224.0.0.9 224.0.0.0/24 "Local Network Control" block-ல் —
+     link-local multicast address (TTL=1). Type: "Local
+     Network Control" (routing protocols மற்றும் infrastructure-க்காக
+     IANA Class D reserved). RIPv2 OSPF மற்றும் EIGRP மாதிரியே
+     தன்னோட Hello/Response mechanism வழியா GRE tunnel-ல்
+     neighbors form பண்றது. PIM தேவையில்லை.
+
+----------------------------------------------------------------
+
+A41.
+[EN] No, PIM does NOT need to be running for the mDNS
+     injection to work. 224.0.0.251 is in the 224.0.0.0/24
+     link-local range (TTL=1). Link-local multicast is
+     delivered by the network stack to all devices on the
+     local segment — this is not a PIM-managed address.
+     After GRE decapsulation, the inner mDNS packet is
+     delivered to the LAN. mDNS-capable hosts (macOS, iOS,
+     Linux/Avahi) on that segment receive it. PIM has no
+     role in this delivery.
+
+[TM] இல்லை, mDNS injection work ஆக PIM running ஆக வேண்டியதில்லை.
+     224.0.0.251 224.0.0.0/24 link-local range (TTL=1)-ல்.
+     Link-local multicast network stack local segment-ல்
+     எல்லா devices-க்கும் deliver — PIM-managed address இல்லை.
+     GRE decapsulation-க்கு பிறகு inner mDNS packet LAN-க்கு
+     deliver. அந்த segment-ல் mDNS-capable hosts (macOS, iOS,
+     Linux/Avahi) receive. PIM இந்த delivery-ல் role இல்லை.
+
+----------------------------------------------------------------
+
+A42.
+[EN] 224.0.0.5 = AllSPFRouters — received by ALL OSPF
+     routers on the segment (both DRs, BDRs, and OSPF
+     DROther routers). Used for: Hello packets, LSU, LSAck
+     on broadcast/NBMA networks.
+     224.0.0.6 = AllDRouters — received ONLY by Designated
+     Router (DR) and Backup Designated Router (BDR). Used
+     for: LSU from non-DR/BDR routers sent to DR/BDR for
+     flooding on broadcast networks.
+     In attack context: injecting to 224.0.0.5 reaches ALL
+     OSPF routers. Injecting to 224.0.0.6 only targets
+     DR and BDR — useful for targeted DR impersonation.
+
+[TM] 224.0.0.5 = AllSPFRouters — segment-ல் எல்லா OSPF
+     routers receive (DRs, BDRs, OSPF DROther routers).
+     பயன்பாடு: broadcast/NBMA networks-ல் Hello packets,
+     LSU, LSAck.
+     224.0.0.6 = AllDRouters — Designated Router (DR) மற்றும்
+     Backup Designated Router (BDR) மட்டும் receive. பயன்பாடு:
+     broadcast networks-ல் flooding-க்கு non-DR/BDR routers-லிருந்து
+     DR/BDR-க்கு LSU.
+     Attack context: 224.0.0.5-க்கு inject = ALL OSPF routers
+     reach. 224.0.0.6-க்கு inject = DR மற்றும் BDR மட்டும்
+     target — targeted DR impersonation-க்கு useful.
+
+----------------------------------------------------------------
+
+A43.
+[EN] Yes, 224.0.0.102 (GLBP) is a link-local multicast
+     address in the 224.0.0.0/24 range. PIM is NOT required
+     for injecting GLBP Hello via GRE tunnel. After GRE
+     decapsulation, the inner GLBP packet is delivered
+     locally by the network stack. GLBP's own Hello mechanism
+     handles neighbor discovery. However, GLBP injection
+     is more complex than VRRP/HSRP — attacker must
+     understand AVG/AVF roles and correct GLBP Hello format
+     to successfully claim the AVG role.
+
+[TM] ஆமா, 224.0.0.102 (GLBP) 224.0.0.0/24 range-ல் link-local
+     multicast address. GRE tunnel வழியா GLBP Hello inject
+     பண்ண PIM தேவையில்லை. GRE decapsulation-க்கு பிறகு inner
+     GLBP packet network stack locally deliver. GLBP-ஓட
+     Hello mechanism neighbor discovery handle. ஆனால் GLBP
+     injection VRRP/HSRP-விட more complex — AVG role
+     successfully claim பண்ண attacker AVG/AVF roles மற்றும்
+     correct GLBP Hello format understand பண்ணணும்.
+
+----------------------------------------------------------------
+
+A44.
+[EN] PIM-SM (Sparse Mode) is the standard for streaming
+     multicast (239.x.x.x) over GRE. It assumes receivers
+     are sparse (not everywhere) — traffic is only sent
+     where receivers explicitly joined. Uses RP as meeting
+     point. More scalable. Preferred for production.
+     PIM-DM (Dense Mode) assumes receivers are everywhere
+     — floods traffic to all interfaces, then prunes
+     branches with no receivers. Simpler but wastes bandwidth
+     in sparse networks.
+     For GRE tunnel streaming: PIM-SM + RP is required.
+     PIM-DM would flood the tunnel with unwanted traffic.
+
+[TM] PIM-SM (Sparse Mode) GRE-ல் streaming multicast
+     (239.x.x.x)-க்கு standard. Receivers sparse (எங்கும்
+     இல்லை) என்று assume — receivers explicitly join பண்ணிட
+     மட்டும் traffic send. RP meeting point-ஆக. More scalable.
+     Production-க்கு preferred.
+     PIM-DM (Dense Mode) receivers எங்கும் இருக்காங்கன்னு
+     assume — எல்லா interfaces-க்கும் flood, பிறகு receivers
+     இல்லாத branches prune. Simpler ஆனால் sparse networks-ல்
+     bandwidth waste.
+     GRE tunnel streaming-க்கு: PIM-SM + RP தேவை. PIM-DM
+     unwanted traffic-உடன் tunnel flood பண்ணும்.
+
+----------------------------------------------------------------
+
+A45.
+[EN] PIM plays NO role in this OSPF attack. The OSPF
+     LSA carries a route advertisement — this is a routing
+     protocol control plane operation. OSPF LSA flooding
+     uses 224.0.0.5 (link-local). PIM manages the data
+     plane multicast forwarding for application traffic.
+     These are completely separate planes:
+     Control plane: OSPF (routing decisions) — no PIM.
+     Data plane: video/IPTV streams — needs PIM.
+     The fake LSA (10.0.0.0/8 → attacker) poisons the
+     unicast routing table. This is OSPF's domain, not
+     PIM's. PIM neither helps nor hinders this attack.
+
+[TM] PIM இந்த OSPF attack-ல் ZERO role. OSPF LSA route
+     advertisement carry பண்றது — routing protocol control
+     plane operation. OSPF LSA flooding 224.0.0.5 (link-local)
+     பயன்படுத்துது. PIM application traffic-க்கு data plane
+     multicast forwarding manage பண்றது. இவை completely
+     separate planes:
+     Control plane: OSPF (routing decisions) — PIM இல்லை.
+     Data plane: video/IPTV streams — PIM தேவை.
+     Fake LSA (10.0.0.0/8 → attacker) unicast routing table
+     poison பண்றது. OSPF-ஓட domain, PIM-ஓட இல்லை. PIM
+     இந்த attack-ஐ help-உம் பண்றதில்லை, hinder-உம் பண்றதில்லை.
+
+----------------------------------------------------------------
+
+A46.
+[EN] OSPF Hellos do not need ip nhrp map multicast dynamic
+     by themselves — they use 224.0.0.5 which the routing
+     protocol handles internally via its own mechanism.
+     BUT in mGRE (DMVPN), the hub must replicate multicast
+     to ALL spokes. The hub doesn't know which spokes exist
+     until NHRP registration. ip nhrp map multicast dynamic
+     tells the hub: "when a spoke registers via NHRP, add
+     its IP to the multicast replication list for this
+     tunnel." This is NHRP's address-resolution function —
+     mapping multicast to known unicast spoke addresses.
+     PIM would be for post-decapsulation routing, not tunnel
+     replication itself.
+
+[TM] OSPF Hellos themselves ip nhrp map multicast dynamic
+     தேவையில்லை — 224.0.0.5 பயன்படுத்துது, routing protocol
+     தன்னோட mechanism வழியா internally handle. ஆனால் mGRE
+     (DMVPN)-ல் hub multicast-ஐ ALL spokes-க்கு replicate
+     பண்ணணும். NHRP registration ஆகும் வரை hub எந்த spokes
+     இருக்குன்னு தெரியாது. ip nhrp map multicast dynamic
+     hub-க்கு சொல்றது: "spoke NHRP வழியா register ஆகும்போது
+     இந்த tunnel-ஓட multicast replication list-ல் அதன் IP add
+     பண்ணு." இது NHRP-ஓட address-resolution function —
+     multicast-ஐ known unicast spoke addresses-க்கு map பண்றது.
+     PIM post-decapsulation routing-க்காக — tunnel replication
+     itself-க்காக இல்லை.
+
+----------------------------------------------------------------
+
+A47.
+[EN] BFD does NOT require PIM. BFD uses unicast packets
+     (UDP 3784/4784, unicast Dst = specific peer IP). It
+     does not use multicast addresses at all. BFD is
+     fundamentally different from OSPF in this regard:
+     OSPF uses multicast for neighbor discovery.
+     BFD uses unicast for keepalive/detection — after OSPF
+     discovers the neighbor and establishes BFD session,
+     BFD communicates directly between two specific IPs.
+     No multicast involved = no PIM needed. GRE tunnel
+     delivers BFD unicast packets same as any other unicast.
+
+[TM] BFD PIM தேவையில்லை. BFD unicast packets பயன்படுத்துது
+     (UDP 3784/4784, unicast Dst = specific peer IP). Multicast
+     addresses பயன்படுத்துவதே இல்லை. BFD OSPF-லிருந்து
+     fundamentally different:
+     OSPF multicast neighbor discovery-க்கு பயன்படுத்துது.
+     BFD keepalive/detection-க்கு unicast — OSPF neighbor
+     discover பண்ணி BFD session establish ஆன பிறகு BFD
+     two specific IPs-க்கிடையே directly communicate. Multicast
+     இல்லை = PIM தேவையில்லை. GRE tunnel BFD unicast packets-ஐ
+     வேற எந்த unicast-மாதிரியே deliver.
+
+----------------------------------------------------------------
+
+A48.
+[EN] After PIM Join injection for 239.1.1.1:
+     (1) The PIM router receives the Join — it adds the
+         attacker's path to the multicast distribution tree
+         for group 239.1.1.1.
+     (2) The PIM RP or upstream router starts forwarding
+         239.1.1.1 traffic toward the attacker's path.
+     (3) All 239.1.1.1 multicast traffic (video, audio,
+         data feeds) is now copied to the attacker in
+         addition to legitimate receivers.
+     (4) Attacker passively receives all group traffic —
+         no disruption to legitimate receivers (passive
+         intercept unless attacker also sends fake traffic).
+     This works ONLY because PIM IS configured on the
+     internal network — without PIM, 239.1.1.1 wouldn't
+     route at all.
+
+[TM] 239.1.1.1-க்கு PIM Join injection-க்கு பிறகு:
+     (1) PIM router Join receive — group 239.1.1.1-க்கு
+         multicast distribution tree-ல் attacker path add.
+     (2) PIM RP அல்லது upstream router 239.1.1.1 traffic-ஐ
+         attacker path-நோக்கி forward start.
+     (3) எல்லா 239.1.1.1 multicast traffic (video, audio,
+         data feeds)-உம் legitimate receivers-கூட attacker-க்கும்
+         copy ஆகும்.
+     (4) Attacker எல்லா group traffic passively receive —
+         legitimate receivers-க்கு disruption இல்லை (attacker
+         fake traffic-உம் அனுப்பாவிட்டால் passive intercept).
+     இது PIM configure ஆகியிருக்கும்போது மட்டும் works —
+     PIM இல்லாம 239.1.1.1 route-ஆகவே ஆகாது.
+
+----------------------------------------------------------------
+
+A49.
+[EN] Yes, attacker can STILL abuse all of them — OSPF,
+     EIGRP, VRRP, HSRP all use link-local multicast (224.0.0.x)
+     which does NOT require PIM. This reveals a critical
+     security insight: PIM is NOT a security control for
+     routing protocol injection attacks.
+     PIM's security relevance: PIM protects against
+     application multicast (239.x.x.x) abuse — without PIM,
+     attackers cannot inject/hijack video/audio streams.
+     But PIM provides ZERO protection against OSPF/EIGRP/
+     VRRP/HSRP injection via GRE. The correct controls
+     are: GRE inbound ACL + protocol authentication (OSPF
+     MD5, EIGRP MD5, HSRP MD5, VRRPv3 auth).
+
+[TM] ஆமா, attacker எல்லாத்தையும் இன்னும் abuse பண்ண முடியும் —
+     OSPF, EIGRP, VRRP, HSRP எல்லாமே link-local multicast
+     (224.0.0.x) பயன்படுத்துது — PIM தேவையில்லை. இது critical
+     security insight reveal பண்றது: PIM routing protocol
+     injection attacks-க்கு security control இல்லை.
+     PIM-ஓட security relevance: PIM application multicast
+     (239.x.x.x) abuse-க்கு எதிரான protection — PIM இல்லாம
+     attackers video/audio streams inject/hijack பண்ண முடியாது.
+     ஆனால் PIM GRE வழியா OSPF/EIGRP/VRRP/HSRP injection-க்கு
+     ZERO protection. Correct controls: GRE inbound ACL +
+     protocol authentication (OSPF MD5, EIGRP MD5, HSRP MD5,
+     VRRPv3 auth).
+
+----------------------------------------------------------------
+
+A50.
+[EN] Complete table:
+     Protocol | Multicast Addr | Needs PIM? | Works in GRE?
+     OSPF     | 224.0.0.5      | NO  ✅      | YES ✅
+     EIGRP    | 224.0.0.10     | NO  ✅      | YES ✅
+     HSRP v1  | 224.0.0.2      | NO  ✅      | YES ✅
+     VRRP     | 224.0.0.18     | NO  ✅      | YES ✅
+     RIPv2    | 224.0.0.9      | NO  ✅      | YES ✅
+     mDNS     | 224.0.0.251    | NO  ✅      | YES ✅
+     IPTV     | 239.255.0.1    | YES ❌      | YES (with PIM)
+     PIM      | 224.0.0.13     | N/A         | YES ✅
+     Rule: 224.0.0.0/24 = link-local = no PIM needed.
+           239.x.x.x = application scope = PIM required.
+
+[TM] Complete table:
+     Protocol | Multicast Addr | PIM தேவையா? | GRE-ல் works?
+     OSPF     | 224.0.0.5      | இல்லை ✅    | ஆமா ✅
+     EIGRP    | 224.0.0.10     | இல்லை ✅    | ஆமா ✅
+     HSRP v1  | 224.0.0.2      | இல்லை ✅    | ஆமா ✅
+     VRRP     | 224.0.0.18     | இல்லை ✅    | ஆமா ✅
+     RIPv2    | 224.0.0.9      | இல்லை ✅    | ஆமா ✅
+     mDNS     | 224.0.0.251    | இல்லை ✅    | ஆமா ✅
+     IPTV     | 239.255.0.1    | ஆமா ❌      | ஆமா (PIM-உடன்)
+     PIM      | 224.0.0.13     | N/A          | ஆமா ✅
+     Rule: 224.0.0.0/24 = link-local = PIM தேவையில்லை.
+           239.x.x.x = application scope = PIM தேவை.
+
+----------------------------------------------------------------
+
+--- SECTION 5: ADVANCED CHAIN & SECURITY (A51–A55) ---
+
+A51.
+[EN] Step-by-step from packet send to OSPF neighbor form:
+     Step 1: Attacker builds GRE packet.
+       Outer: Src=1.2.3.4, Dst=10.10.10.1, Proto=47, TTL=64
+       GRE Header: Proto=0x0800
+       Inner: Src=172.16.0.99, Dst=224.0.0.5, Proto=89, TTL=1
+       OSPF Hello: RouterID=172.16.0.99, Area=0, Auth=0
+     Step 2: Packet traverses internet as unicast GRE.
+       Intermediate routers forward based on outer Dst.
+       Inner payload invisible to all intermediate hops.
+     Step 3: Whitelist router (mGRE) receives packet.
+       Outer Dst = its own IP (10.10.10.1). mGRE = accepts
+       any source. GRE decapsulation occurs.
+     Step 4: Inner packet exposed on router's internal interface.
+       Router forwards to internal LAN (Gi0/1).
+     Step 5: Inner packet hits LAN as OSPF multicast.
+       224.0.0.5, TTL=1 — link-local delivery to all OSPF
+       routers on segment. No PIM needed.
+     Step 6: Target OSPF router receives Hello.
+       Src=172.16.0.99 on its subnet → subnet match.
+       No auth configured → INIT state.
+     Step 7: Target sends Hello back to 172.16.0.99.
+       Attacker injects ACK via GRE → ExStart → Exchange
+       → Full adjacency.
+     Step 8: Attacker can now inject LSAs and poison routing.
+
+[TM] Packet send-லிருந்து OSPF neighbor form வரை step-by-step:
+     Step 1: Attacker GRE packet build.
+       Outer: Src=1.2.3.4, Dst=10.10.10.1, Proto=47, TTL=64
+       GRE Header: Proto=0x0800
+       Inner: Src=172.16.0.99, Dst=224.0.0.5, Proto=89, TTL=1
+       OSPF Hello: RouterID=172.16.0.99, Area=0, Auth=0
+     Step 2: Packet internet-ல் unicast GRE-ஆக traverse.
+       Intermediate routers outer Dst-ஐ வைத்து forward.
+       Inner payload எல்லா intermediate hops-க்கும் invisible.
+     Step 3: Whitelist router (mGRE) packet receive.
+       Outer Dst = its own IP (10.10.10.1). mGRE = any source
+       accept. GRE decapsulation occur.
+     Step 4: Inner packet router internal interface-ல் expose.
+       Router internal LAN-க்கு forward (Gi0/1).
+     Step 5: Inner packet LAN-ல் OSPF multicast-ஆக hit.
+       224.0.0.5, TTL=1 — segment-ல் எல்லா OSPF routers-க்கும்
+       link-local delivery. PIM தேவையில்லை.
+     Step 6: Target OSPF router Hello receive.
+       Src=172.16.0.99 தன்னோட subnet-ல் → subnet match.
+       Auth configure இல்லை → INIT state.
+     Step 7: Target 172.16.0.99-க்கு Hello திரும்பி அனுப்பும்.
+       Attacker GRE வழியா ACK inject → ExStart → Exchange
+       → Full adjacency.
+     Step 8: Attacker இப்போ LSAs inject, routing poison பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A52.
+[EN] EIGRP injection: PIM does NOT affect EIGRP success.
+     EIGRP uses 224.0.0.10 (link-local, no PIM needed).
+     PIM being configured changes nothing for EIGRP.
+     Additional PIM abuse: YES, attacker can extend the
+     attack. Since PIM is enabled, after EIGRP route injection
+     poisons the routing table (making 239.x.x.x multicast
+     sources unreachable or rerouted), the attacker can:
+     (1) Inject PIM Join for application multicast groups
+         (239.x.x.x) — since PIM is enabled, joins are
+         processed. Attacker joins the distribution tree.
+     (2) Inject fake PIM Register to become the source
+         of multicast groups — hijack streaming feeds.
+     EIGRP route injection enables, PIM enables further abuse.
+
+[TM] EIGRP injection: PIM EIGRP success-ஐ affect பண்றதில்லை.
+     EIGRP 224.0.0.10 (link-local, PIM தேவையில்லை). PIM
+     configure ஆகியிருப்பது EIGRP-க்கு nothing change.
+     Additional PIM abuse: ஆமா, attacker attack extend பண்ணலாம்.
+     PIM enabled என்பதால், EIGRP route injection routing table
+     poison பண்ணிய (239.x.x.x multicast sources unreachable
+     அல்லது rerouted) பிறகு attacker:
+     (1) Application multicast groups (239.x.x.x)-க்கு PIM
+         Join inject — PIM enabled என்பதால் joins process.
+         Attacker distribution tree-ல் join.
+     (2) Fake PIM Register inject multicast groups-க்கு source
+         ஆக — streaming feeds hijack.
+     EIGRP route injection enables, PIM further abuse enables.
+
+----------------------------------------------------------------
+
+A53.
+[EN] The ACL does block injection of inner packets with
+     Dst in 224.0.0.0/24. OSPF (224.0.0.5), EIGRP
+     (224.0.0.10), HSRP (224.0.0.2), VRRP (224.0.0.18),
+     mDNS (224.0.0.251) injections are ALL blocked.
+     Limitation:
+     (1) Does NOT block 239.x.x.x application multicast
+         injection — needs separate rule: deny ip any
+         239.0.0.0 0.255.255.255
+     (2) Does NOT block unicast-based attacks (SNMP, LDAP,
+         BGP, NTP) — these use unicast inner Dst.
+     (3) Does NOT address the root cause — GRE inbound
+         from internet should be blocked entirely first.
+         Per-payload ACL is a secondary control.
+
+[TM] ACL inner packets Dst 224.0.0.0/24-ல் இருந்தால் inject
+     block பண்றது. OSPF (224.0.0.5), EIGRP (224.0.0.10),
+     HSRP (224.0.0.2), VRRP (224.0.0.18), mDNS (224.0.0.251)
+     injections எல்லாமே BLOCKED.
+     Limitation:
+     (1) 239.x.x.x application multicast injection block
+         பண்றதில்லை — separate rule தேவை: deny ip any
+         239.0.0.0 0.255.255.255
+     (2) Unicast-based attacks (SNMP, LDAP, BGP, NTP) block
+         பண்றதில்லை — இவை unicast inner Dst பயன்படுத்துது.
+     (3) Root cause address பண்றதில்லை — internet-லிருந்து
+         GRE inbound முதலில் completely block ஆகணும்.
+         Per-payload ACL secondary control.
+
+----------------------------------------------------------------
+
+A54.
+[EN] Attacker infers from tunnel destination = multicast:
+     (1) Admin skill level: LOW — this is a fundamental
+         misconfig that any CCNA-level engineer would
+         catch. Indicates minimal understanding of tunnel
+         types and multicast addressing.
+     (2) Other likely misconfigurations on same device:
+         - No OSPF authentication (same admin probably
+           skipped it)
+         - Default SNMP community strings ("public")
+         - No ACL on tunnel interfaces
+         - Possibly HTTP server still enabled
+         - Telnet allowed on management interfaces
+         - Default passwords or weak enable password
+         - CDP running on all interfaces (information leak)
+     This device is a high-priority target — the
+     misconfiguration signals a systemic lack of hardening.
+
+[TM] Tunnel destination = multicast-ல் attacker infer பண்றது:
+     (1) Admin skill level: LOW — இது fundamental misconfig,
+         CCNA-level engineer catch பண்ணுவான். Tunnel types
+         மற்றும் multicast addressing-ல் minimal understanding
+         indicate பண்றது.
+     (2) Same device-ல் likely மற்ற misconfigurations:
+         - OSPF authentication இல்லை (same admin skip பண்ணியிருப்பான்)
+         - Default SNMP community strings ("public")
+         - Tunnel interfaces-ல் ACL இல்லை
+         - HTTP server still enabled possible
+         - Management interfaces-ல் Telnet allowed
+         - Default passwords அல்லது weak enable password
+         - CDP எல்லா interfaces-லயும் running (information leak)
+     இந்த device high-priority target — misconfig systemic
+     lack of hardening signal பண்றது.
+
+----------------------------------------------------------------
+
+A55.
+[EN] Risk Summary:
+     mGRE tunnels without authentication accept GRE packets
+     from ANY internet source. When routing protocols
+     (OSPF, EIGRP) run on the internal LAN without MD5
+     authentication, an attacker can inject valid protocol
+     Hello packets and LSAs/Updates using link-local
+     multicast destinations (224.0.0.5 for OSPF,
+     224.0.0.10 for EIGRP) as the inner packet destination.
+     These multicast addresses do not require PIM — they
+     are link-local and delivered directly by the network
+     stack after GRE decapsulation, making PIM a non-factor
+     in this attack. Once a routing protocol adjacency
+     forms, the attacker can inject fake routes to redirect
+     traffic, black-hole services, or establish BGP sessions
+     for full route table control. The recommended fix is
+     two-layered: (1) Block GRE inbound from untrusted
+     sources at the internet-facing interface with an ACL
+     denying Proto 47 (and 4, 41, 97) from any external
+     source, and (2) Enable MD5 authentication on all
+     interior routing protocols to prevent injection even
+     if GRE reaches the LAN.
+
+[TM] Risk Summary:
+     Authentication இல்லாத mGRE tunnels ANY internet source-லிருந்தும்
+     GRE packets accept பண்றது. Internal LAN-ல் MD5 authentication
+     இல்லாம routing protocols (OSPF, EIGRP) run ஆகும்போது,
+     attacker link-local multicast destinations (OSPF-க்கு
+     224.0.0.5, EIGRP-க்கு 224.0.0.10) inner packet destination-ஆக
+     பயன்படுத்தி valid protocol Hello packets மற்றும் LSAs/Updates
+     inject பண்ணலாம். இந்த multicast addresses-க்கு PIM தேவையில்லை —
+     இவை link-local, GRE decapsulation-க்கு பிறகு network stack
+     directly deliver பண்றது, இந்த attack-ல் PIM non-factor.
+     Routing protocol adjacency form ஆனதும் attacker traffic
+     redirect பண்ண fake routes inject பண்ணலாம், services
+     black-hole பண்ணலாம், அல்லது full route table control-க்கு
+     BGP sessions establish பண்ணலாம். Recommended fix two-layered:
+     (1) Internet-facing interface-ல் untrusted sources-லிருந்து
+         GRE inbound block — external source-லிருந்து Proto 47
+         (மற்றும் 4, 41, 97) deny பண்ற ACL, மற்றும் (2) GRE LAN-ஐ
+         reach பண்ணினாலும் injection prevent பண்ண எல்லா interior
+         routing protocols-ல் MD5 authentication enable.
+
+================================================================
+  END OF BILINGUAL ANSWERS — 55 TOTAL
+  Sections: Tunnel Dst Errors(12) | Inner Multicast(13) |
+            PIM Requirement(13) | Multicast Types(12) |
+            Advanced Chain(5)
+================================================================

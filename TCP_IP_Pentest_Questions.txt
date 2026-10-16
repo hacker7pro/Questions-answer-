@@ -1,0 +1,1986 @@
+================================================================
+  TCP/IP PENETRATION TESTING — QUESTIONS (INDIRECT MODEL)
+  TCP/IP ஊடுருவல் சோதனை — வினாக்கள் (மறைமுக மாதிரி)
+  150 Questions | இரு மொழிகளில் | Bilingual
+================================================================
+
+SECTION 1: TCP FLAGS & HANDSHAKE FUNDAMENTALS
+பிரிவு 1: TCP FLAGS மற்றும் HANDSHAKE அடிப்படைகள்
+----------------------------------------------------------------
+
+Q1.
+[EN] During a network audit, you observe a host sending only SYN packets to
+     multiple ports and never completing the handshake. What technique is
+     being employed and what does the absence of a final ACK indicate about
+     the attacker's intent?
+
+[TN] ஒரு network audit-ல், ஒரு host பல ports-க்கு SYN packets மட்டும்
+     அனுப்பி handshake complete செய்யவில்லை என்று observe செய்கிறீர்கள்.
+     எந்த technique பயன்படுத்தப்படுகிறது, final ACK இல்லாமல் இருப்பது
+     attacker-ஓட என்ன நோக்கத்தை காட்டுகிறது?
+
+----------------------------------------------------------------
+Q2.
+[EN] A packet capture shows SYN+ACK responses from a server on port 443,
+     but the initiating SYN came from a spoofed IP. What attack scenario
+     does this pattern suggest, and which network tier is most vulnerable?
+
+[TN] Packet capture-ல் port 443-ல் server-ஓட SYN+ACK response தெரிகிறது,
+     ஆனால் SYN spoofed IP-லிருந்து வந்தது. இந்த pattern எந்த attack
+     scenario-வை suggest செய்கிறது, எந்த network tier மிகவும் vulnerable?
+
+----------------------------------------------------------------
+Q3.
+[EN] You intercept a TCP segment carrying the FIN flag on a port that has
+     no established connection in the state table. What RFC behavior should
+     the target exhibit for open versus closed ports, and how does Windows
+     deviate from this standard?
+
+[TN] State table-ல் established connection இல்லாத port-க்கு FIN flag
+     carry செய்யும் TCP segment-ஐ intercept செய்கிறீர்கள். Open vs closed
+     ports-க்கு target என்ன RFC behavior காட்டணும், Windows எப்படி
+     இந்த standard-இல் இருந்து விலகுகிறது?
+
+----------------------------------------------------------------
+Q4.
+[EN] During a red team engagement, your teammate sends packets with
+     FIN+PSH+URG flags set simultaneously. What is the purpose of this
+     combination, and on which operating systems will this approach fail
+     to differentiate port states?
+
+[TN] Red team engagement-ல் உங்கள் teammate FIN+PSH+URG flags ஒரே நேரத்தில்
+     set செய்த packets அனுப்புகிறார். இந்த combination-ஓட நோக்கம் என்ன,
+     எந்த operating systems-ல் இந்த approach port states-ஐ differentiate
+     செய்ய fail ஆகும்?
+
+----------------------------------------------------------------
+Q5.
+[EN] A firewall audit reveals that ACK packets to a specific subnet return
+     RST responses, while another subnet returns no response at all. What
+     conclusions can you draw about the firewall architecture of each subnet?
+
+[TN] Firewall audit-ல் specific subnet-க்கு ACK packets அனுப்பினால்
+     RST response வருகிறது, மற்றொரு subnet-க்கு response இல்லை. ஒவ்வொரு
+     subnet-ஓட firewall architecture பற்றி என்ன conclusions எடுக்கலாம்?
+
+----------------------------------------------------------------
+Q6.
+[EN] You observe a NULL scan (no TCP flags) returning RST+ACK from every
+     probed port of a target. What does this universal RST response reveal
+     about the target operating system?
+
+[TN] NULL scan (TCP flags இல்லாமல்) target-ஓட எல்லா ports-லிருந்தும்
+     RST+ACK return செய்கிறது என்று observe செய்கிறீர்கள். இந்த universal
+     RST response target operating system பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q7.
+[EN] During passive traffic analysis, you notice a host initiating connections
+     with the URG flag and a non-zero urgent pointer on an already-established
+     session. From an IDS evasion perspective, why is this significant?
+
+[TN] Passive traffic analysis-ல் ஒரு host already-established session-ல்
+     URG flag மற்றும் non-zero urgent pointer-உடன் connections initiate
+     செய்கிறது என்று notice செய்கிறீர்கள். IDS evasion perspective-ல்
+     இது ஏன் significant?
+
+----------------------------------------------------------------
+Q8.
+[EN] A penetration test reveals that a target server responds with SYN+ACK
+     to SYN+FIN flag combinations. What vulnerability class does this
+     indicate and which legacy systems commonly exhibit this behavior?
+
+[TN] Penetration test-ல் target server SYN+FIN flag combination-க்கு
+     SYN+ACK-உடன் respond செய்கிறது என்று தெரிகிறது. இது எந்த vulnerability
+     class-ஐ indicate செய்கிறது, எந்த legacy systems இந்த behavior
+     பொதுவாகக் காட்டுகின்றன?
+
+----------------------------------------------------------------
+Q9.
+[EN] In a network assessment, you send ACK probes and observe that ports
+     80, 443, and 8080 return no response while port 22 returns RST. What
+     does this mixed response pattern tell you about the firewall ruleset
+     in place?
+
+[TN] Network assessment-ல் ACK probes அனுப்பி ports 80, 443, 8080
+     response இல்லாமல் இருக்கின்றன, port 22 RST return செய்கிறது என்று
+     observe செய்கிறீர்கள். இந்த mixed response pattern firewall ruleset
+     பற்றி என்ன சொல்கிறது?
+
+----------------------------------------------------------------
+Q10.
+[EN] You capture a TCP segment with RST+ACK flags where the sequence number
+     falls outside the receiver's advertised window. Under RFC 5961, what
+     defense mechanism activates, and how does this mechanism inadvertently
+     create a side-channel information leak?
+
+[TN] RST+ACK flags-உடன் TCP segment capture செய்கிறீர்கள், sequence number
+     receiver-ஓட advertised window-க்கு வெளியே உள்ளது. RFC 5961-ல்
+     என்ன defense mechanism activate ஆகும், இந்த mechanism எப்படி
+     inadvertently side-channel information leak உருவாக்குகிறது?
+
+----------------------------------------------------------------
+
+SECTION 2: SYN COOKIES — DETECTION & ANALYSIS
+பிரிவு 2: SYN COOKIES — கண்டறிதல் மற்றும் பகுப்பாய்வு
+----------------------------------------------------------------
+
+Q11.
+[EN] During a service fingerprinting exercise, you send a SYN packet with
+     SACK, Timestamps, and WScale options, but the SYN+ACK response contains
+     only the MSS option. What server-side protection mechanism does this
+     indicate and why does it strip those options?
+
+[TN] Service fingerprinting exercise-ல் SACK, Timestamps, WScale options-உடன்
+     SYN packet அனுப்புகிறீர்கள், ஆனால் SYN+ACK response-ல் MSS option
+     மட்டுமே உள்ளது. இது என்ன server-side protection mechanism-ஐ indicate
+     செய்கிறது, ஏன் அந்த options strip ஆகின்றன?
+
+----------------------------------------------------------------
+Q12.
+[EN] A server's ISN values across 10 consecutive probes show that bits
+     [28:24] remain constant at index 4 while bits [31:29] cycle through
+     0 to 7. What encoding scheme is the server using and what does index
+     4 reveal about the server's network configuration?
+
+[TN] 10 consecutive probes-ல் server-ஓட ISN values-ல் bits [28:24]
+     index 4-ல் constant-ஆக இருக்கின்றன, bits [31:29] 0 முதல் 7 வரை
+     cycle ஆகின்றன. Server என்ன encoding scheme பயன்படுத்துகிறது,
+     index 4 server-ஓட network configuration பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q13.
+[EN] You compare two SYN+ACK packets from the same server: one from normal
+     load conditions shows TSecr echoing your sent TSval, while one under
+     heavy load returns TSecr=0. What protective mechanism has been
+     triggered and what are the security implications?
+
+[TN] Same server-இல் இருந்து இரண்டு SYN+ACK packets compare செய்கிறீர்கள்:
+     normal load-ல் TSecr உங்கள் TSval-ஐ echo செய்கிறது, heavy load-ல்
+     TSecr=0 return ஆகிறது. என்ன protective mechanism trigger ஆகியிருக்கிறது,
+     security implications என்ன?
+
+----------------------------------------------------------------
+Q14.
+[EN] An attacker floods a target with SYN packets to exhaust the backlog
+     queue, then sends a legitimate SYN and inspects the response TCP options.
+     What specific change in the response would confirm that SYN cookies
+     are now active?
+
+[TN] Attacker target-ஐ SYN packets-ஆல் flood செய்து backlog queue
+     exhaust செய்கிறார், பிறகு legitimate SYN அனுப்பி response TCP options
+     inspect செய்கிறார். Response-ல் என்ன specific change SYN cookies
+     இப்போது active என்று confirm செய்யும்?
+
+----------------------------------------------------------------
+Q15.
+[EN] The SYN cookie ISN formula encodes a timestamp in the top 3 bits
+     cycling modulo 8 with a 64-second window. How could an attacker exploit
+     this timing window to replay a previously captured valid cookie?
+
+[TN] SYN cookie ISN formula-ல் top 3 bits-ல் timestamp encode ஆகிறது,
+     64-second window-உடன் modulo 8 cycle ஆகிறது. Attacker இந்த timing
+     window-ஐ எப்படி exploit செய்து previously captured valid cookie-ஐ
+     replay செய்யலாம்?
+
+----------------------------------------------------------------
+Q16.
+[EN] During a black-box assessment, you craft an ACK packet with an
+     ack_num derived from a SYN+ACK you received 90 seconds ago. The server
+     sends RST. What does this response indicate about the cookie's validity
+     window and the server's implementation?
+
+[TN] Black-box assessment-ல் 90 seconds முன்பு receive செய்த SYN+ACK-லிருந்து
+     derived ack_num-உடன் ACK packet craft செய்கிறீர்கள். Server RST
+     அனுப்புகிறது. இந்த response cookie-ஓட validity window மற்றும்
+     server-ஓட implementation பற்றி என்ன indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q17.
+[EN] You notice a server that has SYN cookies enabled still negotiates
+     WScale and SACK options with some clients but not others. Under what
+     condition would a SYN cookie server partially preserve TCP options?
+
+[TN] SYN cookies enabled இருக்கும் server சில clients-உடன் WScale மற்றும்
+     SACK options negotiate செய்கிறது, மற்றவர்களுடன் இல்லை என்று notice
+     செய்கிறீர்கள். என்ன condition-ல் SYN cookie server TCP options-ஐ
+     partially preserve செய்யும்?
+
+----------------------------------------------------------------
+Q18.
+[EN] From a defensive standpoint, a security engineer argues that SYN
+     cookies should always be enabled. What are the two primary trade-offs
+     this introduces from a TCP performance perspective?
+
+[TN] Defensive standpoint-ல் ஒரு security engineer SYN cookies எப்போதும்
+     enabled இருக்கணும் என்று argue செய்கிறார். TCP performance perspective-ல்
+     இது introduce செய்யும் இரண்டு primary trade-offs என்ன?
+
+----------------------------------------------------------------
+Q19.
+[EN] A packet analyzer captures SYN+ACK responses where the ISN top 5 bits
+     (index field) value keeps changing across sequential probes to the same
+     port. Does this indicate SYN cookies or a normal server? Justify your
+     answer.
+
+[TN] Packet analyzer-ல் SYN+ACK responses capture ஆகின்றன, same port-க்கு
+     sequential probes-ல் ISN top 5 bits (index field) value மாறிக்கொண்டே
+     இருக்கிறது. இது SYN cookies-ஐ indicate செய்கிறதா அல்லது normal
+     server-ஐயா? உங்கள் answer-ஐ justify செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q20.
+[EN] In a threat hunting scenario, a SIEM alert shows a remote host
+     consistently completing the 3-way handshake only after sending exactly
+     512 SYN packets to the same destination port. What reconnaissance
+     technique is being performed and what is the attacker learning?
+
+[TN] Threat hunting scenario-ல் SIEM alert காட்டுகிறது — remote host same
+     destination port-க்கு exactly 512 SYN packets அனுப்பிய பிறகுதான்
+     3-way handshake complete செய்கிறது. என்ன reconnaissance technique
+     perform ஆகிறது, attacker என்ன கற்றுக்கொள்கிறார்?
+
+----------------------------------------------------------------
+
+SECTION 3: WINDOW SIZE & OS FINGERPRINTING
+பிரிவு 3: WINDOW SIZE மற்றும் OS FINGERPRINTING
+----------------------------------------------------------------
+
+Q21.
+[EN] A passive network tap captures SYN packets with window size 65535,
+     WScale=7, MSS=1460, and options ordered as [MSS, SACK, Timestamp,
+     NOP, WScale]. Without active probing, what OS and kernel generation
+     can you identify?
+
+[TN] Passive network tap-ல் window size 65535, WScale=7, MSS=1460, options
+     [MSS, SACK, Timestamp, NOP, WScale] order-ல் உள்ள SYN packets capture
+     ஆகின்றன. Active probing இல்லாமல் என்ன OS மற்றும் kernel generation
+     identify செய்யலாம்?
+
+----------------------------------------------------------------
+Q22.
+[EN] A SYN+ACK response arrives with TTL=54, window=65535, WScale=7.
+     What operating system is indicated, and how many network hops away
+     is the target based on the TTL value?
+
+[TN] SYN+ACK response TTL=54, window=65535, WScale=7-உடன் வருகிறது.
+     என்ன operating system indicate ஆகிறது, TTL value-ஐ வைத்து target
+     எத்தனை network hops தூரத்தில் உள்ளது?
+
+----------------------------------------------------------------
+Q23.
+[EN] During reconnaissance, you receive a SYN+ACK with TTL=249, window=4128,
+     no WScale option, and only MSS=536 in the TCP options. What type of
+     device is most likely the target and what does MSS=536 suggest about
+     its configuration?
+
+[TN] Reconnaissance-ல் SYN+ACK TTL=249, window=4128, WScale option இல்லாமல்,
+     TCP options-ல் MSS=536 மட்டும் receive செய்கிறீர்கள். Target எந்த
+     type device-ஆக இருக்கலாம், MSS=536 அதன் configuration பற்றி என்ன
+     suggest செய்கிறது?
+
+----------------------------------------------------------------
+Q24.
+[EN] A SYN+ACK from a suspected firewall shows TTL=64, window=65535,
+     WScale=7, and all TCP options matching a Linux profile, but you
+     know the underlying infrastructure uses Palo Alto. Explain why
+     this fingerprint appears Linux-like.
+
+[TN] Suspected firewall-இல் இருந்து SYN+ACK TTL=64, window=65535, WScale=7,
+     Linux profile-க்கு match ஆகும் TCP options காட்டுகிறது, ஆனால்
+     underlying infrastructure Palo Alto use செய்கிறது என்று தெரியும்.
+     இந்த fingerprint Linux-like-ஆக ஏன் தெரிகிறது என்று explain செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q25.
+[EN] You observe two hosts: Host A has window=65535, WScale=8, options
+     [MSS, NOP, WScale, NOP, NOP, SACK]; Host B has window=65535, WScale=8,
+     options [MSS, NOP, WScale, NOP, NOP, SACK] but TTL=64. How do you
+     differentiate between Windows and a Windows-mimicking stack?
+
+[TN] இரண்டு hosts observe செய்கிறீர்கள்: Host A-க்கு window=65535,
+     WScale=8, options [MSS, NOP, WScale, NOP, NOP, SACK]; Host B-க்கு
+     window=65535, WScale=8, same options ஆனால் TTL=64. Windows மற்றும்
+     Windows-mimicking stack-ஐ எப்படி differentiate செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q26.
+[EN] A captured SYN packet from a mobile device shows MSS=1380 instead
+     of the expected 1460. What network condition or infrastructure component
+     is responsible for this reduced MSS value?
+
+[TN] Mobile device-இல் இருந்து captured SYN packet-ல் expected 1460-க்கு
+     பதிலாக MSS=1380 காட்டுகிறது. என்ன network condition அல்லது
+     infrastructure component இந்த reduced MSS value-க்கு responsible?
+
+----------------------------------------------------------------
+Q27.
+[EN] During a VPN infrastructure audit, client connections consistently
+     show MSS=1360 in their SYN packets. What tunneling protocol overhead
+     is causing this specific reduction and what is the mathematical
+     derivation?
+
+[TN] VPN infrastructure audit-ல் client connections-ல் SYN packets-ல்
+     consistently MSS=1360 காட்டுகிறது. என்ன tunneling protocol overhead
+     இந்த specific reduction-க்கு காரணமாகிறது, mathematical derivation
+     என்ன?
+
+----------------------------------------------------------------
+Q28.
+[EN] A p0f passive fingerprint signature reads:
+     "*:255:0:*:16384,6:mss,nop,nop,ts,nop,ws,sok:df,id+:0"
+     Decode each field and identify the operating system.
+
+[TN] p0f passive fingerprint signature:
+     "*:255:0:*:16384,6:mss,nop,nop,ts,nop,ws,sok:df,id+:0"
+     ஒவ்வொரு field-ஐயும் decode செய்து operating system identify செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q29.
+[EN] An IDS operator notices that a single source IP sends SYN packets
+     with the WScale option varying between 6, 7, and 8 across different
+     sessions. What does this inconsistency suggest about the source, and
+     how should this be treated from a threat intelligence perspective?
+
+[TN] IDS operator ஒரு source IP-லிருந்து different sessions-ல் WScale
+     option 6, 7, 8-ஆக vary ஆகும் SYN packets-ஐ notice செய்கிறார்.
+     இந்த inconsistency source பற்றி என்ன suggest செய்கிறது, threat
+     intelligence perspective-ல் இதை எப்படி treat செய்யணும்?
+
+----------------------------------------------------------------
+Q30.
+[EN] During OS fingerprinting, you send 5 probe types: SYN, SYN+ECE+CWR,
+     ACK, FIN+PSH+URG, and a UDP probe to a closed port. Describe the
+     complete response matrix you would expect from a modern Linux 5.x host.
+
+[TN] OS fingerprinting-ல் 5 probe types அனுப்புகிறீர்கள்: SYN,
+     SYN+ECE+CWR, ACK, FIN+PSH+URG, மற்றும் closed port-க்கு UDP probe.
+     Modern Linux 5.x host-இல் இருந்து expect செய்யும் complete response
+     matrix describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+
+SECTION 4: IP ID FIELD & IDLE SCAN
+பிரிவு 4: IP ID FIELD மற்றும் IDLE SCAN
+----------------------------------------------------------------
+
+Q31.
+[EN] During a covert reconnaissance operation, you identify a network
+     printer with a predictable global IP ID counter. Describe step-by-step
+     how you would use this printer as a zombie host to determine whether
+     port 3306 on a database server is open, without your IP appearing
+     in any logs.
+
+[TN] Covert reconnaissance operation-ல் predictable global IP ID counter
+     உடைய network printer identify செய்கிறீர்கள். உங்கள் IP எந்த logs-லும்
+     appear ஆகாமல், இந்த printer-ஐ zombie host-ஆக use செய்து database
+     server-ல் port 3306 open-ஆ என்று determine செய்வதை step-by-step
+     describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q32.
+[EN] A zombie host being used in an idle scan shows IP ID increments of 2
+     instead of the expected 1 when probing an open port. What explains
+     the increment of 2, and could an increment of 3 or more indicate
+     anything different?
+
+[TN] Idle scan-ல் use ஆகும் zombie host open port probe செய்யும்போது
+     expected 1-க்கு பதிலாக IP ID 2 increments காட்டுகிறது. 2 increment
+     ஏன் வருகிறது என்று என்ன explain செய்கிறது, 3 அல்லது அதிகமான
+     increment வேறு ஏதாவது indicate செய்யுமா?
+
+----------------------------------------------------------------
+Q33.
+[EN] Modern Linux kernels randomize IP ID per-connection rather than using
+     a global counter. How does this per-connection randomization defeat
+     the idle scan technique, and are there any edge cases where idle
+     scan might still work against Linux?
+
+[TN] Modern Linux kernels global counter-க்கு பதிலாக per-connection-ஆக
+     IP ID randomize செய்கின்றன. இந்த per-connection randomization idle
+     scan technique-ஐ எப்படி defeat செய்கிறது, Linux-க்கு எதிராக idle
+     scan இன்னும் work ஆகும் edge cases உண்டா?
+
+----------------------------------------------------------------
+Q34.
+[EN] Cisco IOS devices consistently show IP ID = 0x0000 in all IP headers.
+     From a fingerprinting perspective, why is this significant, and what
+     does a constant zero IP ID tell you about the device's fragmentation
+     behavior?
+
+[TN] Cisco IOS devices எல்லா IP headers-லும் IP ID = 0x0000 consistently
+     காட்டுகின்றன. Fingerprinting perspective-ல் இது ஏன் significant,
+     constant zero IP ID device-ஓட fragmentation behavior பற்றி என்ன
+     சொல்கிறது?
+
+----------------------------------------------------------------
+Q35.
+[EN] During threat hunting, you observe ICMP echo replies from a host
+     where IP ID values show a linear increment of exactly 1 per packet
+     across sessions from different source IPs. What attack or vulnerability
+     does this pattern expose?
+
+[TN] Threat hunting-ல் ஒரு host-இல் இருந்து ICMP echo replies-ல் different
+     source IPs-இல் இருந்து sessions-ல் IP ID values exactly 1 linear
+     increment காட்டுகிறது என்று observe செய்கிறீர்கள். இந்த pattern
+     என்ன attack அல்லது vulnerability expose செய்கிறது?
+
+----------------------------------------------------------------
+Q36.
+[EN] In a penetration test, you want to verify if a "zombie" candidate
+     is suitable for an idle scan. What three specific properties must
+     the zombie host possess, and what test would you perform to confirm
+     each property?
+
+[TN] Penetration test-ல் "zombie" candidate idle scan-க்கு suitable-ஆ
+     என்று verify செய்ய விரும்புகிறீர்கள். Zombie host-க்கு என்ன மூன்று
+     specific properties இருக்கணும், ஒவ்வொரு property-ஐயும் confirm செய்ய
+     என்ன test perform செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q37.
+[EN] An IP ID sequence analysis shows the following values from a target:
+     0x1000, 0x2000, 0x3000, 0x4000. Compared to random values, what does
+     this arithmetic progression suggest about the host and how would you
+     weaponize this finding?
+
+[TN] Target-இல் இருந்து IP ID sequence analysis பின்வரும் values காட்டுகிறது:
+     0x1000, 0x2000, 0x3000, 0x4000. Random values-உடன் compare செய்தால்,
+     இந்த arithmetic progression host பற்றி என்ன suggest செய்கிறது,
+     இந்த finding-ஐ எப்படி weaponize செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q38.
+[EN] You discover an embedded IoT device with IP ID starting at a fixed
+     value after each reboot. How could this behavior be used to remotely
+     determine the device's uptime without sending any direct probes to
+     the device itself?
+
+[TN] IP ID ஒவ்வொரு reboot-க்கும் பிறகு fixed value-ல் start ஆகும்
+     embedded IoT device discover செய்கிறீர்கள். Device-க்கு direct probes
+     அனுப்பாமல் இந்த behavior-ஐ எப்படி remotely device-ஓட uptime
+     determine செய்ய use செய்யலாம்?
+
+----------------------------------------------------------------
+Q39.
+[EN] A network forensics investigation reveals that ICMP error messages
+     (Type 3) returned by a firewall contain the original IP header of
+     the rejected packet, including its IP ID field. How can an attacker
+     extract useful fingerprinting data from these ICMP error payloads?
+
+[TN] Network forensics investigation-ல் firewall return செய்த ICMP error
+     messages (Type 3) rejected packet-ஓட original IP header contain
+     செய்கின்றன, IP ID field உட்பட. Attacker இந்த ICMP error payloads-லிருந்து
+     எப்படி useful fingerprinting data extract செய்யலாம்?
+
+----------------------------------------------------------------
+Q40.
+[EN] During a red team exercise, the blue team has deployed a honeypot with
+     a deliberately predictable IP ID sequence. What counter-reconnaissance
+     technique is the blue team employing, and how should a skilled red
+     team operator identify and avoid this trap?
+
+[TN] Red team exercise-ல் blue team deliberately predictable IP ID sequence
+     உடைய honeypot deploy செய்திருக்கிறது. Blue team என்ன
+     counter-reconnaissance technique employ செய்கிறது, skilled red team
+     operator இந்த trap-ஐ எப்படி identify செய்து avoid செய்வார்?
+
+----------------------------------------------------------------
+
+SECTION 5: TCP SEQUENCE NUMBERS & SESSION HIJACKING
+பிரிவு 5: TCP SEQUENCE NUMBERS மற்றும் SESSION HIJACKING
+----------------------------------------------------------------
+
+Q41.
+[EN] A legacy application server still generates ISN values based on a
+     time-based counter incrementing at 64,000 per second. An attacker
+     captures one SYN+ACK to learn the current ISN. How would the attacker
+     predict the ISN for a new connection attempted 3 seconds later?
+
+[TN] Legacy application server-ல் ISN values per second 64,000 increment
+     ஆகும் time-based counter-ஐ அடிப்படையாகக் கொண்டு generate ஆகின்றன.
+     Attacker current ISN தெரிந்துகொள்ள ஒரு SYN+ACK capture செய்கிறார்.
+     3 seconds பிறகு attempt செய்யும் new connection-க்கு ISN-ஐ attacker
+     எப்படி predict செய்வார்?
+
+----------------------------------------------------------------
+Q42.
+[EN] RFC 6528 mandates that ISN = F(secret, src_ip, src_port, dst_ip,
+     dst_port) + timestamp. Even with this protection, what residual
+     information does the timestamp component leak to a remote observer?
+
+[TN] RFC 6528-ல் ISN = F(secret, src_ip, src_port, dst_ip, dst_port)
+     + timestamp என்று mandate செய்கிறது. இந்த protection இருந்தாலும்,
+     timestamp component remote observer-க்கு என்ன residual information
+     leak செய்கிறது?
+
+----------------------------------------------------------------
+Q43.
+[EN] The Mitnick attack of 1994 exploited predictable ISNs in a specific
+     trust relationship context. Translate this attack to a modern context:
+     which current protocols or configurations might still be vulnerable
+     to ISN-based session prediction attacks?
+
+[TN] 1994 Mitnick attack specific trust relationship context-ல் predictable
+     ISNs-ஐ exploit செய்தது. இந்த attack-ஐ modern context-க்கு translate
+     செய்யுங்கள்: எந்த current protocols அல்லது configurations இன்னும்
+     ISN-based session prediction attacks-க்கு vulnerable-ஆக இருக்கலாம்?
+
+----------------------------------------------------------------
+Q44.
+[EN] In a BGP session reset attack (CVE-2004-0230), the attacker must
+     find a valid sequence number within the TCP receive window. Given
+     a BGP peer with a window size of 65535 and WScale=7, calculate
+     the actual receive window size and estimate the number of RST
+     packets needed for a brute-force attack.
+
+[TN] BGP session reset attack (CVE-2004-0230)-ல் attacker TCP receive
+     window-க்குள் valid sequence number கண்டுபிடிக்கணும். Window size
+     65535 மற்றும் WScale=7 உடைய BGP peer-க்கு, actual receive window
+     size calculate செய்யுங்கள், brute-force attack-க்கு தேவையான RST
+     packets எண்ணிக்கை estimate செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q45.
+[EN] RFC 5961 introduces the Challenge ACK mechanism to defend against
+     blind in-window attacks. Explain how a Linux kernel vulnerability
+     (CVE-2016-5696) turned this defense mechanism into an oracle that
+     reveals the correct TCP sequence number to an off-path attacker.
+
+[TN] RFC 5961 blind in-window attacks-க்கு எதிராக defend செய்ய Challenge
+     ACK mechanism introduce செய்கிறது. Linux kernel vulnerability
+     (CVE-2016-5696) இந்த defense mechanism-ஐ எப்படி off-path attacker-க்கு
+     correct TCP sequence number reveal செய்யும் oracle-ஆக மாற்றியது
+     என்று explain செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q46.
+[EN] During active session hijacking, an attacker injects a spoofed TCP
+     segment into an established HTTP session. After the injection, both
+     the legitimate client and server experience desynchronization. What
+     observable symptoms would appear in a Wireshark capture of this event?
+
+[TN] Active session hijacking-ல் attacker established HTTP session-ல்
+     spoofed TCP segment inject செய்கிறார். Injection-க்கு பிறகு legitimate
+     client மற்றும் server desynchronization experience செய்கின்றன.
+     இந்த event-ஓட Wireshark capture-ல் என்ன observable symptoms தெரியும்?
+
+----------------------------------------------------------------
+Q47.
+[EN] A security team detects unusually high RST packets targeting port 179
+     (BGP) on their core routers during a maintenance window. The packets
+     arrive from seemingly legitimate AS peers. What attack is likely
+     occurring and what immediate mitigation should be applied?
+
+[TN] Security team maintenance window-ல் core routers-ல் port 179 (BGP)-ஐ
+     target செய்யும் unusually high RST packets detect செய்கிறது. Packets
+     seemingly legitimate AS peers-இல் இருந்து வருகின்றன. என்ன attack
+     likely occur ஆகிறது, என்ன immediate mitigation apply செய்யணும்?
+
+----------------------------------------------------------------
+Q48.
+[EN] An attacker on the same LAN segment uses ARP poisoning to become
+     a man-in-the-middle, then injects a FIN packet with the correct
+     sequence number into an SSH session. What is the practical outcome
+     of this injection and why is SSH resistant to data injection but
+     not to connection termination?
+
+[TN] Same LAN segment-ல் attacker ARP poisoning use செய்து man-in-the-middle
+     ஆகி, SSH session-ல் correct sequence number-உடன் FIN packet inject
+     செய்கிறார். இந்த injection-ஓட practical outcome என்ன, SSH data
+     injection-க்கு resistant ஆனால் connection termination-க்கு ஏன்
+     resistant இல்லை?
+
+----------------------------------------------------------------
+Q49.
+[EN] A packet capture from a suspected compromised host shows outbound
+     TCP segments where the sequence number increments by exactly the
+     payload size plus a consistent offset of 4096. What does this
+     non-standard increment suggest about the host's TCP stack or
+     potential manipulation?
+
+[TN] Suspected compromised host-இல் இருந்து packet capture-ல் outbound TCP
+     segments-ல் sequence number payload size plus consistent offset 4096
+     increments காட்டுகிறது. இந்த non-standard increment host-ஓட TCP stack
+     அல்லது potential manipulation பற்றி என்ன suggest செய்கிறது?
+
+----------------------------------------------------------------
+Q50.
+[EN] During a network pentest, you want to verify if a target server uses
+     RFC 5961-compliant sequence number validation. Describe the probe
+     sequence you would use and the specific responses that would confirm
+     compliance versus non-compliance.
+
+[TN] Network pentest-ல் target server RFC 5961-compliant sequence number
+     validation use செய்கிறதா என்று verify செய்ய விரும்புகிறீர்கள்.
+     Use செய்யும் probe sequence describe செய்யுங்கள், compliance vs
+     non-compliance confirm செய்யும் specific responses என்ன?
+
+----------------------------------------------------------------
+
+SECTION 6: SCAN TYPES & PORT STATE DETECTION
+பிரிவு 6: SCAN TYPES மற்றும் PORT STATE DETECTION
+----------------------------------------------------------------
+
+Q51.
+[EN] A penetration tester receives ICMP Type 3 Code 13 responses when
+     probing a specific subnet. Which specific firewall action generates
+     this code, and how does this differ from ICMP Type 3 Code 3?
+
+[TN] Penetration tester specific subnet probe செய்யும்போது ICMP Type 3
+     Code 13 responses receive செய்கிறார். இந்த code-ஐ எந்த specific
+     firewall action generate செய்கிறது, இது ICMP Type 3 Code 3-லிருந்து
+     எப்படி differ ஆகிறது?
+
+----------------------------------------------------------------
+Q52.
+[EN] You perform an ACK scan on a target and find that ports 22, 80, and
+     443 all return RST, while ports 8080 and 8443 return nothing. Using
+     only this information, reconstruct the firewall ruleset that would
+     produce this exact response pattern.
+
+[TN] Target-ல் ACK scan perform செய்கிறீர்கள், ports 22, 80, 443 எல்லாம்
+     RST return செய்கின்றன, ports 8080, 8443 nothing return செய்கின்றன.
+     இந்த information மட்டும் use செய்து இந்த exact response pattern
+     produce செய்யும் firewall ruleset reconstruct செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q53.
+[EN] A UDP scan of a target returns ICMP Type 3 Code 3 for ports 137
+     and 138 but no response for ports 53, 67, and 161. Interpret these
+     responses and explain why different UDP ports exhibit different
+     response behaviors.
+
+[TN] Target-ஓட UDP scan-ல் ports 137, 138-க்கு ICMP Type 3 Code 3
+     return ஆகிறது, ஆனால் ports 53, 67, 161-க்கு response இல்லை.
+     இந்த responses interpret செய்யுங்கள், different UDP ports ஏன்
+     different response behaviors காட்டுகின்றன என்று explain செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q54.
+[EN] During a firewall evasion test, you send SYN packets fragmented into
+     8-byte chunks. The IDS does not alert, but the target server still
+     completes the handshake. What does this tell you about the IDS
+     architecture, and what risk does this create for the network?
+
+[TN] Firewall evasion test-ல் 8-byte chunks-ஆக fragment செய்யப்பட்ட SYN
+     packets அனுப்புகிறீர்கள். IDS alert செய்யவில்லை, ஆனால் target server
+     handshake complete செய்கிறது. IDS architecture பற்றி என்ன சொல்கிறது,
+     network-க்கு என்ன risk இது create செய்கிறது?
+
+----------------------------------------------------------------
+Q55.
+[EN] An SCTP INIT chunk scan returns INIT-ACK from port 9899 but ABORT
+     from ports 2905 and 14001. Translate these SCTP responses into port
+     states and identify which applications typically run on these SCTP ports.
+
+[TN] SCTP INIT chunk scan-ல் port 9899-ல் இருந்து INIT-ACK வருகிறது,
+     ஆனால் ports 2905, 14001-ல் இருந்து ABORT வருகிறது. இந்த SCTP
+     responses-ஐ port states-ஆக translate செய்யுங்கள், இந்த SCTP ports-ல்
+     typically எந்த applications run ஆகும் என்று identify செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q56.
+[EN] A window scan returns RST packets with non-zero window values for
+     ports 80 and 443 but RST with window=0 for port 8080. The underlying
+     OS is identified as FreeBSD. How reliable is this interpretation and
+     what additional probes would you perform to confirm these states?
+
+[TN] Window scan-ல் ports 80, 443-க்கு non-zero window values-உடன் RST
+     packets return ஆகின்றன, port 8080-க்கு window=0-உடன் RST வருகிறது.
+     Underlying OS FreeBSD என்று identify ஆகிறது. இந்த interpretation
+     எவ்வளவு reliable, இந்த states confirm செய்ய என்ன additional probes
+     perform செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q57.
+[EN] You discover that sending SYN packets with source port 53 bypasses
+     a specific firewall rule and receives SYN+ACK from internal servers.
+     What firewall misconfiguration allows this bypass and how should
+     the rule be corrected?
+
+[TN] Source port 53-உடன் SYN packets அனுப்பினால் specific firewall rule
+     bypass ஆகி internal servers-இல் இருந்து SYN+ACK receive ஆகிறது
+     என்று discover செய்கிறீர்கள். என்ன firewall misconfiguration இந்த
+     bypass-ஐ allow செய்கிறது, rule-ஐ எப்படி correct செய்யணும்?
+
+----------------------------------------------------------------
+Q58.
+[EN] During a stealth scan, you use nmap with timing template T0 (Paranoid).
+     Explain the timing parameters this sets, why it evades most
+     rate-based IDS detection, and what operational trade-off it introduces.
+
+[TN] Stealth scan-ல் timing template T0 (Paranoid)-உடன் nmap use
+     செய்கிறீர்கள். இது set செய்யும் timing parameters explain செய்யுங்கள்,
+     ஏன் இது most rate-based IDS detection-ஐ evade செய்கிறது, என்ன
+     operational trade-off introduce செய்கிறது.
+
+----------------------------------------------------------------
+Q59.
+[EN] A Maimon scan (-sM) returns no response from all probed ports on a
+     target. You know the target is Linux-based. What does the no-response
+     from every port indicate, and how would you proceed to differentiate
+     open from filtered ports on this target?
+
+[TN] Maimon scan (-sM)-ல் target-ஓட எல்லா probed ports-லிருந்தும் response
+     இல்லை. Target Linux-based என்று தெரியும். எல்லா ports-லிருந்தும்
+     no-response என்ன indicate செய்கிறது, இந்த target-ல் open vs filtered
+     ports differentiate செய்ய எப்படி proceed செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q60.
+[EN] An IP protocol scan (-sO) reveals that protocol 47 (GRE) returns
+     a response while protocol 50 (ESP) returns ICMP Type 3 Code 2.
+     What do these specific responses tell you about the network's
+     VPN capabilities and firewall policies?
+
+[TN] IP protocol scan (-sO)-ல் protocol 47 (GRE) response return செய்கிறது,
+     protocol 50 (ESP) ICMP Type 3 Code 2 return செய்கிறது. இந்த specific
+     responses network-ஓட VPN capabilities மற்றும் firewall policies பற்றி
+     என்ன சொல்கின்றன?
+
+----------------------------------------------------------------
+
+SECTION 7: TCP FAST OPEN & ADVANCED FLAGS
+பிரிவு 7: TCP FAST OPEN மற்றும் ADVANCED FLAGS
+----------------------------------------------------------------
+
+Q61.
+[EN] A web server supports TCP Fast Open (TFO). An attacker captures a
+     valid TFO cookie from an intercepted SYN+ACK. What attack scenarios
+     become possible with possession of this cookie, and what is the
+     maximum time window during which the cookie remains exploitable?
+
+[TN] Web server TCP Fast Open (TFO) support செய்கிறது. Attacker intercepted
+     SYN+ACK-லிருந்து valid TFO cookie capture செய்கிறார். இந்த cookie
+     possession-உடன் என்ன attack scenarios possible, cookie exploitable-ஆக
+     இருக்கும் maximum time window என்ன?
+
+----------------------------------------------------------------
+Q62.
+[EN] During a SYN flood defense analysis, an engineer argues that TFO
+     weakens SYN cookie protection because data can be processed before
+     the handshake completes. Construct the specific attack scenario
+     that validates this concern.
+
+[TN] SYN flood defense analysis-ல் ஒரு engineer TFO SYN cookie protection-ஐ
+     weaken செய்கிறது என்று argue செய்கிறார், ஏனென்றால் handshake complete
+     ஆகுமுன் data process ஆகலாம். இந்த concern validate செய்யும் specific
+     attack scenario construct செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q63.
+[EN] You observe a packet with SYN+RST flags set simultaneously. RFC
+     standards define this as impossible in normal operation. What does
+     this packet reveal about the sending host, and how would stateless
+     versus stateful packet filters handle this anomaly?
+
+[TN] SYN+RST flags ஒரே நேரத்தில் set ஆன packet observe செய்கிறீர்கள்.
+     RFC standards-ல் இது normal operation-ல் impossible என்று define
+     ஆகிறது. இந்த packet sending host பற்றி என்ன reveal செய்கிறது,
+     stateless vs stateful packet filters இந்த anomaly-ஐ எப்படி handle
+     செய்யும்?
+
+----------------------------------------------------------------
+Q64.
+[EN] A packet with ECN bits (ECE+CWR) set in the SYN reaches a router.
+     The router does not support ECN. According to RFC 3168, what should
+     happen to this packet, and how can the ECN capability of a network
+     path be mapped through probing?
+
+[TN] ECN bits (ECE+CWR) set ஆன SYN packet ஒரு router-ஐ reach செய்கிறது.
+     Router ECN support செய்வதில்லை. RFC 3168-படி இந்த packet-க்கு என்ன
+     ஆகணும், probing மூலம் network path-ஓட ECN capability எப்படி map
+     செய்யலாம்?
+
+----------------------------------------------------------------
+Q65.
+[EN] The PSH flag instructs the receiver to immediately deliver data to
+     the application without buffering. During a pentest, how can the
+     timing difference between PSH-flagged and non-PSH-flagged responses
+     be used to infer information about server-side application processing?
+
+[TN] PSH flag receiver-க்கு data-ஐ buffering இல்லாமல் application-க்கு
+     immediately deliver செய்யணும் என்று instruct செய்கிறது. Pentest-ல்
+     PSH-flagged vs non-PSH-flagged responses-இடையேயான timing difference
+     server-side application processing பற்றி information infer செய்ய
+     எப்படி use ஆகலாம்?
+
+----------------------------------------------------------------
+Q66.
+[EN] During an advanced evasion test, you send TCP packets with the
+     CWR and ECE bits set but without completing ECN negotiation in the
+     SYN. Describe how different middleboxes (firewalls, IDS, load
+     balancers) might react to this protocol violation.
+
+[TN] Advanced evasion test-ல் SYN-ல் ECN negotiation complete செய்யாமல்
+     CWR மற்றும் ECE bits set ஆன TCP packets அனுப்புகிறீர்கள். Different
+     middleboxes (firewalls, IDS, load balancers) இந்த protocol violation-க்கு
+     எப்படி react செய்யும் என்று describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q67.
+[EN] A packet capture shows a series of TCP segments where the NS
+     (Nonce Sum) bit is set. Under RFC 3540, what is the purpose of
+     this flag, and in what attack scenario would you specifically
+     look for manipulated NS bits?
+
+[TN] Packet capture-ல் NS (Nonce Sum) bit set ஆன TCP segments series
+     தெரிகிறது. RFC 3540-படி இந்த flag-ஓட நோக்கம் என்ன, என்ன attack
+     scenario-ல் specifically manipulated NS bits-ஐ look for செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q68.
+[EN] In a SYN+ACK reflection DDoS scenario, the attacker spoofs the
+     victim's IP in SYN packets sent to thousands of servers. Describe
+     the traffic pattern visible at the victim, and what TCP flag appears
+     most prominently in the amplification traffic?
+
+[TN] SYN+ACK reflection DDoS scenario-ல் attacker thousands of servers-க்கு
+     அனுப்பும் SYN packets-ல் victim-ஓட IP spoof செய்கிறார். Victim-ல்
+     visible traffic pattern describe செய்யுங்கள், amplification traffic-ல்
+     என்ன TCP flag most prominently appear ஆகும்?
+
+----------------------------------------------------------------
+Q69.
+[EN] A host sends TCP segments with FIN+ACK to ports with no established
+     connection. The Maimon scan traditionally exploits similar logic.
+     How does FIN+ACK behavior differ between Linux, Windows, and BSD
+     systems on non-established ports?
+
+[TN] Host established connection இல்லாத ports-க்கு FIN+ACK-உடன் TCP
+     segments அனுப்புகிறது. Maimon scan traditionally similar logic-ஐ
+     exploit செய்கிறது. Non-established ports-ல் FIN+ACK behavior Linux,
+     Windows, BSD systems-இடையே எப்படி differ ஆகிறது?
+
+----------------------------------------------------------------
+Q70.
+[EN] During an assessment, you send a TCP packet with ALL 9 flags set
+     simultaneously (NS, CWR, ECE, URG, ACK, PSH, RST, SYN, FIN).
+     Different targets respond differently. What specifically does each
+     target's response (RST, no response, or SYN+ACK) reveal about
+     its TCP stack implementation quality?
+
+[TN] Assessment-ல் எல்லா 9 flags ஒரே நேரத்தில் set ஆன (NS, CWR, ECE,
+     URG, ACK, PSH, RST, SYN, FIN) TCP packet அனுப்புகிறீர்கள். Different
+     targets differently respond செய்கின்றன. ஒவ்வொரு target-ஓட response
+     (RST, no response, அல்லது SYN+ACK) அதன் TCP stack implementation
+     quality பற்றி specifically என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+
+SECTION 8: FIREWALL DETECTION & EVASION
+பிரிவு 8: FIREWALL DETECTION மற்றும் EVASION
+----------------------------------------------------------------
+
+Q71.
+[EN] A network assessment shows that SYN probes to port 80 return
+     SYN+ACK, but ACK probes to the same port return no response.
+     What type of firewall configuration does this confirm and what
+     is the security implication of this stateful inspection?
+
+[TN] Network assessment-ல் port 80-க்கு SYN probes SYN+ACK return
+     செய்கின்றன, ஆனால் same port-க்கு ACK probes response return
+     செய்வதில்லை. என்ன type firewall configuration இது confirm செய்கிறது,
+     இந்த stateful inspection-ஓட security implication என்ன?
+
+----------------------------------------------------------------
+Q72.
+[EN] You perform a decoy scan using nmap -D RND:15 against a target.
+     The target's IDS logs show 16 source IPs for every scan attempt.
+     From a forensic perspective, how would an analyst distinguish your
+     real IP from the decoy IPs in the log data?
+
+[TN] Target-க்கு எதிராக nmap -D RND:15 use செய்து decoy scan perform
+     செய்கிறீர்கள். Target-ஓட IDS logs ஒவ்வொரு scan attempt-க்கும்
+     16 source IPs காட்டுகிறது. Forensic perspective-ல் analyst log data-ல்
+     உங்கள் real IP-ஐ decoy IPs-லிருந்து எப்படி distinguish செய்வார்?
+
+----------------------------------------------------------------
+Q73.
+[EN] An attacker uses fragmented packets where the TCP header is split
+     across the second and third fragments, with the first fragment
+     containing only the IP header. How does this specific fragmentation
+     pattern defeat signature-based IDS detection for port scanning?
+
+[TN] Attacker TCP header second மற்றும் third fragments-ல் split ஆகும்,
+     first fragment-ல் IP header மட்டுமே contain ஆகும் fragmented packets
+     use செய்கிறார். இந்த specific fragmentation pattern port scanning-க்கான
+     signature-based IDS detection-ஐ எப்படி defeat செய்கிறது?
+
+----------------------------------------------------------------
+Q74.
+[EN] A security audit reveals that ICMP Type 3 Code 13 messages are
+     generated by the gateway for blocked connections instead of silently
+     dropping them. From an attacker's perspective, why is REJECT
+     preferable over DROP for reconnaissance purposes?
+
+[TN] Security audit-ல் blocked connections-க்கு gateway silently drop
+     செய்வதற்கு பதிலாக ICMP Type 3 Code 13 messages generate செய்கிறது
+     என்று தெரிகிறது. Attacker-ஓட perspective-ல் reconnaissance purposes-க்கு
+     DROP-ஐ விட REJECT ஏன் preferable?
+
+----------------------------------------------------------------
+Q75.
+[EN] During a pentest, you use nmap --badsum to probe a target. Some
+     ports respond while others do not. What does a response to a
+     packet with an intentionally bad checksum reveal about the
+     responding device, and what security risk does this indicate?
+
+[TN] Pentest-ல் target probe செய்ய nmap --badsum use செய்கிறீர்கள்.
+     சில ports respond செய்கின்றன, மற்றவை இல்லை. Intentionally bad
+     checksum-உடன் packet-க்கு response reveal செய்வது responding device
+     பற்றி என்ன, இது என்ன security risk indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q76.
+[EN] A firewall passes SYN packets but blocks ACK, FIN, and RST.
+     Describe the complete impact this has on TCP connections: which
+     phase of the connection succeeds and which phase fails?
+
+[TN] Firewall SYN packets pass செய்கிறது ஆனால் ACK, FIN, RST block
+     செய்கிறது. TCP connections-ல் இது ஏற்படுத்தும் complete impact
+     describe செய்யுங்கள்: connection-ஓட எந்த phase succeed ஆகும்,
+     எந்த phase fail ஆகும்?
+
+----------------------------------------------------------------
+Q77.
+[EN] An IDS rule fires on SYN packets to port 4444 but not on SYN
+     packets from source port 80 to port 4444. An attacker exploits
+     this gap using --source-port 80. What fundamental flaw in the
+     IDS rule allows this bypass?
+
+[TN] IDS rule port 4444-க்கு SYN packets-ல் fire ஆகிறது, ஆனால் source
+     port 80-லிருந்து port 4444-க்கு SYN packets-ல் fire ஆவதில்லை.
+     Attacker --source-port 80 use செய்து இந்த gap exploit செய்கிறார்.
+     இந்த bypass allow செய்யும் IDS rule-ல் என்ன fundamental flaw உள்ளது?
+
+----------------------------------------------------------------
+Q78.
+[EN] During a red team operation, you notice that your SYN scans are
+     being blocked but TCP connect scans (-sT) are completing successfully
+     to the same ports. What firewall behavior explains this selective
+     blocking, and what does the successful -sT scan tell you about
+     the firewall's application-layer inspection?
+
+[TN] Red team operation-ல் உங்கள் SYN scans block ஆகின்றன, ஆனால்
+     same ports-க்கு TCP connect scans (-sT) successfully complete
+     ஆகின்றன என்று notice செய்கிறீர்கள். என்ன firewall behavior இந்த
+     selective blocking explain செய்கிறது, successful -sT scan firewall-ஓட
+     application-layer inspection பற்றி என்ன சொல்கிறது?
+
+----------------------------------------------------------------
+Q79.
+[EN] A packet with TTL=1 is sent to a distant host. The resulting ICMP
+     Time Exceeded message reveals the IP address and TTL of the intermediate
+     router. How is this basic traceroute mechanism extended in a pentest
+     context to map firewall locations within a network path?
+
+[TN] Distant host-க்கு TTL=1-உடன் packet அனுப்பப்படுகிறது. Resulting ICMP
+     Time Exceeded message intermediate router-ஓட IP address மற்றும் TTL
+     reveal செய்கிறது. Pentest context-ல் network path-ல் firewall locations
+     map செய்ய இந்த basic traceroute mechanism எப்படி extend ஆகிறது?
+
+----------------------------------------------------------------
+Q80.
+[EN] An application firewall accepts TCP connections but terminates them
+     with RST if the payload does not match expected protocol signatures
+     within the first 512 bytes. How would you detect this behavior during
+     a pentest, and what class of application is implementing it?
+
+[TN] Application firewall TCP connections accept செய்கிறது, ஆனால் payload
+     first 512 bytes-ல் expected protocol signatures-க்கு match ஆகாவிட்டால்
+     RST-உடன் terminate செய்கிறது. Pentest-ல் இந்த behavior எப்படி detect
+     செய்வீர்கள், என்ன class of application இதை implement செய்கிறது?
+
+----------------------------------------------------------------
+
+SECTION 9: TCP TIMESTAMPS & INFORMATION LEAKAGE
+பிரிவு 9: TCP TIMESTAMPS மற்றும் INFORMATION LEAKAGE
+----------------------------------------------------------------
+
+Q81.
+[EN] A target server's TCP timestamp values (TSval) show a consistent
+     increment of 1000 per second. An attacker captures two SYN+ACK
+     packets 24 hours apart and calculates TSval difference as 86,400,000.
+     What can the attacker derive from this, and what operational
+     intelligence does system uptime provide?
+
+[TN] Target server-ஓட TCP timestamp values (TSval) per second 1000
+     consistent increment காட்டுகிறது. Attacker 24 hours இடைவெளியில்
+     இரண்டு SYN+ACK packets capture செய்கிறார், TSval difference
+     86,400,000 என்று calculate செய்கிறார். Attacker இதிலிருந்து என்ன
+     derive செய்யலாம், system uptime என்ன operational intelligence தருகிறது?
+
+----------------------------------------------------------------
+Q82.
+[EN] A security hardening guide recommends disabling TCP timestamps
+     (net.ipv4.tcp_timestamps=0) to prevent uptime leakage. What is
+     the RFC 7323 mechanism that stops working when timestamps are
+     disabled, and how does this create a new vulnerability?
+
+[TN] Security hardening guide uptime leakage prevent செய்ய TCP timestamps
+     disable செய்யணும் (net.ipv4.tcp_timestamps=0) என்று recommend செய்கிறது.
+     Timestamps disable ஆனபோது RFC 7323-ல் என்ன mechanism stop ஆகிறது,
+     இது எப்படி new vulnerability create செய்கிறது?
+
+----------------------------------------------------------------
+Q83.
+[EN] Two hosts on different network segments show TCP timestamp tick
+     rates of 100 Hz and 1000 Hz respectively. Beyond uptime calculation,
+     what does the difference in timestamp tick rates reveal about each
+     host's operating system and hardware?
+
+[TN] Different network segments-ல் இரண்டு hosts TCP timestamp tick rates
+     100 Hz மற்றும் 1000 Hz காட்டுகின்றன. Uptime calculation-க்கு அப்பால்,
+     timestamp tick rates-ல் உள்ள difference ஒவ்வொரு host-ஓட operating
+     system மற்றும் hardware பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q84.
+[EN] During a network audit, you detect that a server randomizes its
+     TSval instead of using a monotonically increasing counter. What
+     security benefit does randomized timestamps provide, and what TCP
+     functionality is preserved despite the randomization?
+
+[TN] Network audit-ல் server monotonically increasing counter-க்கு பதிலாக
+     TSval randomize செய்கிறது என்று detect செய்கிறீர்கள். Randomized
+     timestamps என்ன security benefit தருகிறது, randomization-ஐ மீறியும்
+     என்ன TCP functionality preserved ஆகிறது?
+
+----------------------------------------------------------------
+Q85.
+[EN] PAWS (Protect Against Wrapped Sequence numbers) uses TCP timestamps
+     to reject old duplicate packets. If an attacker can manipulate TSval
+     in transit, how could they use this to cause session disruption or
+     data injection on a high-bandwidth TCP connection?
+
+[TN] PAWS (Protect Against Wrapped Sequence numbers) old duplicate packets
+     reject செய்ய TCP timestamps use செய்கிறது. Attacker transit-ல்
+     TSval manipulate செய்ய முடிந்தால், high-bandwidth TCP connection-ல்
+     session disruption அல்லது data injection ஏற்படுத்த இதை எப்படி
+     use செய்யலாம்?
+
+----------------------------------------------------------------
+
+SECTION 10: MSS, WINDOW SCALING & PERFORMANCE ATTACKS
+பிரிவு 10: MSS, WINDOW SCALING மற்றும் PERFORMANCE ATTACKS
+----------------------------------------------------------------
+
+Q86.
+[EN] An attacker sends a SYN with MSS=1 to a server. The server accepts
+     and acknowledges MSS=1. What impact does negotiating the minimum
+     possible MSS have on the TCP connection's throughput and what
+     denial-of-service implication does this create?
+
+[TN] Attacker server-க்கு MSS=1-உடன் SYN அனுப்புகிறார். Server MSS=1
+     accept செய்து acknowledge செய்கிறது. Minimum possible MSS negotiate
+     செய்வது TCP connection-ஓட throughput-ல் என்ன impact ஏற்படுத்துகிறது,
+     என்ன denial-of-service implication இது create செய்கிறது?
+
+----------------------------------------------------------------
+Q87.
+[EN] A Path MTU Black Hole condition occurs when a router drops
+     oversized packets without sending ICMP fragmentation-needed messages.
+     How does an attacker deliberately create this condition and what
+     specific TCP behavior does it trigger on the affected connection?
+
+[TN] Router oversized packets-ஐ ICMP fragmentation-needed messages அனுப்பாமல்
+     drop செய்யும்போது Path MTU Black Hole condition ஏற்படுகிறது. Attacker
+     இந்த condition-ஐ எப்படி deliberately create செய்கிறார், affected
+     connection-ல் என்ன specific TCP behavior trigger ஆகிறது?
+
+----------------------------------------------------------------
+Q88.
+[EN] During a throughput degradation attack, an adversary sends crafted
+     TCP ACK packets with artificially small window sizes (window=0)
+     periodically to a connection. What TCP mechanism does this trigger
+     and what is the name of this specific denial-of-service attack?
+
+[TN] Throughput degradation attack-ல் adversary periodically artificially
+     small window sizes (window=0) உடன் crafted TCP ACK packets ஒரு
+     connection-க்கு அனுப்புகிறார். இது என்ன TCP mechanism trigger
+     செய்கிறது, இந்த specific denial-of-service attack-ஓட பெயர் என்ன?
+
+----------------------------------------------------------------
+Q89.
+[EN] A client advertises WScale=14 (the maximum) in its SYN. The server
+     responds with WScale=0. Calculate the effective window sizes for
+     both sides and explain how this asymmetry could be exploited to
+     create a traffic amplification scenario.
+
+[TN] Client SYN-ல் WScale=14 (maximum) advertise செய்கிறது. Server
+     WScale=0-உடன் respond செய்கிறது. இரண்டு sides-க்கும் effective
+     window sizes calculate செய்யுங்கள், இந்த asymmetry traffic
+     amplification scenario create செய்ய எப்படி exploit ஆகலாம்
+     என்று explain செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q90.
+[EN] MSS clamping is configured on a network edge router to set MSS=1452
+     for all passing SYN packets. An internal application generates
+     packets with MSS=1460. What device is performing the clamping,
+     what RFC mechanism enables this, and is this modification visible
+     to the endpoints?
+
+[TN] Network edge router-ல் MSS clamping configure ஆகியிருக்கிறது —
+     எல்லா SYN packets-க்கும் MSS=1452 set செய்கிறது. Internal application
+     MSS=1460-உடன் packets generate செய்கிறது. என்ன device clamping
+     perform செய்கிறது, என்ன RFC mechanism இதை enable செய்கிறது,
+     இந்த modification endpoints-க்கு visible-ஆ?
+
+----------------------------------------------------------------
+
+SECTION 11: ADVANCED FINGERPRINTING & EVASION
+பிரிவு 11: ADVANCED FINGERPRINTING மற்றும் EVASION
+----------------------------------------------------------------
+
+Q91.
+[EN] A security researcher uses p0f to passively fingerprint network
+     traffic and observes a signature where TTL=64, window=65535,
+     WScale=7 but the TCP options order is [MSS, NOP, WScale, NOP, NOP,
+     SACK] instead of the expected Linux order. What does this options
+     ordering anomaly suggest about the source?
+
+[TN] Security researcher p0f use செய்து passively network traffic fingerprint
+     செய்கிறார், TTL=64, window=65535, WScale=7 ஆனால் TCP options order
+     expected Linux order-க்கு பதிலாக [MSS, NOP, WScale, NOP, NOP, SACK]
+     என்ற signature observe செய்கிறார். இந்த options ordering anomaly
+     source பற்றி என்ன suggest செய்கிறது?
+
+----------------------------------------------------------------
+Q92.
+[EN] An attacker deliberately crafts SYN packets that mimic the exact
+     TCP options profile of a specific OS (OS spoofing). From a network
+     forensics standpoint, what other fields in the network packet can
+     betray the true nature of the crafted packets?
+
+[TN] Attacker deliberately specific OS-ஓட exact TCP options profile
+     mimic செய்யும் SYN packets craft செய்கிறார் (OS spoofing). Network
+     forensics standpoint-ல் network packet-ல் என்ன other fields crafted
+     packets-ஓட true nature-ஐ betray செய்யலாம்?
+
+----------------------------------------------------------------
+Q93.
+[EN] During a sophisticated penetration test, the team uses nmap with
+     --data-length 25 to append 25 random bytes to probe packets.
+     Why does adding random payload data help evade some IDS systems,
+     and what detection method can still identify these probes?
+
+[TN] Sophisticated penetration test-ல் team probe packets-க்கு 25 random
+     bytes append செய்ய nmap --data-length 25 use செய்கிறது. Random
+     payload data add செய்வது சில IDS systems-ஐ evade செய்ய ஏன்
+     help செய்கிறது, என்ன detection method இந்த probes-ஐ இன்னும்
+     identify செய்யலாம்?
+
+----------------------------------------------------------------
+Q94.
+[EN] A host scanning tool cycles through source IP addresses from a
+     pool while maintaining consistent TCP options fingerprinting.
+     Describe two detection approaches that would identify this
+     distributed scanning behavior despite the IP rotation.
+
+[TN] Host scanning tool source IP addresses ஒரு pool-லிருந்து cycle
+     செய்கிறது, consistent TCP options fingerprinting maintain செய்கிறது.
+     IP rotation-ஐ மீறியும் இந்த distributed scanning behavior identify
+     செய்யும் இரண்டு detection approaches describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q95.
+[EN] A network appliance shows WScale=2 in all SYN packets, consistent
+     with Juniper JunOS fingerprinting. However, the TTL is 64 instead
+     of the expected 64. You suspect a Juniper device but want higher
+     confidence. What additional probes would you use to confirm the
+     Juniper identification?
+
+[TN] Network appliance எல்லா SYN packets-லும் WScale=2 காட்டுகிறது,
+     Juniper JunOS fingerprinting-க்கு consistent. ஆனால் TTL expected
+     64 அல்ல, 64 ஆகும். Juniper device என்று suspect செய்கிறீர்கள்
+     ஆனால் higher confidence வேண்டும். Juniper identification confirm
+     செய்ய என்ன additional probes use செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q96.
+[EN] An analyst captures a packet from an IoT sensor with window=512,
+     MSS=536, no WScale, no SACK, no Timestamps, and TTL=255. This
+     exact profile matches an embedded RTOS. From this fingerprint,
+     what attack surface assessment conclusions can be drawn?
+
+[TN] Analyst window=512, MSS=536, WScale இல்லாமல், SACK இல்லாமல்,
+     Timestamps இல்லாமல், TTL=255-உடன் IoT sensor-இல் இருந்து packet
+     capture செய்கிறார். இந்த exact profile embedded RTOS-க்கு match
+     ஆகிறது. இந்த fingerprint-லிருந்து என்ன attack surface assessment
+     conclusions draw செய்யலாம்?
+
+----------------------------------------------------------------
+Q97.
+[EN] You receive a SYN+ACK where the DF (Don't Fragment) bit is set but
+     the IP ID field is non-zero. Compare this against a packet where
+     DF is set and IP ID is zero. What do these two combinations indicate
+     about the respective hosts' network stack implementations?
+
+[TN] DF (Don't Fragment) bit set ஆகியிருக்கும் ஆனால் IP ID field
+     non-zero-ஆக இருக்கும் SYN+ACK receive செய்கிறீர்கள். DF set
+     ஆகியிருக்கும் IP ID zero-ஆக இருக்கும் packet-உடன் compare
+     செய்யுங்கள். இந்த இரண்டு combinations respective hosts-ஓட
+     network stack implementations பற்றி என்ன indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q98.
+[EN] During a long-term passive monitoring operation, you track a specific
+     host and notice that after 49.7 days, its TCP timestamp values wrap
+     to near-zero values. What does this timestamp wrap event reveal
+     about the host, and how can this periodic event be used as an
+     operational timing marker?
+
+[TN] Long-term passive monitoring operation-ல் specific host track செய்கிறீர்கள்,
+     49.7 days-க்கு பிறகு TCP timestamp values near-zero values-க்கு wrap
+     ஆகின்றன என்று notice செய்கிறீர்கள். இந்த timestamp wrap event
+     host பற்றி என்ன reveal செய்கிறது, இந்த periodic event-ஐ operational
+     timing marker-ஆக எப்படி use செய்யலாம்?
+
+----------------------------------------------------------------
+Q99.
+[EN] A sophisticated attacker changes their TCP stack fingerprint between
+     reconnaissance phases by modifying kernel parameters in real-time.
+     What specific sysctl or network stack parameters would need to be
+     modified to shift from a Linux fingerprint to a Windows fingerprint?
+
+[TN] Sophisticated attacker reconnaissance phases-க்கிடையே real-time-ல்
+     kernel parameters modify செய்து TCP stack fingerprint மாற்றுகிறார்.
+     Linux fingerprint-இல் இருந்து Windows fingerprint-க்கு shift ஆக
+     என்ன specific sysctl அல்லது network stack parameters modify செய்யணும்?
+
+----------------------------------------------------------------
+Q100.
+[EN] A network forensics team discovers that a persistent threat actor
+      used a custom TCP stack that always sent SYN packets with options
+      in alphabetical order (MSS, SACK, Timestamps, WScale). How would
+      this non-standard ordering serve as an unintentional signature, and
+      how would you build a detection rule around it?
+
+[TN] Network forensics team discover செய்கிறது — persistent threat actor
+     options alphabetical order-ல் (MSS, SACK, Timestamps, WScale) SYN
+     packets அனுப்பும் custom TCP stack use செய்தார். இந்த non-standard
+     ordering எப்படி unintentional signature-ஆக serve செய்கிறது,
+     இதை சுற்றி detection rule எப்படி build செய்வீர்கள்?
+
+----------------------------------------------------------------
+
+SECTION 12: PROTOCOL INTERACTIONS & REAL-WORLD SCENARIOS
+பிரிவு 12: PROTOCOL INTERACTIONS மற்றும் REAL-WORLD SCENARIOS
+----------------------------------------------------------------
+
+Q101.
+[EN] A web application firewall (WAF) is placed in front of a web server.
+      SYN scans to port 443 show the WAF responding. The WAF fingerprint
+      shows Linux characteristics. How would you determine whether the
+      web server behind the WAF is a different OS, without direct access?
+
+[TN] Web application firewall (WAF) web server-ஓட முன்பாக place ஆகியிருக்கிறது.
+     Port 443-க்கு SYN scans WAF respond செய்கிறது என்று காட்டுகிறது.
+     WAF fingerprint Linux characteristics காட்டுகிறது. Direct access
+     இல்லாமல் WAF-க்கு பின்னால் உள்ள web server different OS-ஆ என்று
+     எப்படி determine செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q102.
+[EN] During a cloud infrastructure pentest, you observe that all targets
+      return TTL=64 and appear Linux-based. However, MSS values vary
+      between 1460 and 1380 for different instances. What does this MSS
+      variation reveal about the underlying cloud network infrastructure?
+
+[TN] Cloud infrastructure pentest-ல் எல்லா targets TTL=64 return செய்கின்றன,
+     Linux-based-ஆகத் தெரிகின்றன. ஆனால் different instances-க்கு MSS
+     values 1460 மற்றும் 1380-க்கிடையே vary ஆகிறது. இந்த MSS variation
+     underlying cloud network infrastructure பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q103.
+[EN] An attacker performs a SYN scan from multiple exit nodes of a Tor
+      network. The target logs show connections from many different IPs.
+      Explain how TCP fingerprinting at the application layer could still
+      be used to correlate these connections to a single actor.
+
+[TN] Attacker Tor network-ஓட multiple exit nodes-லிருந்து SYN scan
+     perform செய்கிறார். Target logs many different IPs-லிருந்து
+     connections காட்டுகிறது. Application layer-ல் TCP fingerprinting
+     இந்த connections-ஐ single actor-க்கு correlate செய்ய எப்படி
+     இன்னும் use ஆகலாம் என்று explain செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q104.
+[EN] A load balancer distributes traffic across three backend servers
+      with different operating systems (Linux, Windows, FreeBSD). During
+      a SYN scan, you notice window sizes and WScale values alternating
+      between sessions. What does this inconsistency reveal about the
+      load balancer configuration?
+
+[TN] Load balancer different operating systems (Linux, Windows, FreeBSD)
+     உடைய மூன்று backend servers-ல் traffic distribute செய்கிறது. SYN
+     scan-ல் sessions-க்கிடையே window sizes மற்றும் WScale values
+     alternating ஆவதை notice செய்கிறீர்கள். இந்த inconsistency load
+     balancer configuration பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q105.
+[EN] A corporate network implements TCP MSS clamping at the perimeter
+      firewall. All external SYN packets have their MSS rewritten to 1452.
+      How can an external attacker use this consistent MSS value to
+      confirm the presence of a perimeter device performing MSS clamping?
+
+[TN] Corporate network perimeter firewall-ல் TCP MSS clamping implement
+     செய்கிறது. எல்லா external SYN packets-ஓட MSS 1452-ஆக rewrite
+     ஆகிறது. External attacker இந்த consistent MSS value-ஐ MSS clamping
+     perform செய்யும் perimeter device presence confirm செய்ய எப்படி
+     use செய்யலாம்?
+
+----------------------------------------------------------------
+Q106.
+[EN] During threat emulation, you attempt to establish a TCP connection
+      using raw sockets with a crafted SYN that has TCP options placed
+      after the data payload (violating RFC 793). What would be the
+      expected behavior from a standards-compliant TCP stack versus a
+      lenient implementation?
+
+[TN] Threat emulation-ல் data payload-க்கு பிறகு TCP options place ஆகும்
+     (RFC 793 violating) crafted SYN-உடன் raw sockets use செய்து TCP
+     connection establish செய்ய attempt செய்கிறீர்கள். Standards-compliant
+     TCP stack vs lenient implementation-லிருந்து expected behavior என்ன?
+
+----------------------------------------------------------------
+Q107.
+[EN] A penetration tester discovers that a target application resets
+      connections (RST) exactly 30 seconds after establishment if no
+      data is exchanged. What type of device or software is implementing
+      this behavior, and how would you probe to confirm whether this
+      is application-level or firewall-level enforcement?
+
+[TN] Penetration tester discover செய்கிறார் — target application establish
+     ஆனது 30 seconds-க்கு பிறகு data exchange இல்லாவிட்டால் connections
+     reset (RST) செய்கிறது. என்ன type device அல்லது software இந்த
+     behavior implement செய்கிறது, இது application-level-ஆ firewall-level
+     enforcement-ஆ என்று confirm செய்ய எப்படி probe செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q108.
+[EN] During a wireless network assessment, captured SYN packets from
+      mobile clients show inconsistent MSS values between 1380 and 1240.
+      What factors related to wireless and cellular infrastructure explain
+      this variability?
+
+[TN] Wireless network assessment-ல் mobile clients-இல் இருந்து captured
+     SYN packets 1380 மற்றும் 1240-க்கிடையே inconsistent MSS values
+     காட்டுகிறது. Wireless மற்றும் cellular infrastructure-க்கு related
+     என்ன factors இந்த variability explain செய்கிறது?
+
+----------------------------------------------------------------
+Q109.
+[EN] You are analyzing packet captures from a suspected C2 (Command and
+      Control) channel. The TCP sessions show SYN packets with unusual
+      TTL values of 33 and 65 rather than standard 64 or 128. What
+      might non-standard TTL values indicate about the C2 infrastructure?
+
+[TN] Suspected C2 (Command and Control) channel-இல் இருந்து packet
+     captures analyze செய்கிறீர்கள். TCP sessions standard 64 அல்லது 128-க்கு
+     பதிலாக unusual TTL values 33 மற்றும் 65-உடன் SYN packets காட்டுகிறது.
+     Non-standard TTL values C2 infrastructure பற்றி என்ன indicate
+     செய்யலாம்?
+
+----------------------------------------------------------------
+Q110.
+[EN] A blue team implements a deception layer where specific ports respond
+      with SYN+ACK regardless of whether a service is listening. How can
+      a red team operator distinguish between a real service and this
+      deceptive honeypot response using TCP-layer techniques?
+
+[TN] Blue team deception layer implement செய்கிறது — service listen
+     செய்கிறதா இல்லையா என்று பாராமல் specific ports SYN+ACK-உடன்
+     respond செய்கின்றன. Red team operator TCP-layer techniques use
+     செய்து real service மற்றும் இந்த deceptive honeypot response-ஐ
+     எப்படி distinguish செய்வார்?
+
+----------------------------------------------------------------
+
+SECTION 13: DEFENSIVE ANALYSIS & DETECTION
+பிரிவு 13: DEFENSIVE ANALYSIS மற்றும் DETECTION
+----------------------------------------------------------------
+
+Q111.
+[EN] A SIEM rule triggers on more than 100 SYN packets from a single
+      source IP within 10 seconds. An attacker bypasses this by sending
+      99 SYNs per 10-second window across 20 different source IPs.
+      Design an improved detection rule that would catch this distributed
+      slow scan while minimizing false positives.
+
+[TN] SIEM rule 10 seconds-ல் single source IP-லிருந்து 100-க்கும் அதிகமான
+     SYN packets-ல் trigger ஆகிறது. Attacker 20 different source IPs-ல்
+     10-second window-ல் 99 SYNs அனுப்பி இதை bypass செய்கிறார்.
+     False positives minimize செய்தபடி இந்த distributed slow scan catch
+     செய்யும் improved detection rule design செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q112.
+[EN] During incident response, you examine firewall logs and notice
+      repeated TCP ACK packets to port 80 from an external IP with no
+      corresponding SYN in the logs. What attack technique does this
+      suggest, and what does the absence of SYN indicate about where
+      the attacker is in the network?
+
+[TN] Incident response-ல் firewall logs examine செய்கிறீர்கள், logs-ல்
+     corresponding SYN இல்லாமல் external IP-லிருந்து port 80-க்கு
+     repeated TCP ACK packets notice செய்கிறீர்கள். இது என்ன attack
+     technique suggest செய்கிறது, SYN இல்லாமல் இருப்பது network-ல்
+     attacker எங்கே இருக்கிறார் என்று என்ன indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q113.
+[EN] A network sensor detects TCP segments with FIN+PSH+URG (XMAS)
+      flags arriving at a Windows Server. The Windows server sends RST
+      to every probe regardless of port state. From a defensive standpoint,
+      does this RST response help or harm the organization's security
+      posture?
+
+[TN] Network sensor Windows Server-ல் FIN+PSH+URG (XMAS) flags-உடன்
+     TCP segments arrive ஆவதை detect செய்கிறது. Windows server port
+     state-ஐ பொருட்படுத்தாமல் ஒவ்வொரு probe-க்கும் RST அனுப்புகிறது.
+     Defensive standpoint-ல் இந்த RST response organization-ஓட security
+     posture-க்கு help செய்கிறதா அல்லது harm செய்கிறதா?
+
+----------------------------------------------------------------
+Q114.
+[EN] During a threat hunt, an analyst finds that ISN values from an
+      internal web server show very low entropy, clustering around
+      specific value ranges. What security vulnerability does this
+      represent and what immediate remediation should be applied?
+
+[TN] Threat hunt-ல் analyst internal web server-இல் இருந்து ISN values
+     very low entropy காட்டி specific value ranges சுற்றி clustering
+     ஆவதைக் காண்கிறார். இது என்ன security vulnerability represent
+     செய்கிறது, என்ன immediate remediation apply செய்யணும்?
+
+----------------------------------------------------------------
+Q115.
+[EN] A blue team analyst observes that a legitimate user's workstation
+      shows TCP timestamp values that are 6 hours ahead of the current
+      time. What might cause this discrepancy and what security concern
+      does time skew in TCP timestamps raise for PAWS protection?
+
+[TN] Blue team analyst legitimate user-ஓட workstation current time-ஐ
+     விட 6 hours முன்பாக TCP timestamp values காட்டுவதை observe செய்கிறார்.
+     இந்த discrepancy-க்கு என்ன cause இருக்கலாம், TCP timestamps-ல்
+     time skew PAWS protection-க்கு என்ன security concern raise செய்கிறது?
+
+----------------------------------------------------------------
+Q116.
+[EN] A honeypot logs SYN packets with TCP Fast Open cookies that match
+      cookies issued to legitimate users. What does this imply about
+      the attacker's capabilities, and what network position would allow
+      cookie theft of this type?
+
+[TN] Honeypot legitimate users-க்கு issued cookies-க்கு match ஆகும்
+     TCP Fast Open cookies-உடன் SYN packets log செய்கிறது. Attacker-ஓட
+     capabilities பற்றி இது என்ன imply செய்கிறது, இந்த type cookie
+     theft-ஐ allow செய்யும் network position என்ன?
+
+----------------------------------------------------------------
+Q117.
+[EN] During network baseline establishment, a security team profiles
+      TCP window sizes across all internal subnets. They find subnet A
+      consistently shows window=65535, WScale=7 while subnet B shows
+      window=8192, WScale=8. Six months later, an anomaly shows subnet
+      A hosts with window=8192, WScale=8. What security event does this
+      indicate?
+
+[TN] Network baseline establishment-ல் security team all internal
+     subnets-ல் TCP window sizes profile செய்கிறது. Subnet A consistently
+     window=65535, WScale=7 காட்டுகிறது, subnet B window=8192, WScale=8
+     காட்டுகிறது. 6 months பிறகு anomaly subnet A hosts window=8192,
+     WScale=8 காட்டுகிறது. என்ன security event இதை indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q118.
+[EN] An IDS signature designed to detect Nmap SYN scans fires on packets
+      with specific TCP options in the order [MSS, SACK, Timestamp, NOP,
+      WScale]. An attacker knows this rule and modifies their scanner to
+      send options in random order. Design a detection approach that is
+      resilient to options-order randomization.
+
+[TN] Nmap SYN scans detect செய்ய design ஆன IDS signature [MSS, SACK,
+     Timestamp, NOP, WScale] order-ல் specific TCP options-உடன் packets-ல்
+     fire ஆகிறது. Attacker இந்த rule தெரிந்து random order-ல் options
+     அனுப்ப scanner modify செய்கிறார். Options-order randomization-க்கு
+     resilient ஆன detection approach design செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q119.
+[EN] A network operations center (NOC) detects an unusual spike in RST
+      packets targeting their BGP-speaking routers. The RST packets have
+      spoofed source IPs matching their upstream providers. Describe the
+      incident response steps to confirm and mitigate a BGP RST injection
+      attack in progress.
+
+[TN] Network operations center (NOC) BGP-speaking routers-ஐ target
+     செய்யும் RST packets-ல் unusual spike detect செய்கிறது. RST packets
+     upstream providers-க்கு match ஆகும் spoofed source IPs கொண்டிருக்கின்றன.
+     In progress ஆகும் BGP RST injection attack confirm மற்றும் mitigate
+     செய்ய incident response steps describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q120.
+[EN] A packet capture analysis reveals that during a data exfiltration
+      event, the attacker tunneled data inside TCP URG (urgent) data
+      fields rather than the regular payload. What detection challenges
+      does this technique present for DLP systems and network monitors?
+
+[TN] Packet capture analysis reveal செய்கிறது — data exfiltration event-ல்
+     attacker regular payload-க்கு பதிலாக TCP URG (urgent) data fields-க்குள்
+     data tunnel செய்தார். இந்த technique DLP systems மற்றும் network
+     monitors-க்கு என்ன detection challenges present செய்கிறது?
+
+----------------------------------------------------------------
+
+SECTION 14: SCAPY, TOOL-BASED & PRACTICAL ANALYSIS
+பிரிவு 14: SCAPY, TOOL-BASED மற்றும் PRACTICAL ANALYSIS
+----------------------------------------------------------------
+
+Q121.
+[EN] You write a Scapy script to perform OS fingerprinting by sending
+      a SYN with specific options and analyzing the response. The script
+      correctly identifies Linux hosts but consistently misidentifies
+      macOS hosts as FreeBSD. What specific field difference between
+      macOS and FreeBSD would you need to add to your analysis to
+      correct this misidentification?
+
+[TN] Specific options-உடன் SYN அனுப்பி response analyze செய்து OS
+     fingerprinting perform செய்ய Scapy script எழுதுகிறீர்கள். Script
+     Linux hosts-ஐ correctly identify செய்கிறது ஆனால் macOS hosts-ஐ
+     consistently FreeBSD-ஆக misidentify செய்கிறது. இந்த misidentification
+     correct செய்ய உங்கள் analysis-ல் macOS மற்றும் FreeBSD-க்கிடையே
+     என்ன specific field difference add செய்யணும்?
+
+----------------------------------------------------------------
+Q122.
+[EN] Using hping3, you capture 20 sequential IP ID values from a target:
+      all even numbers, incrementing by 2. Does this prove a shared counter?
+      What alternative explanation exists, and how would you design
+      a test to distinguish between the two explanations?
+
+[TN] hping3 use செய்து target-இல் இருந்து 20 sequential IP ID values
+     capture செய்கிறீர்கள்: எல்லாம் even numbers, 2-ஆல் increment ஆகின்றன.
+     இது shared counter-ஐ prove செய்கிறதா? என்ன alternative explanation
+     உள்ளது, இரண்டு explanations-ஐ distinguish செய்ய எப்படி test
+     design செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q123.
+[EN] During a capture, Wireshark shows TCP retransmissions occurring
+      precisely at 200ms intervals for a specific flow, with window size
+      dropping to zero after each retransmission. What combination of
+      network conditions and TCP mechanisms explains this exact pattern?
+
+[TN] Capture-ல் Wireshark specific flow-க்கு precisely 200ms intervals-ல்
+     TCP retransmissions ஆவதைக் காட்டுகிறது, ஒவ்வொரு retransmission-க்கும்
+     பிறகு window size zero-க்கு drop ஆகிறது. இந்த exact pattern-ஐ
+     என்ன network conditions மற்றும் TCP mechanisms combination explain
+     செய்கிறது?
+
+----------------------------------------------------------------
+Q124.
+[EN] You use nmap -O to fingerprint a target and the output shows OS
+      detection confidence at only 62% with two candidate OSes. What
+      factors reduce Nmap's OS detection confidence, and what additional
+      manual probes would you perform to increase certainty?
+
+[TN] Target fingerprint செய்ய nmap -O use செய்கிறீர்கள், output OS
+     detection confidence 62% மட்டுமே காட்டுகிறது, இரண்டு candidate
+     OSes உள்ளன. என்ன factors Nmap-ஓட OS detection confidence-ஐ
+     reduce செய்கிறது, certainty increase செய்ய என்ன additional manual
+     probes perform செய்வீர்கள்?
+
+----------------------------------------------------------------
+Q125.
+[EN] A Scapy-based tool sends SYN+ACK packets (without a prior SYN)
+      directly to a target. The target consistently responds with RST.
+      Explain this RST response in terms of TCP state machine behavior,
+      and describe one scenario where sending unsolicited SYN+ACK could
+      reveal useful network information.
+
+[TN] Scapy-based tool prior SYN இல்லாமல் directly target-க்கு SYN+ACK
+     packets அனுப்புகிறது. Target consistently RST-உடன் respond செய்கிறது.
+     TCP state machine behavior-ஓட terms-ல் இந்த RST response explain
+     செய்யுங்கள், unsolicited SYN+ACK அனுப்புவது useful network information
+     reveal செய்யும் ஒரு scenario describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+
+SECTION 15: COMBINED & SCENARIO-BASED QUESTIONS
+பிரிவு 15: COMBINED மற்றும் SCENARIO-BASED QUESTIONS
+----------------------------------------------------------------
+
+Q126.
+[EN] You are tasked with determining the exact OS of a DMZ server without
+      triggering the IDS. The IDS is known to alert on: SYN scans, XMAS
+      scans, and NULL scans. Design a fingerprinting approach using only
+      allowed traffic types that avoids all three IDS rules.
+
+[TN] IDS trigger செய்யாமல் DMZ server-ஓட exact OS determine செய்யும்
+     task கொடுக்கப்படுகிறது. IDS SYN scans, XMAS scans, NULL scans-ல்
+     alert செய்கிறது என்று தெரியும். இந்த மூன்று IDS rules-ஐயும் avoid
+     செய்யும் allowed traffic types மட்டும் use செய்த fingerprinting
+     approach design செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q127.
+[EN] During a red team operation, you need to determine if a target IP
+      belongs to a Windows server or a Linux server, using only one
+      single packet exchange (no back-and-forth). Design the exact packet,
+      describe what you send, and what specific field in the response
+      definitively answers the question.
+
+[TN] Red team operation-ல் one single packet exchange மட்டும் use செய்து
+     (back-and-forth இல்லாமல்) target IP Windows server-ஆ Linux server-ஆ
+     என்று determine செய்ய வேண்டும். Exact packet design செய்யுங்கள்,
+     என்ன அனுப்புகிறீர்கள் describe செய்யுங்கள், response-ல் என்ன
+     specific field definitively question-க்கு answer தருகிறது.
+
+----------------------------------------------------------------
+Q128.
+[EN] A firewall administrator wants to prevent idle scan (zombie scan)
+      attacks originating from inside their network. What specific network
+      configuration changes and host hardening measures would eliminate
+      the conditions necessary for a host to be exploited as a zombie?
+
+[TN] Firewall administrator network-க்குள்ளிருந்து originating ஆகும்
+     idle scan (zombie scan) attacks prevent செய்ய விரும்புகிறார்.
+     ஒரு host zombie-ஆக exploit ஆவதற்கு necessary conditions eliminate
+     செய்யும் specific network configuration changes மற்றும் host
+     hardening measures என்ன?
+
+----------------------------------------------------------------
+Q129.
+[EN] You perform a complete port scan methodology against a hardened
+      target: SYN scan shows all filtered, FIN scan shows all
+      open|filtered, ACK scan shows all filtered. Combine these results
+      to draw the most specific conclusions possible about the target's
+      firewall type and configuration.
+
+[TN] Hardened target-க்கு எதிராக complete port scan methodology perform
+     செய்கிறீர்கள்: SYN scan எல்லாம் filtered காட்டுகிறது, FIN scan
+     எல்லாம் open|filtered காட்டுகிறது, ACK scan எல்லாம் filtered
+     காட்டுகிறது. இந்த results combine செய்து target-ஓட firewall type
+     மற்றும் configuration பற்றி most specific conclusions draw செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q130.
+[EN] During a purple team exercise, the red team uses TCP fingerprinting
+      evasion by randomizing WScale values per connection. The blue team's
+      detection relies on behavioral baselines. Describe how the blue
+      team's baseline detection would flag this activity despite the
+      randomized WScale.
+
+[TN] Purple team exercise-ல் red team per connection WScale values
+     randomize செய்து TCP fingerprinting evasion use செய்கிறது. Blue
+     team-ஓட detection behavioral baselines-ஐ rely செய்கிறது. Randomized
+     WScale-ஐ மீறியும் blue team-ஓட baseline detection இந்த activity-ஐ
+     எப்படி flag செய்யும் என்று describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q131.
+[EN] An attacker discovers that a critical server accepts connections
+      from source port 443 regardless of destination port (a common
+      cloud firewall misconfiguration). Describe the full exploitation
+      chain from reconnaissance to establishing a covert channel using
+      only this firewall bypass.
+
+[TN] Attacker discover செய்கிறார் — critical server destination port-ஐ
+     பொருட்படுத்தாமல் source port 443-லிருந்து connections accept செய்கிறது
+     (common cloud firewall misconfiguration). Reconnaissance முதல் இந்த
+     firewall bypass மட்டும் use செய்து covert channel establish செய்வது
+     வரையிலான full exploitation chain describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q132.
+[EN] A security researcher identifies that a router between two network
+      zones modifies TCP window sizes in transit, reducing them by exactly
+      25%. How would you detect this TCP window manipulation, what type
+      of middlebox behavior causes it, and what are the security
+      implications?
+
+[TN] Security researcher identify செய்கிறார் — two network zones-க்கிடையே
+     router transit-ல் TCP window sizes modify செய்கிறது, exactly 25%
+     reduce செய்கிறது. இந்த TCP window manipulation எப்படி detect
+     செய்வீர்கள், என்ன type middlebox behavior இதை cause செய்கிறது,
+     security implications என்ன?
+
+----------------------------------------------------------------
+Q133.
+[EN] During a DNS infrastructure assessment, you send SYN probes to port
+      53 TCP and receive SYN+ACK. You then intentionally do not complete
+      the handshake. After 75 seconds, you probe again and receive no
+      response. What TCP mechanism caused the second probe to fail and
+      what does this reveal about the server's half-open connection limit?
+
+[TN] DNS infrastructure assessment-ல் port 53 TCP-க்கு SYN probes
+     அனுப்பி SYN+ACK receive செய்கிறீர்கள். பிறகு intentionally handshake
+     complete செய்யவில்லை. 75 seconds-க்கு பிறகு மீண்டும் probe செய்கிறீர்கள்,
+     response இல்லை. என்ன TCP mechanism second probe-ஐ fail ஆக்கியது,
+     server-ஓட half-open connection limit பற்றி இது என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q134.
+[EN] A penetration tester captures a full TCP handshake followed by an
+      HTTP request. The TCP segment carrying the HTTP GET has PSH+ACK
+      flags. The server's response segments all carry only ACK. Under
+      what conditions would you expect to see PSH in server responses,
+      and what does its consistent absence indicate?
+
+[TN] Penetration tester full TCP handshake-க்கு பிறகு HTTP request capture
+     செய்கிறார். HTTP GET carry செய்யும் TCP segment PSH+ACK flags
+     கொண்டுள்ளது. Server-ஓட response segments எல்லாம் ACK மட்டுமே
+     carry செய்கின்றன. என்ன conditions-ல் server responses-ல் PSH
+     expect செய்வீர்கள், consistent absence என்ன indicate செய்கிறது?
+
+----------------------------------------------------------------
+Q135.
+[EN] You are building a network sensor to detect SYN cookie activation
+      events in real-time across a monitored network. Describe the exact
+      fields and field transitions in packet captures that your sensor
+      must monitor to reliably detect when SYN cookies become active
+      on any server in the monitored segment.
+
+[TN] Monitored network-ல் real-time-ல் SYN cookie activation events
+     detect செய்யும் network sensor build செய்கிறீர்கள். Monitored
+     segment-ல் எந்த server-லும் SYN cookies active ஆவதை reliably
+     detect செய்ய உங்கள் sensor monitor செய்யணும் exact fields மற்றும்
+     field transitions describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q136.
+[EN] A threat intelligence report indicates that a specific APT group
+      uses TCP SYN packets with a window size of exactly 1024, MSS=512,
+      no WScale, no SACK, and no Timestamp options as part of their
+      initial reconnaissance. Write a Snort/Suricata rule to detect
+      this specific fingerprint without generating excessive false positives.
+
+[TN] Threat intelligence report indicate செய்கிறது — specific APT group
+     initial reconnaissance-ல் exactly 1024 window size, MSS=512, WScale
+     இல்லாமல், SACK இல்லாமல், Timestamp options இல்லாமல் TCP SYN packets
+     use செய்கிறது. Excessive false positives generate செய்யாமல் இந்த
+     specific fingerprint detect செய்யும் Snort/Suricata rule எழுதுங்கள்.
+
+----------------------------------------------------------------
+Q137.
+[EN] During network forensics, you discover that an exfiltration tool
+      encoded data in the TCP sequence number field, using the 32-bit
+      ISN field of SYN packets to transmit 4 bytes of data per packet.
+      How would you identify this covert channel in packet captures,
+      and what anomaly would distinguish it from normal ISN values?
+
+[TN] Network forensics-ல் discover செய்கிறீர்கள் — exfiltration tool TCP
+     sequence number field-ல் data encode செய்தது, SYN packets-ஓட 32-bit
+     ISN field-ஐ per packet 4 bytes data transmit செய்ய use செய்தது.
+     Packet captures-ல் இந்த covert channel எப்படி identify செய்வீர்கள்,
+     normal ISN values-லிருந்து distinguish செய்யும் anomaly என்ன?
+
+----------------------------------------------------------------
+Q138.
+[EN] A penetration tester performs a TCP connect scan (-sT) against a
+      target behind a proxy. The proxy completes the TCP handshake on
+      behalf of the target but terminates the connection before relaying
+      to the backend. How can the tester detect the presence of this
+      TCP proxy and determine information about the actual backend server?
+
+[TN] Penetration tester proxy-க்கு பின்னால் உள்ள target-க்கு எதிராக TCP
+     connect scan (-sT) perform செய்கிறார். Proxy target-ஓட behalf-ல்
+     TCP handshake complete செய்கிறது, ஆனால் backend-க்கு relay செய்வதற்கு
+     முன்பே connection terminate செய்கிறது. Tester இந்த TCP proxy presence
+     எப்படி detect செய்வார், actual backend server பற்றி information
+     எப்படி determine செய்வார்?
+
+----------------------------------------------------------------
+Q139.
+[EN] An organization implements RFC 5961 on all their servers. An
+      attacker attempts a blind TCP injection attack by sending RST
+      packets. Explain exactly how RFC 5961's Challenge ACK mechanism
+      prevents the injection while simultaneously describing the
+      side-channel that still allows sequence number inference.
+
+[TN] Organization எல்லா servers-லும் RFC 5961 implement செய்கிறது.
+     Attacker RST packets அனுப்பி blind TCP injection attack attempt
+     செய்கிறார். RFC 5961-ஓட Challenge ACK mechanism injection-ஐ எப்படி
+     exactly prevent செய்கிறது, sequence number inference allow செய்யும்
+     side-channel-ஐ simultaneously describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q140.
+[EN] You capture network traffic during a suspected lateral movement
+      event. The traffic shows TCP sessions with window size=65535 and
+      WScale=7 (Linux profile) connecting to Windows Active Directory
+      ports (88, 389, 445). However, the source workstation inventory
+      lists only Windows machines. What are the three most likely
+      explanations for this discrepancy?
+
+[TN] Suspected lateral movement event-ல் network traffic capture
+     செய்கிறீர்கள். Traffic window size=65535, WScale=7 (Linux profile)
+     உடன் Windows Active Directory ports (88, 389, 445)-க்கு connect
+     ஆகும் TCP sessions காட்டுகிறது. ஆனால் source workstation inventory
+     only Windows machines list செய்கிறது. இந்த discrepancy-க்கு மூன்று
+     most likely explanations என்ன?
+
+----------------------------------------------------------------
+Q141.
+[EN] An advanced persistent threat actor communicates with their implant
+      using TCP connections where every SYN packet carries a 1-byte TCP
+      option with kind=253 (experimental). The option value changes with
+      each connection. What is the likely purpose of this custom option
+      and how would you extract and analyze the embedded data?
+
+[TN] Advanced persistent threat actor TCP connections use செய்து implant-உடன்
+     communicate செய்கிறார், ஒவ்வொரு SYN packet-லும் 1-byte TCP option
+     kind=253 (experimental) carry செய்கிறது. Option value ஒவ்வொரு
+     connection-லும் மாறுகிறது. இந்த custom option-ஓட likely purpose என்ன,
+     embedded data extract செய்து analyze செய்வது எப்படி?
+
+----------------------------------------------------------------
+Q142.
+[EN] A security engineer proposes using TCP window size as an access
+      control mechanism: only connections with window size=8192 are
+      forwarded to the backend. Evaluate the security effectiveness
+      of this approach and describe how an attacker would trivially
+      bypass it.
+
+[TN] Security engineer TCP window size-ஐ access control mechanism-ஆக
+     use செய்ய propose செய்கிறார்: window size=8192 உடைய connections
+     மட்டுமே backend-க்கு forward ஆகும். இந்த approach-ஓட security
+     effectiveness evaluate செய்யுங்கள், attacker இதை எப்படி trivially
+     bypass செய்வார் என்று describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q143.
+[EN] During post-incident analysis of a DDoS attack, logs show millions
+      of SYN packets with source IPs from around the world, each with
+      different TTL values of 47, 112, 55, 119. Given that real TTLs
+      should cluster around 64-X or 128-X (where X is hop count), what
+      do the scattered TTL values tell you about the attack source?
+
+[TN] DDoS attack-ஓட post-incident analysis-ல் logs worldwide source
+     IPs-லிருந்து millions of SYN packets காட்டுகிறது, ஒவ்வொன்றும்
+     47, 112, 55, 119 different TTL values கொண்டுள்ளன. Real TTLs 64-X
+     அல்லது 128-X சுற்றி cluster ஆகணும் (X = hop count). Scattered TTL
+     values attack source பற்றி என்ன சொல்கிறது?
+
+----------------------------------------------------------------
+Q144.
+[EN] A network analyst observes that a server changes its TCP fingerprint
+      between reboots — sometimes appearing as Linux, sometimes as Windows.
+      The hardware does not change. What infrastructure technology could
+      explain this fingerprint variability and what security implications
+      does this have for network-based access controls?
+
+[TN] Network analyst observe செய்கிறார் — server reboots-க்கிடையே TCP
+     fingerprint மாறுகிறது, சில நேரம் Linux-ஆகவும் சில நேரம் Windows-ஆகவும்
+     appear ஆகிறது. Hardware மாறவில்லை. என்ன infrastructure technology
+     இந்த fingerprint variability explain செய்யலாம், network-based access
+     controls-க்கு இது என்ன security implications கொண்டுள்ளது?
+
+----------------------------------------------------------------
+Q145.
+[EN] You identify that a target web application returns HTTP 200 for all
+      requests but with different response times: fast for valid paths,
+      slow for invalid paths. Correlating this with TCP-layer observations
+      (window size changes, PSH patterns), describe how you would build
+      a comprehensive side-channel attack combining application-layer
+      and TCP-layer timing information.
+
+[TN] Target web application எல்லா requests-க்கும் HTTP 200 return செய்கிறது
+     ஆனால் different response times: valid paths-க்கு fast, invalid paths-க்கு
+     slow என்று identify செய்கிறீர்கள். TCP-layer observations (window size
+     changes, PSH patterns)-உடன் correlate செய்து, application-layer மற்றும்
+     TCP-layer timing information combine செய்யும் comprehensive side-channel
+     attack எப்படி build செய்வீர்கள் என்று describe செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q146.
+[EN] A junior penetration tester claims that running a SYN scan with
+      a spoofed source IP is completely anonymous because no packets
+      with their real IP are sent to the target. Identify at least
+      three ways this assumption is incorrect and their real IP could
+      still be identified.
+
+[TN] Junior penetration tester spoofed source IP-உடன் SYN scan run
+     செய்வது completely anonymous என்று claim செய்கிறார், ஏனென்றால்
+     target-க்கு their real IP-உடன் packets அனுப்பப்படவில்லை. இந்த
+     assumption incorrect-ஆக இருக்கும் குறைந்தது மூன்று ways identify
+     செய்யுங்கள், their real IP இன்னும் எப்படி identify ஆகலாம்.
+
+----------------------------------------------------------------
+Q147.
+[EN] A SOC analyst receives an alert about TCP FIN packets arriving at
+      multiple servers simultaneously from the same source IP, with no
+      prior connections in the state table. What is the most likely
+      explanation for this traffic pattern, is it malicious, and what
+      additional context would help determine intent?
+
+[TN] SOC analyst ஒரே source IP-லிருந்து same time-ல் multiple servers-ல்
+     TCP FIN packets arrive ஆவதை, state table-ல் prior connections
+     இல்லாமல், alert receive செய்கிறார். இந்த traffic pattern-க்கு most
+     likely explanation என்ன, இது malicious-ஆ, intent determine செய்ய
+     என்ன additional context help செய்யும்?
+
+----------------------------------------------------------------
+Q148.
+[EN] During a network audit, you compare the TCP fingerprints of two
+      hosts claiming to be identical VM templates (same OS, same
+      configuration). Host A shows WScale=7, TSval incrementing at 1000Hz.
+      Host B shows WScale=7 but TSval incrementing at 250Hz. Despite
+      identical configurations, what explains this difference and what
+      does it reveal about each host's actual hardware or hypervisor?
+
+[TN] Network audit-ல் identical VM templates (same OS, same configuration)
+     என்று claim செய்யும் இரண்டு hosts-ஓட TCP fingerprints compare
+     செய்கிறீர்கள். Host A WScale=7, TSval 1000Hz-ல் incrementing காட்டுகிறது.
+     Host B WScale=7 ஆனால் TSval 250Hz-ல் incrementing காட்டுகிறது. Identical
+     configurations-ஆக இருந்தாலும் இந்த difference ஏன் என்று explain
+     செய்யுங்கள், ஒவ்வொரு host-ஓட actual hardware அல்லது hypervisor
+     பற்றி என்ன reveal செய்கிறது?
+
+----------------------------------------------------------------
+Q149.
+[EN] A red team operator needs to perform port scanning against a target
+      that logs all TCP connections with full packet headers. The operator
+      must determine open ports without having any SYN packets from their
+      real source IP reach the target. Design a complete scanning strategy
+      using only the techniques discussed in this topic area.
+
+[TN] Red team operator full packet headers-உடன் எல்லா TCP connections
+     log செய்யும் target-க்கு எதிராக port scanning perform செய்யணும்.
+     Their real source IP-லிருந்து எந்த SYN packets-உம் target-ஐ reach
+     செய்யாமல் open ports determine செய்யணும். இந்த topic area-ல்
+     discuss ஆன techniques மட்டும் use செய்து complete scanning strategy
+     design செய்யுங்கள்.
+
+----------------------------------------------------------------
+Q150.
+[EN] You are designing a next-generation network IDS signature for
+      detecting all forms of TCP-based OS fingerprinting and port scanning,
+      including passive techniques. Describe the comprehensive detection
+      framework covering: flag-based scan signatures, fingerprint anomaly
+      detection, behavioral baselines, SYN cookie state monitoring, IP ID
+      sequence analysis, and timestamp-based correlation — all integrated
+      into a single coherent detection architecture.
+
+[TN] Passive techniques உட்பட TCP-based OS fingerprinting மற்றும் port
+     scanning-ஓட எல்லா forms detect செய்யும் next-generation network IDS
+     signature design செய்கிறீர்கள். பின்வருவனவற்றை cover செய்யும்
+     comprehensive detection framework describe செய்யுங்கள்: flag-based
+     scan signatures, fingerprint anomaly detection, behavioral baselines,
+     SYN cookie state monitoring, IP ID sequence analysis, timestamp-based
+     correlation — எல்லாவற்றையும் single coherent detection architecture-ல்
+     integrate செய்யுங்கள்.
+
+================================================================
+  END OF QUESTIONS | வினாக்கள் முடிவு
+  Total: 150 Questions | Bilingual: English + Tamil
+  Topic: TCP/IP Indirect Penetration Testing Model
+================================================================

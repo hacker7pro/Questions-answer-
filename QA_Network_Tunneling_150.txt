@@ -1,0 +1,1236 @@
+================================================================
+NETWORK TUNNELING & ENCAPSULATION - 150 Q&A
+(Bilingual: English & Tamil | Straight Knowledge Model)
+================================================================
+
+-----------------------------------------------------------
+SECTION 1: IP-in-IP (Protocol 4)
+-----------------------------------------------------------
+
+Q1. What is IP-in-IP tunneling?
+A1. IP-in-IP (RFC 2003) is a tunneling protocol where one IP packet is encapsulated inside another IP packet. The outer IP header handles delivery, and the inner IP header carries the original packet.
+
+கேள்வி 1. IP-in-IP tunneling என்றால் என்ன?
+பதில் 1. IP-in-IP (RFC 2003) என்பது ஒரு IP packet-ஐ மற்றொரு IP packet-க்குள் encapsulate செய்யும் tunneling protocol. Outer IP header delivery handle செய்யும், Inner IP header original packet carry செய்யும்.
+
+---
+
+Q2. What is the protocol number for IP-in-IP?
+A2. Protocol number 4.
+
+கேள்வி 2. IP-in-IP-ன் protocol number என்ன?
+பதில் 2. Protocol number 4.
+
+---
+
+Q3. What is the overhead of IP-in-IP?
+A3. 20 bytes (one additional IP header).
+
+கேள்வி 3. IP-in-IP-ன் overhead என்ன?
+பதில் 3. 20 bytes (ஒரு additional IP header).
+
+---
+
+Q4. What is the effective MTU of IP-in-IP on a 1500-byte Ethernet link?
+A4. 1460 bytes (1500 - 40 bytes overhead: 20 outer IP + 20 inner IP).
+
+கேள்வி 4. 1500-byte Ethernet link-ல் IP-in-IP-ன் effective MTU என்ன?
+பதில் 4. 1460 bytes (1500 - 40 bytes overhead: 20 outer IP + 20 inner IP).
+
+---
+
+Q5. Does IP-in-IP support multicast as an outer destination?
+A5. No. IP-in-IP only supports unicast as the outer destination. However, the inner destination can be multicast.
+
+கேள்வி 5. IP-in-IP outer destination-ஆக multicast support செய்யுமா?
+பதில் 5. இல்லை. IP-in-IP outer destination unicast மட்டும். ஆனால் inner destination multicast ஆக இருக்கலாம்.
+
+---
+
+Q6. Does IP-in-IP require a target (remote) address to be configured?
+A6. Yes. IP-in-IP is a point-to-point tunnel and requires both source and destination (remote) IP addresses to be configured.
+
+கேள்வி 6. IP-in-IP-க்கு target address configure தேவையா?
+பதில் 6. ஆம். IP-in-IP point-to-point tunnel — source மற்றும் destination IP இரண்டும் configure தேவை.
+
+---
+
+Q7. Can IP-in-IP carry multicast traffic inside the tunnel?
+A7. Yes. The inner IP header can have a multicast destination (e.g., 224.0.0.5). This is how DVMRP/Mbone used IP-in-IP to carry multicast routing traffic.
+
+கேள்வி 7. IP-in-IP tunnel-க்குள் multicast traffic carry செய்யலாமா?
+பதில் 7. ஆம். Inner IP header-ல் multicast destination (224.0.0.5) வைக்கலாம். DVMRP/Mbone இதையே use செய்தது.
+
+---
+
+Q8. What RFC defines IP-in-IP?
+A8. RFC 2003.
+
+கேள்வி 8. IP-in-IP எந்த RFC define செய்கிறது?
+பதில் 8. RFC 2003.
+
+---
+
+Q9. What is the main limitation of IP-in-IP compared to GRE?
+A9. IP-in-IP cannot carry multicast as outer destination, does not support multiple protocols, and has no header for flags or keys unlike GRE.
+
+கேள்வி 9. GRE-உடன் ஒப்பிடும்போது IP-in-IP-ன் முக்கிய limitation என்ன?
+பதில் 9. IP-in-IP outer destination multicast support இல்லை, multiple protocols support இல்லை, GRE போல் flags/keys header இல்லை.
+
+---
+
+Q10. How does IP-in-IP appear in a packet capture?
+A10. The outer IP header shows Protocol=4, and inside it another full IP header is found with the original source and destination.
+
+கேள்வி 10. Packet capture-ல் IP-in-IP எப்படி தெரியும்?
+பதில் 10. Outer IP header Protocol=4 காட்டும், உள்ளே மற்றொரு IP header original source மற்றும் destination உடன் தெரியும்.
+
+-----------------------------------------------------------
+SECTION 2: EtherIP (Protocol 97)
+-----------------------------------------------------------
+
+Q11. What is EtherIP?
+A11. EtherIP (RFC 3378, Protocol 97) is a tunneling protocol that encapsulates full Ethernet frames inside IP datagrams. It operates at Layer 2, allowing MAC addresses and Ethernet broadcasts to traverse IP networks.
+
+கேள்வி 11. EtherIP என்றால் என்ன?
+பதில் 11. EtherIP (RFC 3378, Protocol 97) முழு Ethernet frames-ஐ IP datagrams-க்குள் encapsulate செய்யும். Layer 2-ல் operate செய்யும் — MAC addresses மற்றும் Ethernet broadcasts IP network வழியா போகும்.
+
+---
+
+Q12. What is the protocol number for EtherIP?
+A12. Protocol number 97.
+
+கேள்வி 12. EtherIP-ன் protocol number என்ன?
+பதில் 12. Protocol number 97.
+
+---
+
+Q13. What is the EtherIP header size?
+A13. 2 bytes (16-bit EtherIP header) plus the 20-byte outer IP header, totaling 22 bytes of overhead.
+
+கேள்வி 13. EtherIP header size என்ன?
+பதில் 13. 2 bytes (16-bit EtherIP header) + 20 bytes outer IP header = 22 bytes total overhead.
+
+---
+
+Q14. What is the effective MTU of EtherIP on a 1500-byte link?
+A14. 1478 bytes (1500 - 22 bytes overhead).
+
+கேள்வி 14. 1500-byte link-ல் EtherIP-ன் effective MTU என்ன?
+பதில் 14. 1478 bytes (1500 - 22 bytes overhead).
+
+---
+
+Q15. Does EtherIP require a target address to be configured?
+A15. Yes. EtherIP outer IP destination must be a specific unicast address of the remote EtherIP router.
+
+கேள்வி 15. EtherIP-க்கு target address configure தேவையா?
+பதில் 15. ஆம். EtherIP outer IP destination remote router-ன் specific unicast address ஆக இருக்க வேண்டும்.
+
+---
+
+Q16. Can EtherIP carry multicast traffic?
+A16. Yes, but only in the inner Ethernet frame. The inner frame can carry multicast MAC addresses and IP multicast traffic. The outer IP destination must remain unicast.
+
+கேள்வி 16. EtherIP multicast traffic carry செய்யுமா?
+பதில் 16. ஆம், ஆனால் inner Ethernet frame மட்டும். Inner frame-ல் multicast MAC மற்றும் IP multicast traffic போகும். Outer IP destination unicast மட்டுமே.
+
+---
+
+Q17. What is the main use case for EtherIP?
+A17. Connecting two geographically separate LANs as if they were on the same Layer 2 network (L2 bridging over IP).
+
+கேள்வி 17. EtherIP-ன் முக்கிய use case என்ன?
+பதில் 17. இரண்டு தொலைவிலுள்ள LANs-ஐ ஒரே Layer 2 network போல் connect செய்வது (L2 bridging over IP).
+
+---
+
+Q18. What inner traffic can EtherIP carry?
+A18. Any Ethernet frame including unicast, broadcast, multicast, ARP, OSPF hellos, EIGRP, and any Layer 2 protocol.
+
+கேள்வி 18. EtherIP என்ன inner traffic carry செய்யும்?
+பதில் 18. Unicast, broadcast, multicast, ARP, OSPF hellos, EIGRP உட்பட எந்த Ethernet frame-உம்.
+
+---
+
+Q19. What RFC defines EtherIP?
+A19. RFC 3378.
+
+கேள்வி 19. EtherIP எந்த RFC define செய்கிறது?
+பதில் 19. RFC 3378.
+
+---
+
+Q20. How does EtherIP differ from GRE?
+A20. EtherIP carries full Ethernet frames (Layer 2), while GRE carries IP packets (Layer 3). EtherIP cannot use multicast as outer destination; GRE can. EtherIP has minimal 2-byte header; GRE has 4+ byte header.
+
+கேள்வி 20. EtherIP மற்றும் GRE-ல் என்ன வித்தியாசம்?
+பதில் 20. EtherIP முழு Ethernet frames (Layer 2) carry செய்யும், GRE IP packets (Layer 3) carry செய்யும். EtherIP outer multicast இல்லை; GRE உண்டு. EtherIP 2-byte header; GRE 4+ byte header.
+
+-----------------------------------------------------------
+SECTION 3: GRE (Protocol 47)
+-----------------------------------------------------------
+
+Q21. What is GRE?
+A21. Generic Routing Encapsulation (GRE, RFC 2784, Protocol 47) is a tunneling protocol that can encapsulate any network layer protocol inside IP packets.
+
+கேள்வி 21. GRE என்றால் என்ன?
+பதில் 21. Generic Routing Encapsulation (GRE, RFC 2784, Protocol 47) எந்த network layer protocol-ஐயும் IP packets-க்குள் encapsulate செய்யும் tunneling protocol.
+
+---
+
+Q22. What is the overhead of basic GRE?
+A22. 24 bytes (20-byte outer IP header + 4-byte GRE header).
+
+கேள்வி 22. Basic GRE-ன் overhead என்ன?
+பதில் 22. 24 bytes (20-byte outer IP header + 4-byte GRE header).
+
+---
+
+Q23. What is the effective MTU of GRE on a 1500-byte link?
+A23. 1476 bytes (1500 - 24 bytes overhead).
+
+கேள்வி 23. 1500-byte link-ல் GRE-ன் effective MTU என்ன?
+பதில் 23. 1476 bytes (1500 - 24 bytes overhead).
+
+---
+
+Q24. Can GRE use multicast as outer destination?
+A24. Yes. GRE is the only standard tunneling protocol that supports multicast as the outer destination address, enabling routing protocols like OSPF and EIGRP over tunnels.
+
+கேள்வி 24. GRE outer destination-ஆக multicast use செய்யுமா?
+பதில் 24. ஆம். GRE மட்டும் outer destination multicast support செய்யும் — OSPF, EIGRP போன்ற routing protocols tunnel வழியா போகும்.
+
+---
+
+Q25. Does GRE with multicast outer destination require target configuration?
+A25. No. When using multicast as the outer destination, nodes join the multicast group and no specific target is configured.
+
+கேள்வி 25. GRE multicast outer destination-க்கு target config தேவையா?
+பதில் 25. இல்லை. Multicast group join மட்டும் — specific target configure தேவையில்லை.
+
+---
+
+Q26. What is mGRE?
+A26. Multipoint GRE (mGRE) is a variant of GRE that allows a single tunnel interface to connect to multiple endpoints dynamically, used in DMVPN.
+
+கேள்வி 26. mGRE என்றால் என்ன?
+பதில் 26. Multipoint GRE (mGRE) ஒரே tunnel interface-ல் multiple endpoints dynamically connect செய்யும் — DMVPN-ல் use ஆகும்.
+
+---
+
+Q27. What is DMVPN?
+A27. Dynamic Multipoint VPN (DMVPN) uses mGRE + NHRP + IPSec to create a scalable hub-and-spoke or spoke-to-spoke VPN without pre-configuring every tunnel endpoint.
+
+கேள்வி 27. DMVPN என்றால் என்ன?
+பதில் 27. Dynamic Multipoint VPN (DMVPN) = mGRE + NHRP + IPSec — எல்லா tunnel endpoint configure செய்யாமல் scalable VPN உருவாக்கும்.
+
+---
+
+Q28. What protocol number is GRE?
+A28. Protocol 47.
+
+கேள்வி 28. GRE-ன் protocol number என்ன?
+பதில் 28. Protocol 47.
+
+---
+
+Q29. Is GRE encrypted by default?
+A29. No. GRE provides no encryption. All inner traffic is transmitted in plaintext. IPSec must be added for encryption.
+
+கேள்வி 29. GRE default-ஆ encrypt ஆகுமா?
+பதில் 29. இல்லை. GRE encryption இல்லை. Inner traffic plaintext-ஆக போகும். Encryption-க்கு IPSec add செய்யணும்.
+
+---
+
+Q30. What is the GRE header with key option overhead?
+A30. 28 bytes (20-byte outer IP + 8-byte GRE header with key field).
+
+கேள்வி 30. GRE key option-உடன் overhead என்ன?
+பதில் 30. 28 bytes (20-byte outer IP + 8-byte GRE header with key field).
+
+-----------------------------------------------------------
+SECTION 4: 6in4 / 6to4 (Protocol 41)
+-----------------------------------------------------------
+
+Q31. What is 6in4 tunneling?
+A31. 6in4 (RFC 4213, Protocol 41) encapsulates IPv6 packets inside IPv4 packets to carry IPv6 traffic over IPv4 networks.
+
+கேள்வி 31. 6in4 tunneling என்றால் என்ன?
+பதில் 31. 6in4 (RFC 4213, Protocol 41) IPv6 packets-ஐ IPv4 packets-க்குள் encapsulate செய்து IPv4 network வழியா IPv6 traffic கொண்டு போகும்.
+
+---
+
+Q32. What is the overhead of 6in4?
+A32. 20 bytes (IPv4 outer header only, since IPv6 header is the payload).
+
+கேள்வி 32. 6in4-ன் overhead என்ன?
+பதில் 32. 20 bytes (IPv4 outer header மட்டும்).
+
+---
+
+Q33. What is the difference between 6in4 and 6to4?
+A33. 6in4 (static) requires a configured remote endpoint. 6to4 (RFC 3056) is dynamic — it uses anycast address 192.88.99.1 and derives the IPv6 address from the IPv4 address automatically. No target configuration needed for 6to4.
+
+கேள்வி 33. 6in4 மற்றும் 6to4-ல் என்ன வித்தியாசம்?
+பதில் 33. 6in4 static — remote endpoint configure தேவை. 6to4 dynamic — anycast 192.88.99.1 use செய்யும், IPv4 address-இல் இருந்து IPv6 auto-derive ஆகும். 6to4-க்கு target config தேவையில்லை.
+
+---
+
+Q34. What is the protocol number for 6in4?
+A34. Protocol 41.
+
+கேள்வி 34. 6in4-ன் protocol number என்ன?
+பதில் 34. Protocol 41.
+
+---
+
+Q35. What is the effective MTU of 6in4?
+A35. 1480 bytes (1500 - 20 bytes IPv4 overhead). But IPv6 requires minimum 1280 bytes MTU.
+
+கேள்வி 35. 6in4-ன் effective MTU என்ன?
+பதில் 35. 1480 bytes (1500 - 20 bytes IPv4 overhead). ஆனால் IPv6 minimum 1280 bytes MTU தேவை.
+
+---
+
+Q36. Does 6to4 require a target address?
+A36. No. 6to4 uses anycast — the nearest 6to4 relay router automatically handles the traffic.
+
+கேள்வி 36. 6to4-க்கு target address தேவையா?
+பதில் 36. இல்லை. 6to4 anycast use செய்யும் — nearest 6to4 relay router automatically handle செய்யும்.
+
+---
+
+Q37. What IPv6 prefix does 6to4 use?
+A37. 2002::/16 prefix. The IPv4 address is embedded in the IPv6 address as 2002:[v4 hex]::1.
+
+கேள்வி 37. 6to4 எந்த IPv6 prefix use செய்யும்?
+பதில் 37. 2002::/16 prefix. IPv4 address hex-ஆக embed ஆகும்: 2002:[v4 hex]::1.
+
+---
+
+Q38. What anycast address does 6to4 use?
+A38. 192.88.99.1 (the 6to4 anycast relay address).
+
+கேள்வி 38. 6to4 எந்த anycast address use செய்யும்?
+பதில் 38. 192.88.99.1 (6to4 anycast relay address).
+
+---
+
+Q39. What RFC defines 6to4?
+A39. RFC 3056.
+
+கேள்வி 39. 6to4 எந்த RFC define செய்கிறது?
+பதில் 39. RFC 3056.
+
+---
+
+Q40. When does 6in4 require target configuration?
+A40. Always. Static 6in4 is point-to-point and both tunnel source and remote endpoint IPv4 address must be configured.
+
+கேள்வி 40. 6in4-க்கு எப்போது target configuration தேவை?
+பதில் 40. எப்போதும். Static 6in4 point-to-point — tunnel source மற்றும் remote endpoint IPv4 address configure செய்யணும்.
+
+-----------------------------------------------------------
+SECTION 5: IP Protocol Numbers
+-----------------------------------------------------------
+
+Q41. What does the IP Protocol field indicate?
+A41. The 8-bit Protocol field in the IP header identifies which protocol is carried in the IP payload (e.g., 6=TCP, 17=UDP, 47=GRE).
+
+கேள்வி 41. IP Protocol field என்ன indicate செய்யும்?
+பதில் 41. IP header-ல் 8-bit Protocol field IP payload-ல் எந்த protocol இருக்கிறது என்று identify செய்யும் (6=TCP, 17=UDP, 47=GRE).
+
+---
+
+Q42. What is Protocol 1?
+A42. ICMP (Internet Control Message Protocol) — used for error messages and diagnostics like ping.
+
+கேள்வி 42. Protocol 1 என்ன?
+பதில் 42. ICMP (Internet Control Message Protocol) — ping மற்றும் error messages-க்கு use ஆகும்.
+
+---
+
+Q43. What is Protocol 2?
+A43. IGMP (Internet Group Management Protocol) — used for multicast group membership management.
+
+கேள்வி 43. Protocol 2 என்ன?
+பதில் 43. IGMP (Internet Group Management Protocol) — multicast group join/leave manage செய்யும்.
+
+---
+
+Q44. What is Protocol 6?
+A44. TCP (Transmission Control Protocol) — reliable, connection-oriented transport. Unicast only.
+
+கேள்வி 44. Protocol 6 என்ன?
+பதில் 44. TCP (Transmission Control Protocol) — reliable, connection-oriented transport. Unicast மட்டும்.
+
+---
+
+Q45. What is Protocol 17?
+A45. UDP (User Datagram Protocol) — connectionless transport. Supports both unicast and multicast destinations.
+
+கேள்வி 45. Protocol 17 என்ன?
+பதில் 45. UDP (User Datagram Protocol) — connectionless transport. Unicast மற்றும் multicast destinations support செய்யும்.
+
+---
+
+Q46. What is Protocol 47?
+A46. GRE (Generic Routing Encapsulation).
+
+கேள்வி 46. Protocol 47 என்ன?
+பதில் 46. GRE (Generic Routing Encapsulation).
+
+---
+
+Q47. What is Protocol 50?
+A47. ESP (Encapsulating Security Payload) — IPSec encryption protocol.
+
+கேள்வி 47. Protocol 50 என்ன?
+பதில் 47. ESP (Encapsulating Security Payload) — IPSec encryption protocol.
+
+---
+
+Q48. What is Protocol 51?
+A48. AH (Authentication Header) — IPSec authentication without encryption.
+
+கேள்வி 48. Protocol 51 என்ன?
+பதில் 48. AH (Authentication Header) — encryption இல்லாமல் IPSec authentication.
+
+---
+
+Q49. What is Protocol 89?
+A49. OSPF (Open Shortest Path First) — link-state routing protocol. Uses multicast destinations 224.0.0.5 and 224.0.0.6 directly.
+
+கேள்வி 49. Protocol 89 என்ன?
+பதில் 49. OSPF (Open Shortest Path First) — link-state routing protocol. Multicast 224.0.0.5 மற்றும் 224.0.0.6 directly use செய்யும்.
+
+---
+
+Q50. What is Protocol 88?
+A50. EIGRP (Enhanced Interior Gateway Routing Protocol) — Cisco routing protocol. Uses multicast 224.0.0.10.
+
+கேள்வி 50. Protocol 88 என்ன?
+பதில் 50. EIGRP (Enhanced Interior Gateway Routing Protocol) — Cisco routing protocol. Multicast 224.0.0.10 use செய்யும்.
+
+---
+
+Q51. What protocols support multicast as direct IP destination (no encapsulation)?
+A51. IGMP (2), OSPF (89), EIGRP (88), PIM (103), VRRP (112) — these send packets directly to multicast addresses without encapsulation.
+
+கேள்வி 51. எந்த protocols encapsulation இல்லாமல் multicast-ஐ direct destination-ஆக use செய்யும்?
+பதில் 51. IGMP (2), OSPF (89), EIGRP (88), PIM (103), VRRP (112) — இவை multicast addresses-க்கு directly packets அனுப்பும்.
+
+---
+
+Q52. What is Protocol 103?
+A52. PIM (Protocol Independent Multicast) — multicast routing protocol. Uses multicast 224.0.0.13.
+
+கேள்வி 52. Protocol 103 என்ன?
+பதில் 52. PIM (Protocol Independent Multicast) — multicast routing protocol. Multicast 224.0.0.13 use செய்யும்.
+
+---
+
+Q53. What is Protocol 112?
+A53. VRRP (Virtual Router Redundancy Protocol) — router failover. Uses multicast 224.0.0.18.
+
+கேள்வி 53. Protocol 112 என்ன?
+பதில் 53. VRRP (Virtual Router Redundancy Protocol) — router failover. Multicast 224.0.0.18 use செய்யும்.
+
+---
+
+Q54. What is Protocol 115?
+A54. L2TP (Layer Two Tunneling Protocol) — L2 VPN tunneling.
+
+கேள்வி 54. Protocol 115 என்ன?
+பதில் 54. L2TP (Layer Two Tunneling Protocol) — L2 VPN tunneling.
+
+---
+
+Q55. What is Protocol 137?
+A55. MPLS-in-IP — MPLS label switching traffic tunneled inside IP.
+
+கேள்வி 55. Protocol 137 என்ன?
+பதில் 55. MPLS-in-IP — MPLS label switching traffic IP-க்குள் tunnel செய்யும்.
+
+-----------------------------------------------------------
+SECTION 6: Multicast & Target Configuration
+-----------------------------------------------------------
+
+Q56. What is the multicast address range?
+A56. 224.0.0.0 to 239.255.255.255 (Class D address space).
+
+கேள்வி 56. Multicast address range என்ன?
+பதில் 56. 224.0.0.0 முதல் 239.255.255.255 (Class D address space).
+
+---
+
+Q57. Which multicast range is link-local (not routed)?
+A57. 224.0.0.0/24 — TTL=1, routers do not forward these packets.
+
+கேள்வி 57. எந்த multicast range link-local (route ஆகாது)?
+பதில் 57. 224.0.0.0/24 — TTL=1, routers forward செய்யாது.
+
+---
+
+Q58. Which multicast range is safe to use for custom tunnels?
+A58. 239.0.0.0/8 (Admin Scoped) — private multicast, safe for internal use.
+
+கேள்வி 58. Custom tunnels-க்கு எந்த multicast range safe?
+பதில் 58. 239.0.0.0/8 (Admin Scoped) — private multicast, internal use-க்கு safe.
+
+---
+
+Q59. What is the general rule for target configuration in tunneling?
+A59. If the outer destination is unicast → target configuration required. If the outer destination is multicast or anycast → no target configuration needed.
+
+கேள்வி 59. Tunneling-ல் target configuration-க்கான general rule என்ன?
+பதில் 59. Outer destination unicast → target config தேவை. Outer destination multicast அல்லது anycast → தேவையில்லை.
+
+---
+
+Q60. Why does multicast outer destination not need target configuration?
+A60. Because packets are sent to a multicast group address, and any device that has joined that group receives the packet automatically — no specific endpoint is pre-defined.
+
+கேள்வி 60. Multicast outer destination-க்கு target config ஏன் தேவையில்லை?
+பதில் 60. Packets multicast group address-க்கு அனுப்பப்படும் — group join செய்த எல்லாரும் receive செய்வார்கள். Specific endpoint pre-define தேவையில்லை.
+
+---
+
+Q61. Does VXLAN require target configuration?
+A61. No. VXLAN uses multicast groups for BUM (Broadcast, Unknown unicast, Multicast) traffic, so no target configuration is needed.
+
+கேள்வி 61. VXLAN-க்கு target configuration தேவையா?
+பதில் 61. இல்லை. VXLAN BUM traffic-க்கு multicast groups use செய்யும் — target config தேவையில்லை.
+
+---
+
+Q62. Which tunneling protocols require target configuration?
+A62. IP-in-IP, EtherIP, GRE (unicast mode), static 6in4, L2TP — all require explicit remote endpoint configuration.
+
+கேள்வி 62. எந்த tunneling protocols target configuration தேவை?
+பதில் 62. IP-in-IP, EtherIP, GRE (unicast mode), static 6in4, L2TP — எல்லாமே explicit remote endpoint configuration தேவை.
+
+---
+
+Q63. Which tunneling protocols do NOT require target configuration?
+A63. GRE with multicast outer, mGRE/DMVPN, 6to4, VXLAN multicast mode.
+
+கேள்வி 63. எந்த tunneling protocols target configuration தேவையில்லை?
+பதில் 63. GRE multicast outer, mGRE/DMVPN, 6to4, VXLAN multicast mode.
+
+---
+
+Q64. What is the inner layer's role in target configuration?
+A64. The inner layer never determines target configuration. Only the outer IP header destination matters for tunnel delivery.
+
+கேள்வி 64. Inner layer target configuration-ல் என்ன role?
+பதில் 64. Inner layer target configuration-ஐ determine செய்யாது. Tunnel delivery-க்கு outer IP header destination மட்டும் முக்கியம்.
+
+---
+
+Q65. What multicast addresses should NOT be used as tunnel destinations?
+A65. 224.0.0.0/24 (link-local, TTL=1, not routed), well-known protocol addresses (224.0.0.5 OSPF, 224.0.0.10 EIGRP) to avoid conflicts.
+
+கேள்வி 65. Tunnel destination-ஆக எந்த multicast addresses use செய்யக்கூடாது?
+பதில் 65. 224.0.0.0/24 (link-local, TTL=1, route ஆகாது), well-known addresses (224.0.0.5 OSPF, 224.0.0.10 EIGRP) — conflict ஆகும்.
+
+-----------------------------------------------------------
+SECTION 7: Cisco ASA Hardening
+-----------------------------------------------------------
+
+Q66. What services should never be enabled on Cisco ASA?
+A66. Telnet should never be enabled. HTTP server should be disabled unless required for ASDM management.
+
+கேள்வி 66. Cisco ASA-ல் எந்த services never enable செய்யக்கூடாது?
+பதில் 66. Telnet never enable செய்யக்கூடாது. HTTP server ASDM management தேவையில்லை என்றால் disable செய்யணும்.
+
+---
+
+Q67. What is the default ICMP behavior on Cisco ASA?
+A67. By default, the ASA allows all ICMP traffic to its interfaces including the outside interface. No ICMP ACL configured means all ICMP is accepted.
+
+கேள்வி 67. Cisco ASA-ல் default ICMP behavior என்ன?
+பதில் 67. Default-ஆ ASA எல்லா interfaces-ல் ICMP traffic allow செய்யும் — outside interface உட்பட. ICMP ACL இல்லை என்றால் எல்லா ICMP accept ஆகும்.
+
+---
+
+Q68. What inspection engines are enabled by default on Cisco ASA?
+A68. DNS, FTP, H.323, RSH, RTSP, ESMTP, SQL*Net, SKINNY (SCCP), SunRPC, XDMCP, SIP, NetBIOS, TFTP, IP-options.
+
+கேள்வி 68. Cisco ASA-ல் default-ஆ enable ஆகும் inspection engines எவை?
+பதில் 68. DNS, FTP, H.323, RSH, RTSP, ESMTP, SQL*Net, SKINNY (SCCP), SunRPC, XDMCP, SIP, NetBIOS, TFTP, IP-options.
+
+---
+
+Q69. Which ASA inspection engines should be disabled if not needed?
+A69. RSH (remote shell — dangerous), SunRPC (legacy), XDMCP (X display — unused), SKINNY (only if no Cisco IP phones), NetBIOS (if no Windows file sharing).
+
+கேள்வி 69. தேவையில்லை என்றால் எந்த ASA inspection engines disable செய்யணும்?
+பதில் 69. RSH (dangerous), SunRPC (legacy), XDMCP (unused), SKINNY (IP phones இல்லை என்றால்), NetBIOS (Windows file sharing இல்லை என்றால்).
+
+---
+
+Q70. What command disables HTTP server on Cisco ASA?
+A70. `no http server enable`
+
+கேள்வி 70. Cisco ASA-ல் HTTP server disable செய்ய என்ன command?
+பதில் 70. `no http server enable`
+
+---
+
+Q71. What command disables Telnet on Cisco ASA?
+A71. `no telnet <ip> <mask> <interface>`
+
+கேள்வி 71. Cisco ASA-ல் Telnet disable செய்ய என்ன command?
+பதில் 71. `no telnet <ip> <mask> <interface>`
+
+---
+
+Q72. What command restricts ICMP on ASA outside interface?
+A72. `icmp deny any outside` — blocks all ICMP to the outside interface.
+
+கேள்வி 72. ASA outside interface-ல் ICMP restrict செய்ய என்ன command?
+பதில் 72. `icmp deny any outside` — outside interface-ல் எல்லா ICMP block செய்யும்.
+
+---
+
+Q73. Is HTTP inspection enabled by default on Cisco ASA?
+A73. No. HTTP inspection is disabled by default and must be manually enabled.
+
+கேள்வி 73. Cisco ASA-ல் HTTP inspection default-ஆ enable ஆகுமா?
+பதில் 73. இல்லை. HTTP inspection default-ஆ disable — manually enable செய்யணும்.
+
+---
+
+Q74. What is the ASA stateful inspection behavior for TCP and UDP?
+A74. TCP and UDP stateful inspection is ON by default. The ASA tracks connection states and allows return traffic automatically.
+
+கேள்வி 74. ASA-ல் TCP மற்றும் UDP stateful inspection behavior என்ன?
+பதில் 74. TCP மற்றும் UDP stateful inspection default-ஆ ON. ASA connection states track செய்யும், return traffic automatically allow ஆகும்.
+
+---
+
+Q75. What is the principle of least privilege in network hardening?
+A75. Enable only what is necessary. Every service, protocol, or port that is not required must be disabled to reduce the attack surface.
+
+கேள்வி 75. Network hardening-ல் principle of least privilege என்ன?
+பதில் 75. தேவையான மட்டும் enable செய்யணும். தேவையில்லாத எல்லா services, protocols, ports disable செய்யணும் — attack surface குறைக்கணும்.
+
+-----------------------------------------------------------
+SECTION 8: Cisco IOS Hardening
+-----------------------------------------------------------
+
+Q76. What is CDP and why should it be disabled on external interfaces?
+A76. Cisco Discovery Protocol (CDP) broadcasts device information (model, IP, IOS version) to neighbors. On external interfaces it leaks network topology to attackers.
+
+கேள்வி 76. CDP என்ன, ஏன் external interfaces-ல் disable செய்யணும்?
+பதில் 76. Cisco Discovery Protocol (CDP) neighbor devices-க்கு device info (model, IP, IOS version) broadcast செய்யும். External interfaces-ல் attackers-க்கு topology leak ஆகும்.
+
+---
+
+Q77. What command disables CDP globally on Cisco IOS?
+A77. `no cdp run`
+
+கேள்வி 77. Cisco IOS-ல் CDP globally disable செய்ய என்ன command?
+பதில் 77. `no cdp run`
+
+---
+
+Q78. Why should IP directed broadcasts be disabled?
+A78. Directed broadcasts can be used for Smurf DDoS attacks, where an attacker sends packets to a broadcast address to amplify traffic against a victim.
+
+கேள்வி 78. IP directed broadcasts ஏன் disable செய்யணும்?
+பதில் 78. Directed broadcasts Smurf DDoS attacks-க்கு use ஆகும் — attacker broadcast address-க்கு packets அனுப்பி victim-க்கு amplified traffic உருவாக்குவான்.
+
+---
+
+Q79. What command disables IP directed broadcasts on an interface?
+A79. `no ip directed-broadcast`
+
+கேள்வி 79. Interface-ல் IP directed broadcasts disable செய்ய command என்ன?
+பதில் 79. `no ip directed-broadcast`
+
+---
+
+Q80. Why should IP source routing be disabled?
+A80. IP source routing allows the packet originator to specify the route, which can be exploited to bypass firewall rules and access control lists.
+
+கேள்வி 80. IP source routing ஏன் disable செய்யணும்?
+பதில் 80. IP source routing packet originator-ஆல் route specify செய்ய allow ஆகும் — firewall rules மற்றும் ACL bypass செய்ய exploit ஆகலாம்.
+
+---
+
+Q81. What command disables IP source routing on Cisco IOS?
+A81. `no ip source-route`
+
+கேள்வி 81. Cisco IOS-ல் IP source routing disable செய்ய command?
+பதில் 81. `no ip source-route`
+
+---
+
+Q82. What are small servers in Cisco IOS and why disable them?
+A82. TCP/UDP small servers (echo, chargen, daytime, discard) are legacy services enabled by default that can be used for DoS attacks or information gathering.
+
+கேள்வி 82. Cisco IOS-ல் small servers என்ன, ஏன் disable செய்யணும்?
+பதில் 82. TCP/UDP small servers (echo, chargen, daytime, discard) default-ஆ enable ஆகும் legacy services — DoS attacks அல்லது information gathering-க்கு use ஆகலாம்.
+
+---
+
+Q83. What does `no ip proxy-arp` do?
+A83. Disables proxy ARP on an interface, preventing the router from responding to ARP requests on behalf of other hosts, which can enable ARP spoofing attacks.
+
+கேள்வி 83. `no ip proxy-arp` என்ன செய்யும்?
+பதில் 83. Interface-ல் proxy ARP disable செய்யும் — router மற்ற hosts-க்காக ARP requests-க்கு respond செய்யாது — ARP spoofing attacks prevent ஆகும்.
+
+---
+
+Q84. What does `no ip redirects` prevent?
+A84. Prevents the router from sending ICMP redirect messages, which can leak routing topology information to attackers.
+
+கேள்வி 84. `no ip redirects` என்ன prevent செய்யும்?
+பதில் 84. Router ICMP redirect messages அனுப்புவதை prevent செய்யும் — routing topology info attackers-க்கு leak ஆகாது.
+
+---
+
+Q85. What is AutoSecure in Cisco IOS?
+A85. AutoSecure is a Cisco IOS feature that automatically disables unnecessary global and interface services (CDP, finger, small servers, etc.) to harden the device with a single command: `auto secure`.
+
+கேள்வி 85. Cisco IOS-ல் AutoSecure என்ன?
+பதில் 85. AutoSecure ஒரே command-ல் (`auto secure`) தேவையில்லாத global மற்றும் interface services (CDP, finger, small servers) automatically disable செய்து device harden செய்யும்.
+
+-----------------------------------------------------------
+SECTION 9: ICMP Unreachable Leak
+-----------------------------------------------------------
+
+Q86. What is an ICMP Unreachable leak in the context of tunneling?
+A86. When a large packet with DF bit set arrives at a tunnel router, the packet is dropped and an ICMP Type 3 Code 4 (Fragmentation Needed) message is sent back. This message contains the Next-Hop MTU value, which reveals the tunnel overhead and therefore the encapsulation protocol in use.
+
+கேள்வி 86. Tunneling context-ல் ICMP Unreachable leak என்றால் என்ன?
+பதில் 86. DF bit set-ஆன large packet tunnel router-ல் arrive ஆனால் drop ஆகும், ICMP Type 3 Code 4 (Fragmentation Needed) திரும்பும். இந்த message-ல் Next-Hop MTU value இருக்கும் — tunnel overhead மற்றும் encapsulation protocol reveal ஆகும்.
+
+---
+
+Q87. How does MTU value reveal the encapsulation protocol?
+A87. By subtracting the returned MTU from 1500: 1500-1476=24 bytes → GRE; 1500-1460=40 bytes → IP-in-IP; 1500-1478=22 bytes → EtherIP; 1500-1440=60 bytes → 6in4.
+
+கேள்வி 87. MTU value எப்படி encapsulation protocol reveal செய்யும்?
+பதில் 87. 1500-ல் இருந்து returned MTU கழிக்கணும்: 1500-1476=24 → GRE; 1500-1460=40 → IP-in-IP; 1500-1478=22 → EtherIP; 1500-1440=60 → 6in4.
+
+---
+
+Q88. What else does the ICMP Unreachable message leak?
+A88. The ICMP message contains a copy of the original IP header, which reveals the Protocol field (e.g., 47 for GRE) and the tunnel endpoint IP address.
+
+கேள்வி 88. ICMP Unreachable message வேறு என்ன leak செய்யும்?
+பதில் 88. ICMP message-ல் original IP header copy இருக்கும் — Protocol field (47 GRE) மற்றும் tunnel endpoint IP address reveal ஆகும்.
+
+---
+
+Q89. What command prevents ICMP Unreachable leak on Cisco IOS?
+A89. `no ip unreachables` on the interface facing attackers.
+
+கேள்வி 89. Cisco IOS-ல் ICMP Unreachable leak prevent செய்ய என்ன command?
+பதில் 89. Attacker-facing interface-ல் `no ip unreachables`.
+
+---
+
+Q90. What is PMTUD?
+A90. Path MTU Discovery (PMTUD) is the process by which TCP/IP discovers the maximum packet size that can traverse a path without fragmentation, using DF bit and ICMP Fragmentation Needed messages.
+
+கேள்வி 90. PMTUD என்றால் என்ன?
+பதில் 90. Path MTU Discovery (PMTUD) — TCP/IP fragmentation இல்லாமல் path-ல் maximum packet size discover செய்யும் process — DF bit மற்றும் ICMP Fragmentation Needed messages use செய்யும்.
+
+-----------------------------------------------------------
+SECTION 10: TTL Expiry Leak
+-----------------------------------------------------------
+
+Q91. How does TTL expiry reveal tunnel information?
+A91. Traceroute sends packets with increasing TTL values. When TTL expires inside a tunnel, the inner router sends an ICMP Time Exceeded message back, revealing its private IP address as the source.
+
+கேள்வி 91. TTL expiry tunnel information எப்படி reveal செய்யும்?
+பதில் 91. Traceroute increasing TTL-உடன் packets அனுப்பும். TTL tunnel-க்குள் expire ஆனால் inner router ICMP Time Exceeded message அனுப்பும் — private IP address source-ஆக reveal ஆகும்.
+
+---
+
+Q92. What is TTL propagation in GRE tunnels?
+A92. By default, GRE copies the inner packet TTL to the outer IP header. So when an attacker sends a packet with TTL=3, the inner router receives it with TTL=1, causing it to expire and reply with its private IP.
+
+கேள்வி 92. GRE tunnels-ல் TTL propagation என்ன?
+பதில் 92. Default-ஆ GRE inner packet TTL-ஐ outer IP header-க்கு copy செய்யும். Attacker TTL=3 packet அனுப்பினால் inner router TTL=1 receive செய்யும் — expire ஆகி private IP reply செய்யும்.
+
+---
+
+Q93. What Cisco IOS command prevents TTL propagation in GRE tunnels?
+A93. `no ip ttl-propagate` on the tunnel interface.
+
+கேள்வி 93. GRE tunnels-ல் TTL propagation prevent செய்ய Cisco IOS command என்ன?
+பதில் 93. Tunnel interface-ல் `no ip ttl-propagate`.
+
+---
+
+Q94. What happens when `no ip ttl-propagate` is configured?
+A94. The outer TTL is set to a fixed value (not copied from inner). Inner routers no longer expire the TTL, so traceroute shows * * * (asterisks) for tunnel hops instead of private IPs.
+
+கேள்வி 94. `no ip ttl-propagate` configure செய்தால் என்ன நடக்கும்?
+பதில் 94. Outer TTL fixed value-க்கு set ஆகும் (inner-ல் இருந்து copy ஆகாது). Inner routers TTL expire செய்யாது — traceroute tunnel hops-க்கு * * * காட்டும்.
+
+---
+
+Q95. What do three asterisks (* * *) in traceroute output mean?
+A95. No ICMP reply received for that hop — either the router is configured to drop TTL-expired packets or the hop does not exist. In tunnels, it means TTL propagation is disabled.
+
+கேள்வி 95. Traceroute output-ல் * * * என்றால் என்ன?
+பதில் 95. அந்த hop-க்கு ICMP reply வரவில்லை — router TTL-expired packets drop செய்கிறது அல்லது hop இல்லை. Tunnels-ல் TTL propagation disable என்று அர்த்தம்.
+
+---
+
+Q96. What are the default OS TTL values?
+A96. Linux: 64, Windows: 128, Cisco IOS: 255, Solaris: 255, FreeBSD: 64.
+
+கேள்வி 96. Different OS-களின் default TTL values என்ன?
+பதில் 96. Linux: 64, Windows: 128, Cisco IOS: 255, Solaris: 255, FreeBSD: 64.
+
+---
+
+Q97. How can an attacker use TTL values for OS fingerprinting?
+A97. By measuring the received TTL and comparing to known initial TTL values (64, 128, 255), an attacker can infer the operating system of the responding device.
+
+கேள்வி 97. Attacker TTL values-ஐ OS fingerprinting-க்கு எப்படி use செய்வான்?
+பதில் 97. Received TTL-ஐ known initial TTL values (64, 128, 255) உடன் compare செய்து responding device-ன் OS infer செய்வான்.
+
+---
+
+Q98. Does TTL expiry leak packet size information?
+A98. No. Traceroute uses small packets (40-60 bytes). TTL expiry only reveals IP addresses (hops), not packet size or protocol overhead.
+
+கேள்வி 98. TTL expiry packet size information leak செய்யுமா?
+பதில் 98. இல்லை. Traceroute small packets (40-60 bytes) use செய்யும். TTL expiry IP addresses (hops) மட்டும் reveal செய்யும் — packet size அல்லது protocol overhead இல்லை.
+
+---
+
+Q99. What is TCP traceroute and how does it bypass firewalls?
+A99. TCP traceroute (`traceroute -T -p 80`) uses TCP SYN packets instead of UDP/ICMP. Since many firewalls allow TCP port 80/443, it can trace paths through firewalls that block ICMP.
+
+கேள்வி 99. TCP traceroute என்ன, firewalls எப்படி bypass செய்யும்?
+பதில் 99. TCP traceroute (`traceroute -T -p 80`) UDP/ICMP-க்கு பதிலாக TCP SYN packets use செய்யும். Firewalls TCP port 80/443 allow செய்வதால் ICMP block செய்யும் firewalls bypass ஆகும்.
+
+---
+
+Q100. What is Paris traceroute?
+A100. Paris traceroute is an advanced traceroute technique that uses flow-based probing to ensure packets follow the same path, avoiding load-balancer artifacts. It provides more accurate path discovery through tunnels.
+
+கேள்வி 100. Paris traceroute என்றால் என்ன?
+பதில் 100. Paris traceroute flow-based probing use செய்யும் advanced traceroute — packets same path follow செய்வதை ensure செய்யும், load-balancer artifacts avoid செய்யும். Tunnels வழியா accurate path discovery செய்யும்.
+
+-----------------------------------------------------------
+SECTION 11: Traffic Pattern Analysis
+-----------------------------------------------------------
+
+Q101. How does packet size reveal the tunneling protocol?
+A101. Each encapsulation protocol adds a fixed overhead. By observing that all packets are consistently N bytes larger than expected, the overhead can be calculated: overhead = observed size - original size. This identifies the protocol.
+
+கேள்வி 101. Packet size tunneling protocol எப்படி reveal செய்யும்?
+பதில் 101. ஒவ்வொரு encapsulation protocol fixed overhead add செய்யும். எல்லா packets N bytes larger என்று observe செய்தால் overhead calculate செய்யலாம்: overhead = observed size - original size. Protocol identify ஆகும்.
+
+---
+
+Q102. What is GRE keepalive and why does it leak information?
+A102. GRE keepalive is a periodic packet (every 10 seconds, 32 bytes, Protocol 47) sent between tunnel endpoints to verify the tunnel is alive. An attacker capturing these packets learns the tunnel endpoints, protocol, and timing pattern.
+
+கேள்வி 102. GRE keepalive என்ன, ஏன் information leak செய்யும்?
+பதில் 102. GRE keepalive periodic packet (10 seconds, 32 bytes, Protocol 47) tunnel endpoints-க்கிடையில் tunnel alive verify செய்ய அனுப்பும். Capture செய்தால் attacker tunnel endpoints, protocol, timing pattern தெரிஞ்சுக்குவான்.
+
+---
+
+Q103. What Cisco command disables GRE keepalives?
+A103. `no keepalive` on the tunnel interface.
+
+கேள்வி 103. GRE keepalives disable செய்ய Cisco command என்ன?
+பதில் 103. Tunnel interface-ல் `no keepalive`.
+
+---
+
+Q104. How does protocol distribution analysis reveal tunneling?
+A104. Normal traffic has mostly TCP (80%) and UDP (15%). If Protocol 47 (GRE) accounts for 70% of packets in NetFlow/Wireshark data, it's obvious that GRE tunneling is in use.
+
+கேள்வி 104. Protocol distribution analysis tunneling எப்படி reveal செய்யும்?
+பதில் 104. Normal traffic TCP (80%) மற்றும் UDP (15%) mostly இருக்கும். NetFlow/Wireshark-ல் Protocol 47 (GRE) 70% என்றால் GRE tunneling use ஆகிறது என்று obvious ஆகும்.
+
+---
+
+Q105. What is an MTU probe attack?
+A105. An attacker sends large packets with DF bit set at varying sizes (binary search) to determine the exact MTU of the path. The working size identifies the tunnel overhead and therefore the protocol.
+
+கேள்வி 105. MTU probe attack என்றால் என்ன?
+பதில் 105. Attacker DF bit set-ஆன large packets varying sizes-ல் (binary search) அனுப்பி path-ன் exact MTU determine செய்வான். Working size tunnel overhead மற்றும் protocol identify செய்யும்.
+
+---
+
+Q106. How does IPSec prevent traffic pattern analysis?
+A106. IPSec ESP encrypts all inner content and replaces the original protocol field with Protocol 50 (ESP). Packet sizes are padded to fixed lengths, hiding overhead. All packets look like ESP regardless of inner content.
+
+கேள்வி 106. IPSec traffic pattern analysis எப்படி prevent செய்யும்?
+பதில் 106. IPSec ESP எல்லா inner content-ஐ encrypt செய்யும், original protocol field-ஐ Protocol 50 (ESP) ஆக replace செய்யும். Packet sizes fixed lengths-க்கு pad ஆகும் — overhead hide ஆகும். எல்லா packets ESP போல் தெரியும்.
+
+---
+
+Q107. What is a side-channel attack in the context of network tunneling?
+A107. A side-channel attack infers tunnel information from observable physical or behavioral characteristics — RTT timing differences, throughput reduction, CPU usage during encryption — without directly examining the packet content.
+
+கேள்வி 107. Network tunneling context-ல் side-channel attack என்றால் என்ன?
+பதில் 107. Side-channel attack observable characteristics-இல் இருந்து tunnel info infer செய்யும் — RTT timing differences, throughput reduction, CPU usage during encryption — packet content directly examine செய்யாமல்.
+
+---
+
+Q108. What is chaff traffic and how does it help?
+A108. Chaff traffic is fake/dummy packets injected into the network to hide real traffic patterns. It makes pattern analysis difficult by adding noise that obscures the actual tunnel traffic characteristics.
+
+கேள்வி 108. Chaff traffic என்ன, எப்படி help செய்யும்?
+பதில் 108. Chaff traffic fake/dummy packets network-ல் inject செய்யும் — real traffic patterns hide ஆகும். Noise add செய்வதால் actual tunnel traffic characteristics obscure ஆகும் — pattern analysis difficult ஆகும்.
+
+---
+
+Q109. Does MSS clamping affect UDP traffic?
+A109. No. MSS (Maximum Segment Size) only applies to TCP. UDP has no MSS field, so UDP-based probes completely bypass MSS clamping.
+
+கேள்வி 109. MSS clamping UDP traffic-ஐ affect செய்யுமா?
+பதில் 109. இல்லை. MSS (Maximum Segment Size) TCP-க்கு மட்டும். UDP-க்கு MSS field இல்லை — UDP-based probes MSS clamping completely bypass செய்யும்.
+
+---
+
+Q110. What is binary search MTU probing?
+A110. An attacker sends packets at incrementally varying sizes (e.g., 1400, 1450, 1470, 1476, 1477...) and notes which size succeeds vs fails. The boundary between success and failure reveals the exact MTU, exposing the tunnel overhead.
+
+கேள்வி 110. Binary search MTU probing என்றால் என்ன?
+பதில் 110. Attacker incrementally varying sizes-ல் (1400, 1450, 1470, 1476, 1477...) packets அனுப்பி success vs fail note செய்வான். Success மற்றும் failure-க்கிடையிலான boundary exact MTU reveal செய்யும் — tunnel overhead expose ஆகும்.
+
+-----------------------------------------------------------
+SECTION 12: TCP-based Leak & MSS
+-----------------------------------------------------------
+
+Q111. How does TCP MSS reveal tunnel overhead?
+A111. MSS = MTU - IP header (20) - TCP header (20). If a router advertises MSS=1436, then MTU=1436+40=1476. Overhead=1500-1476=24 bytes → GRE.
+
+கேள்வி 111. TCP MSS tunnel overhead எப்படி reveal செய்யும்?
+பதில் 111. MSS = MTU - IP header (20) - TCP header (20). Router MSS=1436 advertise செய்தால் MTU=1436+40=1476. Overhead=1500-1476=24 bytes → GRE.
+
+---
+
+Q112. What is MSS clamping?
+A112. MSS clamping (`ip tcp adjust-mss`) modifies the MSS value in TCP SYN and SYN-ACK packets to a configured maximum, preventing fragmentation and masking the true tunnel MTU.
+
+கேள்வி 112. MSS clamping என்றால் என்ன?
+பதில் 112. MSS clamping (`ip tcp adjust-mss`) TCP SYN மற்றும் SYN-ACK packets-ல் MSS value configured maximum-ஆக modify செய்யும் — fragmentation prevent செய்யும், true tunnel MTU mask ஆகும்.
+
+---
+
+Q113. What are the bypass methods for MSS clamping?
+A113. UDP probe (no MSS in UDP), ICMP large ping (MSS is TCP only), IPv6 probes (separate MSS clamp needed), IP fragmentation with DF=0, binary search on data size.
+
+கேள்வி 113. MSS clamping bypass methods என்ன?
+பதில் 113. UDP probe (UDP-ல் MSS இல்லை), ICMP large ping (MSS TCP only), IPv6 probes (separate MSS clamp தேவை), DF=0 IP fragmentation, data size binary search.
+
+---
+
+Q114. What is TCP PMTUD and how does it leak?
+A114. TCP Path MTU Discovery sends large TCP segments with DF=1. When the router drops the packet (too large for tunnel), it sends ICMP Type 3 Code 4 back with the MTU value, revealing the tunnel overhead.
+
+கேள்வி 114. TCP PMTUD என்ன, எப்படி leak செய்யும்?
+பதில் 114. TCP PMTUD DF=1-உடன் large TCP segments அனுப்பும். Router packet drop செய்தால் (tunnel-க்கு too large) ICMP Type 3 Code 4 MTU value-உடன் திரும்பும் — tunnel overhead reveal ஆகும்.
+
+---
+
+Q115. How does TCP retransmission behavior reveal tunneling?
+A115. When large TCP segments are dropped by the tunnel (MTU exceeded), the sender retransmits at smaller sizes. An attacker observing the retransmission pattern and the final successful size can calculate the exact tunnel MTU.
+
+கேள்வி 115. TCP retransmission behavior tunneling எப்படி reveal செய்யும்?
+பதில் 115. Tunnel MTU exceed ஆனால் large TCP segments drop ஆகும், sender smaller sizes-ல் retransmit செய்யும். Attacker retransmission pattern மற்றும் final successful size observe செய்து exact tunnel MTU calculate செய்வான்.
+
+---
+
+Q116. What Cisco command clamps TCP MSS on a tunnel interface?
+A116. `ip tcp adjust-mss 1452` on the tunnel interface.
+
+கேள்வி 116. Tunnel interface-ல் TCP MSS clamp செய்ய Cisco command என்ன?
+பதில் 116. Tunnel interface-ல் `ip tcp adjust-mss 1452`.
+
+---
+
+Q117. What IPv6 MSS value should be used to clamp for GRE tunnels?
+A117. `ipv6 tcp adjust-mss 1412` (accounting for IPv6 40-byte header + GRE 24-byte overhead + TCP 20-byte header).
+
+கேள்வி 117. GRE tunnels-க்கு IPv6 MSS clamp value என்ன?
+பதில் 117. `ipv6 tcp adjust-mss 1412` (IPv6 40-byte header + GRE 24-byte overhead + TCP 20-byte header).
+
+---
+
+Q118. Why is `no ip unreachables` more important than MSS clamping alone?
+A118. MSS clamping only affects TCP SYN/SYN-ACK. `no ip unreachables` suppresses ICMP Fragmentation Needed messages for all protocols (UDP, ICMP, IPv6), preventing MTU disclosure from any probe type.
+
+கேள்வி 118. MSS clamping மட்டும் போட்டதை விட `no ip unreachables` ஏன் முக்கியம்?
+பதில் 118. MSS clamping TCP SYN/SYN-ACK மட்டும் affect செய்யும். `no ip unreachables` எல்லா protocols-க்கும் (UDP, ICMP, IPv6) ICMP Fragmentation Needed messages suppress செய்யும் — எந்த probe type-க்கும் MTU disclosure prevent ஆகும்.
+
+---
+
+Q119. How does throughput reduction reveal tunneling?
+A119. Tunnel overhead reduces effective throughput (e.g., GRE adds 24 bytes per packet, reducing capacity by ~1.6%). An attacker using iperf3 can measure and compare throughput to detect the presence of a tunnel.
+
+கேள்வி 119. Throughput reduction tunneling எப்படி reveal செய்யும்?
+பதில் 119. Tunnel overhead effective throughput குறைக்கும் (GRE 24 bytes per packet add செய்யும் — ~1.6% capacity reduce). Attacker iperf3 use செய்து throughput measure மற்றும் compare செய்து tunnel detect செய்வான்.
+
+---
+
+Q120. What is the best combined protection against TCP-based MTU probing?
+A120. `no ip unreachables` + `ip tcp adjust-mss` + IPSec encryption. This suppresses ICMP, adjusts MSS for TCP, and encrypts all content so protocol and overhead are completely hidden.
+
+கேள்வி 120. TCP-based MTU probing-க்கு எதிரான best combined protection என்ன?
+பதில் 120. `no ip unreachables` + `ip tcp adjust-mss` + IPSec encryption. ICMP suppress ஆகும், TCP MSS adjust ஆகும், எல்லாம் encrypt ஆகும் — protocol மற்றும் overhead completely hidden ஆகும்.
+
+-----------------------------------------------------------
+SECTION 13: Prevention & Bypass
+-----------------------------------------------------------
+
+Q121. What are the main prevention techniques for encapsulation protocol detection?
+A121. 1) `no ip unreachables` — ICMP suppress. 2) `ip tcp adjust-mss` — MSS clamp. 3) IPSec encryption — content hide. 4) ACL block ICMP. 5) `no ip ttl-propagate` — inner IP hide. 6) `no keepalive` — timing pattern hide.
+
+கேள்வி 121. Encapsulation protocol detection-க்கான main prevention techniques என்ன?
+பதில் 121. 1) `no ip unreachables` — ICMP suppress. 2) `ip tcp adjust-mss` — MSS clamp. 3) IPSec encryption — content hide. 4) ACL block ICMP. 5) `no ip ttl-propagate` — inner IP hide. 6) `no keepalive` — timing pattern hide.
+
+---
+
+Q122. How can an attacker bypass `no ip unreachables`?
+A122. TCP SYN probe (reads MSS from SYN-ACK), UDP timeout analysis (large UDP → silence = dropped = MTU limit), IPv6 ICMPv6 (often unconfigured), timing/RTT side-channel analysis.
+
+கேள்வி 122. Attacker `no ip unreachables` எப்படி bypass செய்வான்?
+பதில் 122. TCP SYN probe (SYN-ACK-ல் MSS read), UDP timeout analysis (large UDP → silence = MTU limit), IPv6 ICMPv6 (often unconfigured), timing/RTT side-channel analysis.
+
+---
+
+Q123. How can an attacker bypass ACL blocking of ICMP?
+A123. DNS tunnel (port 53 usually allowed), HTTP/HTTPS tunnel (port 80/443 allowed), IPv6 over IPv4 (if IPv6 ACL not configured), packet fragmentation (tiny fragments may bypass stateless ACL).
+
+கேள்வி 123. Attacker ICMP blocking ACL எப்படி bypass செய்வான்?
+பதில் 123. DNS tunnel (port 53 allow), HTTP/HTTPS tunnel (port 80/443 allow), IPv6 over IPv4 (IPv6 ACL இல்லை என்றால்), packet fragmentation (tiny fragments stateless ACL bypass).
+
+---
+
+Q124. How can an attacker bypass rate limiting?
+A124. Slow scan (below rate limit threshold), distributed scan (multiple source IPs), randomized timing (avoids pattern detection), botnet probing (thousands of IPs overwhelm per-IP rate limits).
+
+கேள்வி 124. Attacker rate limiting எப்படி bypass செய்வான்?
+பதில் 124. Slow scan (rate limit threshold-க்கு கீழே), distributed scan (multiple source IPs), randomized timing (pattern detection avoid), botnet probing (thousands of IPs per-IP rate limits overwhelm).
+
+---
+
+Q125. Can IPSec be bypassed?
+A125. IPSec content encryption is mathematically strong. However, metadata (endpoint IPs, traffic timing, packet size patterns, IKE negotiation, ESP header) remains visible. Side-channel attacks can infer tunnel existence and approximate traffic volume.
+
+கேள்வி 125. IPSec bypass செய்யலாமா?
+பதில் 125. IPSec content encryption mathematically strong. ஆனால் metadata (endpoint IPs, traffic timing, packet size patterns, IKE negotiation, ESP header) visible-ஆக இருக்கும். Side-channel attacks tunnel existence மற்றும் approximate traffic volume infer செய்யலாம்.
+
+---
+
+Q126. What does IKE probe reveal?
+A126. Scanning UDP port 500 and 4500 reveals that IPSec IKE is running on a device, confirming that IPSec tunneling is in use even if the content is encrypted.
+
+கேள்வி 126. IKE probe என்ன reveal செய்யும்?
+பதில் 126. UDP port 500 மற்றும் 4500 scan செய்தால் device-ல் IPSec IKE run ஆகிறது என்று தெரியும் — content encrypt ஆனாலும் IPSec tunneling use ஆகிறது என்று confirm ஆகும்.
+
+---
+
+Q127. What is the only way to truly hide tunnel endpoint IPs?
+A127. Onion routing (Tor-like) with multiple encrypted hops. Even with IPSec, the outer IP source and destination are always visible in the IP header of every packet.
+
+கேள்வி 127. Tunnel endpoint IPs truly hide செய்வதற்கான ஒரே வழி என்ன?
+பதில் 127. Multiple encrypted hops-உடன் Onion routing (Tor-like). IPSec use செய்தாலும் outer IP source மற்றும் destination எல்லா packets-ல் IP header-ல் visible-ஆக இருக்கும்.
+
+---
+
+Q128. What is DNS tunneling?
+A128. DNS tunneling encodes data inside DNS query/response packets (port 53). Since DNS traffic is typically allowed through firewalls, it can be used to bypass ACL rules and establish covert communication channels.
+
+கேள்வி 128. DNS tunneling என்றால் என்ன?
+பதில் 128. DNS tunneling DNS query/response packets-க்குள் (port 53) data encode செய்யும். DNS traffic firewalls-ல் allow ஆவதால் ACL rules bypass செய்து covert communication channels establish செய்யலாம்.
+
+---
+
+Q129. What is the most effective single prevention against all probe types?
+A129. IPSec with AES-256 encryption and Perfect Forward Secrecy (PFS). Combined with `no ip unreachables`, it protects against ICMP, UDP, TCP, and IPv6 probe types.
+
+கேள்வி 129. எல்லா probe types-க்கும் எதிரான most effective single prevention என்ன?
+பதில் 129. AES-256 encryption மற்றும் Perfect Forward Secrecy (PFS)-உடன் IPSec. `no ip unreachables`-உடன் combine செய்தால் ICMP, UDP, TCP, IPv6 probe types-க்கு protect ஆகும்.
+
+---
+
+Q130. What is defense in depth for tunnel protection?
+A130. Layered security: IPSec encryption (content), `no ip unreachables` (ICMP), `no ip ttl-propagate` (inner IPs), MSS clamping (TCP MSS), ACL (protocol blocking), rate limiting (probe throttling), IDS/IPS (anomaly detection), NetFlow monitoring (behavior analysis).
+
+கேள்வி 130. Tunnel protection-க்கான defense in depth என்ன?
+பதில் 130. Layered security: IPSec (content), `no ip unreachables` (ICMP), `no ip ttl-propagate` (inner IPs), MSS clamping (TCP MSS), ACL (protocol blocking), rate limiting (probe throttling), IDS/IPS (anomaly detection), NetFlow monitoring (behavior analysis).
+
+-----------------------------------------------------------
+SECTION 14: General Network Security
+-----------------------------------------------------------
+
+Q131. What information does nmap protocol scan reveal?
+A131. `nmap --script ip-protocols` identifies all IP protocol numbers supported by a host, revealing which encapsulation protocols (GRE=47, IPIP=4, EtherIP=97) are enabled.
+
+கேள்வி 131. Nmap protocol scan என்ன information reveal செய்யும்?
+பதில் 131. `nmap --script ip-protocols` host support செய்யும் எல்லா IP protocol numbers identify செய்யும் — எந்த encapsulation protocols (GRE=47, IPIP=4, EtherIP=97) enable ஆகிறது என்று reveal ஆகும்.
+
+---
+
+Q132. How can SNMP reveal tunnel configuration?
+A132. SNMP walk (`snmpwalk`) on a router can enumerate all interfaces including tunnel interfaces, revealing tunnel names, IP addresses, and configured endpoints.
+
+கேள்வி 132. SNMP tunnel configuration எப்படி reveal செய்யும்?
+பதில் 132. Router-ல் SNMP walk (`snmpwalk`) எல்லா interfaces enumerate செய்யும் — tunnel interfaces, names, IP addresses, configured endpoints reveal ஆகும்.
+
+---
+
+Q133. What is a covert channel in networking?
+A133. A covert channel uses a legitimate communication medium (DNS, HTTP, ICMP) to secretly transmit data that bypasses security controls. Examples: data encoded in DNS TXT records, HTTP headers, or ICMP payload fields.
+
+கேள்வி 133. Networking-ல் covert channel என்றால் என்ன?
+பதில் 133. Covert channel legitimate communication medium (DNS, HTTP, ICMP) use செய்து security controls bypass செய்து secretly data transmit செய்யும். Examples: DNS TXT records, HTTP headers, ICMP payload fields-ல் encode செய்யலாம்.
+
+---
+
+Q134. What are the default TTL behaviors across platforms?
+A134. Cisco IOS defaults to TTL=255 for generated packets. Linux defaults to 64. Windows defaults to 128. These help identify device types from ICMP replies.
+
+கேள்வி 134. Platforms across default TTL behaviors என்ன?
+பதில் 134. Cisco IOS generated packets-க்கு TTL=255. Linux 64. Windows 128. இவை ICMP replies-இல் இருந்து device types identify செய்ய help செய்யும்.
+
+---
+
+Q135. What is IP fragmentation and how does it relate to MTU?
+A135. When a packet exceeds the MTU of a link, it must be fragmented into smaller pieces (if DF bit is not set). Each fragment is an independent IP packet that is reassembled at the destination.
+
+கேள்வி 135. IP fragmentation என்ன, MTU-உடன் என்ன தொடர்பு?
+பதில் 135. Packet link-ன் MTU exceed ஆனால் (DF bit set இல்லை என்றால்) smaller pieces-ஆக fragment செய்யப்படும். ஒவ்வொரு fragment independent IP packet — destination-ல் reassemble ஆகும்.
+
+---
+
+Q136. What is the DF bit and why does it matter for tunnel probing?
+A136. The Don't Fragment (DF) bit in the IP header instructs routers not to fragment the packet. If the packet is too large, it is dropped and an ICMP Fragmentation Needed message is returned. Attackers set DF=1 to force ICMP responses that reveal MTU.
+
+கேள்வி 136. DF bit என்ன, tunnel probing-க்கு ஏன் முக்கியம்?
+பதில் 136. IP header-ல் Don't Fragment (DF) bit routers-ஐ packet fragment செய்யாதே என்று instruct செய்யும். Packet too large என்றால் drop ஆகும், ICMP Fragmentation Needed திரும்பும். Attackers DF=1 set செய்து MTU reveal செய்யும் ICMP responses force செய்வார்கள்.
+
+---
+
+Q137. What is NHRP and its role in DMVPN?
+A137. Next Hop Resolution Protocol (NHRP) is used in DMVPN to dynamically resolve tunnel endpoint addresses. It allows spoke routers to discover each other's real IP addresses without pre-configuration.
+
+கேள்வி 137. NHRP என்ன, DMVPN-ல் என்ன role?
+பதில் 137. Next Hop Resolution Protocol (NHRP) DMVPN-ல் tunnel endpoint addresses dynamically resolve செய்யும். Spoke routers pre-configuration இல்லாமல் each other's real IP addresses discover செய்யும்.
+
+---
+
+Q138. What is Perfect Forward Secrecy (PFS) in IPSec?
+A138. PFS ensures that each session uses a unique key that is not derived from the master key. Even if one session key is compromised, past and future sessions remain secure.
+
+கேள்வி 138. IPSec-ல் Perfect Forward Secrecy (PFS) என்றால் என்ன?
+பதில் 138. PFS ஒவ்வொரு session-க்கும் master key-இல் இருந்து derive ஆகாத unique key use செய்வதை ensure செய்யும். ஒரு session key compromise ஆனாலும் past மற்றும் future sessions secure ஆக இருக்கும்.
+
+---
+
+Q139. What is the difference between IKEv1 and IKEv2?
+A139. IKEv2 is simpler, faster, supports EAP authentication, has built-in NAT traversal, better handles packet loss, and is more secure than IKEv1. IKEv1 aggressive mode leaks identity information.
+
+கேள்வி 139. IKEv1 மற்றும் IKEv2-ல் என்ன வித்தியாசம்?
+பதில் 139. IKEv2 simpler, faster, EAP authentication support, built-in NAT traversal, packet loss better handle செய்யும், IKEv1-ஐ விட secure. IKEv1 aggressive mode identity information leak செய்யும்.
+
+---
+
+Q140. What is GRE-over-IPSec and why use it?
+A140. GRE-over-IPSec encapsulates GRE packets inside IPSec ESP, combining GRE's multicast/routing protocol support with IPSec's encryption. This enables encrypted transport of routing protocol updates (OSPF, EIGRP) over tunnels.
+
+கேள்வி 140. GRE-over-IPSec என்ன, ஏன் use செய்யணும்?
+பதில் 140. GRE-over-IPSec GRE packets-ஐ IPSec ESP-க்குள் encapsulate செய்யும் — GRE-ன் multicast/routing protocol support-ஐ IPSec-ன் encryption-உடன் combine செய்யும். Encrypted tunnel வழியா routing protocol updates (OSPF, EIGRP) transport செய்யும்.
+
+---
+
+Q141. What is VXLAN and its protocol number?
+A141. VXLAN (Virtual Extensible LAN) is a Layer 2 overlay tunneling protocol that encapsulates Ethernet frames in UDP (Protocol 17). It uses multicast groups for BUM traffic and requires no target configuration in multicast mode.
+
+கேள்வி 141. VXLAN என்ன, protocol number என்ன?
+பதில் 141. VXLAN (Virtual Extensible LAN) Ethernet frames-ஐ UDP (Protocol 17)-ல் encapsulate செய்யும் Layer 2 overlay tunneling protocol. BUM traffic-க்கு multicast groups use செய்யும் — multicast mode-ல் target configuration தேவையில்லை.
+
+---
+
+Q142. What is the overhead of VXLAN?
+A142. 50 bytes (20 IP + 8 UDP + 8 VXLAN + 14 inner Ethernet header), giving an effective MTU of 1450 bytes on a 1500-byte link.
+
+கேள்வி 142. VXLAN-ன் overhead என்ன?
+பதில் 142. 50 bytes (20 IP + 8 UDP + 8 VXLAN + 14 inner Ethernet header) — 1500-byte link-ல் effective MTU 1450 bytes.
+
+---
+
+Q143. Which Cisco IOS services should be disabled for security hardening?
+A143. Telnet, HTTP server, CDP (on external interfaces), BOOTP server, IP finger, IP source routing, IP directed broadcasts, IP redirects, IP proxy ARP, IP unreachables, TCP/UDP small servers, IP mask-reply.
+
+கேள்வி 143. Security hardening-க்காக எந்த Cisco IOS services disable செய்யணும்?
+பதில் 143. Telnet, HTTP server, CDP (external interfaces), BOOTP server, IP finger, IP source routing, IP directed broadcasts, IP redirects, IP proxy ARP, IP unreachables, TCP/UDP small servers, IP mask-reply.
+
+---
+
+Q144. What is the role of NetFlow in detecting tunnel misuse?
+A144. NetFlow records all traffic flows (source IP, dest IP, protocol, bytes, packets, timing). Analyzing NetFlow data reveals unusual protocol distributions (high GRE percentage), regular keepalive patterns, and abnormal overhead ratios that indicate tunnel activity.
+
+கேள்வி 144. Tunnel misuse detect செய்வதில் NetFlow-ன் role என்ன?
+பதில் 144. NetFlow எல்லா traffic flows record செய்யும் (source IP, dest IP, protocol, bytes, packets, timing). NetFlow data analyze செய்தால் unusual protocol distributions (high GRE %), regular keepalive patterns, abnormal overhead ratios reveal ஆகும் — tunnel activity indicate ஆகும்.
+
+---
+
+Q145. What is the significance of Protocol 0 (HOPOPT)?
+A145. HOPOPT (Hop-by-Hop Options) is an IPv6 extension header (Protocol 0) that every router in the path must process. It is used for special IPv6 features like router alert options.
+
+கேள்வி 145. Protocol 0 (HOPOPT)-ன் significance என்ன?
+பதில் 145. HOPOPT (Hop-by-Hop Options) IPv6 extension header (Protocol 0) — path-ல் ஒவ்வொரு router process செய்யணும். Special IPv6 features (router alert options) -க்கு use ஆகும்.
+
+---
+
+Q146. What is the difference between ESP (50) and AH (51) in IPSec?
+A146. ESP (50) encrypts and authenticates the payload — content is hidden. AH (51) only authenticates (no encryption) — content is visible but integrity is guaranteed. ESP is preferred for security.
+
+கேள்வி 146. IPSec-ல் ESP (50) மற்றும் AH (51)-ல் என்ன வித்தியாசம்?
+பதில் 146. ESP (50) payload encrypt மற்றும் authenticate செய்யும் — content hidden. AH (51) authenticate மட்டும் (encryption இல்லை) — content visible, integrity guaranteed. Security-க்கு ESP preferred.
+
+---
+
+Q147. What is RSVP (Protocol 46) used for?
+A147. RSVP (Resource Reservation Protocol) is used for QoS — it reserves bandwidth along a path for specific flows, ensuring quality for real-time applications like voice and video.
+
+கேள்வி 147. RSVP (Protocol 46) எதற்கு use ஆகும்?
+பதில் 147. RSVP (Resource Reservation Protocol) QoS-க்கு use ஆகும் — specific flows-க்காக path-ல் bandwidth reserve செய்யும் — voice மற்றும் video போன்ற real-time applications-க்கு quality ensure ஆகும்.
+
+---
+
+Q148. What is Proxy ARP and why should it be disabled?
+A148. Proxy ARP allows a router to respond to ARP requests on behalf of hosts on another subnet. This can be exploited for ARP spoofing and man-in-the-middle attacks. Disable with `no ip proxy-arp`.
+
+கேள்வி 148. Proxy ARP என்ன, ஏன் disable செய்யணும்?
+பதில் 148. Proxy ARP router-ஐ மற்ற subnet-ல் உள்ள hosts-க்காக ARP requests-க்கு respond செய்ய allow ஆகும். ARP spoofing மற்றும் man-in-the-middle attacks-க்கு exploit ஆகலாம். `no ip proxy-arp` disable செய்யணும்.
+
+---
+
+Q149. What is the difference between unicast, multicast, and anycast?
+A149. Unicast: one-to-one (specific destination). Multicast: one-to-many (group of receivers). Anycast: one-to-nearest (packet goes to the nearest node in a group). Each affects tunnel target configuration requirements differently.
+
+கேள்வி 149. Unicast, multicast, மற்றும் anycast-ல் என்ன வித்தியாசம்?
+பதில் 149. Unicast: one-to-one (specific destination). Multicast: one-to-many (receivers group). Anycast: one-to-nearest (nearest node-க்கு packet போகும்). ஒவ்வொன்னும் tunnel target configuration requirements-ஐ differently affect செய்யும்.
+
+---
+
+Q150. What is the most important lesson about network security from this study?
+A150. No single security control is sufficient. Attackers can bypass individual protections (MSS clamping, ACL, rate limiting). Only defense-in-depth — multiple overlapping controls — provides meaningful security. And even then, the existence of traffic between two endpoints can never be completely hidden; only its content can be protected.
+
+கேள்வி 150. இந்த study-ல் இருந்து network security பற்றிய most important lesson என்ன?
+பதில் 150. ஒரே ஒரு security control போதாது. Attackers individual protections (MSS clamping, ACL, rate limiting) bypass செய்யலாம். Defense-in-depth மட்டும் — multiple overlapping controls — meaningful security provide செய்யும். அதுவும் கூட இரண்டு endpoints-க்கிடையில் traffic existence completely hide செய்ய முடியாது — content மட்டும் protect செய்யலாம்.
+
+================================================================
+END OF Q&A FILE - 150 QUESTIONS
+================================================================
