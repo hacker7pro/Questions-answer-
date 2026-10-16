@@ -1,0 +1,1546 @@
+================================================================
+ENCAPSULATION PROTOCOLS & NETWORK ATTACKS — 150 ANSWERS
+================================================================
+
+--- SECTION 1: GRE BASICS ---
+
+A1.
+GRE = Generic Routing Encapsulation
+IP Protocol Number = 47 (0x2F)
+GRE = ஒரு protocol-ஐ இன்னொரு protocol-க்குள் encapsulate பண்ண use பண்றது.
+Protocol 47 = IP header-ல் GRE indicate பண்ற value.
+
+A2.
+EtherType = 0x6558 (Transparent Ethernet Bridging)
+இந்த value GRE header-ல் Protocol field-ல் வைக்கும்போது
+GRE-க்குள் raw Ethernet frame carry ஆகுது.
+0x0800 = IPv4, 0x6558 = Ethernet frame.
+
+A3.
+YES — Traditional GRE tunnel-ல் both endpoints configure வேணும்.
+Reason: GRE = point-to-point tunnel.
+Router A: tunnel source + tunnel destination
+Router B: tunnel source + tunnel destination (reverse)
+இல்லன்னா packet decapsulate ஆகாது, forward ஆகாது.
+Exception: Multicast scenario-ல் target config தேவையில்லை.
+
+A4.
+GRE protocol number = 47 (decimal) = 0x2F (hex)
+IP header-ல் Protocol field-ல் 47 இருந்தா
+"Next header = GRE" என்று router புரிஞ்சுக்கும்.
+
+A5.
+GRE Key field (RFC 2890):
+= 32-bit optional field
+= Tunnel identifier மாதிரி act பண்றது
+= Multiple tunnels distinguish பண்ண use பண்றது
+BUT: Authentication இல்லை!
+Key = just a number — sniff பண்ணி replay பண்ணலாம்.
+PPTP-ல் Call ID = Key field position-ல் வருது.
+
+A6.
+Multicast inner destination scenario-ல்:
+GRE router outer header strip பண்ணி
+inner packet-ஐ multicast group-க்கு forward பண்றது.
+Target devices = just multicast subscribers!
+OSPF router = 224.0.0.5 listen பண்றது already.
+GRE பத்தி தெரியாது — normal multicast packet மட்டும் receive.
+= Zero config on targets!
+
+A7.
+GRE Unicast:
+Both endpoints must configure tunnel.
+Specific target device receive பண்றது.
+= Target must have GRE config.
+
+GRE Multicast:
+Only intermediate GRE router needs config.
+Inner Dst = 224.x.x.x (multicast group).
+All subscribers in that group receive.
+= Target zero config needed!
+
+A8.
+Outer Destination IP = Internet-reachable public IP of GRE router!
+= Router's WAN/external interface IP.
+Example: 203.0.113.1 (Gi0/0 WAN IP).
+Private IPs (10.x.x.x) = internet routers drop!
+= Must be reachable from attacker's location.
+
+A9.
+PPTP GRE Call ID:
+= 16-bit field in Enhanced GRE header
+= Identifies specific PPTP session
+= Acts like a port number for NAT tracking
+NAT importance:
+Raw GRE = no port → NAT cannot track → drops multiple clients.
+Call ID = unique per client → NAT tracks → multiple clients work!
+Each client has different Call ID → NAT maps correctly.
+
+A10.
+Minimum GRE header = 4 bytes (no optional fields):
+[C=0|R=0|K=0|S=0|Flags|Ver] = 2 bytes
+[Protocol Type] = 2 bytes
+Total = 4 bytes.
+With Checksum: +4 bytes = 8 bytes.
+With Key: +4 bytes = 8 bytes.
+With Sequence: +4 bytes = 8 bytes.
+
+A11.
+Cisco IOS command for GRE NAT support:
+ip nat service gre
+This tells NAT engine to track GRE sessions
+using GRE Key / Call ID field.
+Without this: only 1 GRE client behind NAT.
+With this: multiple GRE clients supported.
+
+A12.
+Inner TTL = 1 when injecting OSPF via GRE.
+Reason: OSPF = link-local protocol.
+OSPF packets TTL=1 = not forwarded beyond next hop.
+If TTL > 1 = suspicious, may be filtered.
+TTL=1 = looks like legitimate local OSPF packet.
+
+A13.
+GRE Protocol Type for IPv4 = 0x0800
+This tells the GRE receiving end:
+"Inner payload = IPv4 packet."
+0x86DD = IPv6, 0x6558 = Ethernet,
+0x8847 = MPLS Unicast, 0x880B = PPP (PPTP).
+
+A14.
+YES — GRE can carry MPLS traffic.
+EtherType values:
+0x8847 = MPLS Unicast inside GRE
+0x8848 = MPLS Multicast inside GRE
+MPLS label stack follows GRE header directly.
+
+A15.
+GRE 'C' flag = Checksum Present bit (bit 0).
+C=0 = No checksum field (default, smaller packet).
+C=1 = 4-byte Checksum + Reserved field present.
+GRE checksum = checksum of GRE header + payload.
+Most implementations use C=0 for performance.
+
+--- SECTION 2: IP-in-IP ---
+
+A16.
+RFC = RFC 2003 (IP Encapsulation within IP)
+Protocol Number = 4 (decimal) = 0x04 (hex)
+IP header-ல் Protocol=4 இருந்தா
+"Next header = another IP packet" என்று router புரியும்.
+GRE-விட simpler: no intermediate header!
+
+A17.
+CVE-2020-10136:
+= IP-in-IP (RFC 2003) vulnerability
+= Multiple vendor implementations affected
+= Devices decapsulate IP-in-IP WITHOUT validation
+= Unauthenticated remote attacker can route
+  arbitrary traffic through vulnerable device
+= Access control bypass, spoofing possible.
+Affected: Cisco, Linux, many others.
+
+A18.
+Vulnerable device skips:
+1. Is outer source IP an authorized tunnel endpoint?
+2. Is a tunnel configured with this source?
+3. Is inner source IP valid/authorized?
+4. Any cryptographic verification.
+= Receives Proto=4 packet → immediately decapsulates
+→ forwards inner packet without ANY check!
+
+A19.
+CERT Advisory = VU#636397
+Full reference: https://kb.cert.org/vuls/id/636397
+CVE = CVE-2020-10136
+Published: June 2020.
+Recommends: Disable IP-in-IP on all interfaces
+that don't require tunneling.
+
+A20.
+GRE structure:
+[Outer IP][GRE Header 4+ bytes][Inner IP][Payload]
+IP-in-IP structure:
+[Outer IP][Inner IP][Payload]
+Key difference:
+IP-in-IP = NO intermediate header!
+Protocol=4 in outer IP tells receiver "inner = IP".
+= Simpler, smaller (4+ bytes less).
+= Same attack capability.
+
+A21.
+At intermediate vulnerable device:
+Step 1: Outer IP received, Dst=device IP.
+Step 2: Protocol=4 detected.
+Step 3: Device decapsulates (no validation!).
+Step 4: Inner IP visible: Dst=224.x.x.x (multicast).
+Step 5: Device forwards inner packet to multicast group.
+Step 6: All multicast subscribers receive.
+= Target devices = zero config needed.
+
+A22.
+NO — Target does NOT need IP-in-IP configured.
+Reason: Intermediate vulnerable device decapsulates.
+Target receives ONLY the inner IP packet.
+Inner packet = normal IP packet.
+Target thinks it received a regular packet
+from the inner source IP.
+= Completely unaware of encapsulation.
+
+A23.
+RFC 2003 text: "A node SHOULD decapsulate..."
+"SHOULD" in RFC = recommended but NOT mandatory.
+= Implementations may decapsulate without
+  checking if tunnel is configured.
+= No mandatory sender verification required.
+= Root cause: permissive language allows
+  unconditional decapsulation.
+= CVE-2020-10136 exploits this behavior.
+
+A24.
+Martian packet = packet with source IP that
+should NEVER appear as a source in transit:
+Examples:
+1. Router's own interface IP (loopback)
+2. 127.0.0.0/8 (loopback range)
+3. 0.0.0.0 (unspecified)
+4. Broadcast addresses (255.255.255.255)
+5. Multicast as source (224.x.x.x)
+Dropped because: these IPs cannot legitimately
+originate transit traffic.
+
+A25.
+If inner src = router's own GRE interface IP:
+Step 1: Router decapsulates GRE.
+Step 2: Sees inner src = own interface IP.
+Step 3: CEF/RPF check: "This is MY OWN IP!"
+Step 4: Martian check triggered!
+Step 5: DROP! Always fails.
+Reason: Own IP as source = loop/spoof indicator.
+Cannot form OSPF neighbor with self.
+
+A26.
+IP-in-IP firewall evasion advantages over GRE:
+1. Many firewalls block GRE (proto 47) but
+   forget to block IP-in-IP (proto 4).
+2. Smaller packet = less suspicious.
+3. Protocol 4 = older, less monitored.
+4. Same attack capability with simpler structure.
+5. CVE-2020-10136 = well-documented exploit path.
+
+A27.
+GRE carrying OSPF:
+[Outer IP proto=47][GRE hdr 4bytes proto=0x0800]
+[Inner IP proto=89 TTL=1][OSPF Hello]
+
+IP-in-IP carrying OSPF:
+[Outer IP proto=4][Inner IP proto=89 TTL=1][OSPF Hello]
+
+Difference: 4 bytes GRE header absent in IP-in-IP.
+Both achieve same OSPF injection result.
+
+A28.
+Unused IP chosen as inner source because:
+1. NOT router's own IP → no martian check.
+2. In target subnet → subnet check passes.
+3. No device owns it → no IP conflict.
+4. Route exists → RPF loose check passes.
+5. OSPF doesn't recognize as "self".
+6. No duplicate response from real device.
+= Perfect stealth, no conflicts, all checks pass.
+
+A29.
+CERT recommendations for VU#636397:
+1. Disable IP-in-IP on all interfaces
+   that don't need tunneling.
+2. Accept IP-in-IP ONLY from configured peers.
+3. Use ACL: deny ip proto 4 from unknown sources.
+4. Manufacturers: disable by default.
+5. IDS rule: alert ip any any -> any any
+   (ip_proto:4; sid:1367636397)
+
+A30.
+YES — IP-in-IP can carry IPv6 traffic.
+Protocol number for IPv6-in-IPv4 = 41 (0x29)
+Called: 6in4 tunneling.
+[Outer IPv4 proto=41][Inner IPv6][Payload]
+Used by: SixXS, Hurricane Electric tunnel brokers.
+Inner IPv6 can target FF02::5 (OSPFv3).
+
+--- SECTION 3: EtherIP ---
+
+A31.
+RFC = RFC 3378 (EtherIP: Tunneling Ethernet Frames)
+IP Protocol Number = 97 (0x61)
+Purpose: Carry Ethernet frames inside IP packets.
+= L2 over L3 tunneling.
+= Connect two Ethernet LANs over IP network.
+
+A32.
+EtherIP header size = 2 bytes ONLY!
+Fields:
+Bits 0-3:  Version = 3 (always value 3!)
+Bits 4-15: Reserved = 0 (always zero!)
+Total: 16 bits = 2 bytes.
+= No auth field, no session ID, no key!
+= Simplest possible tunnel header.
+
+A33.
+GRE carries: IP packets (L3 payload)
+IP-in-IP carries: IP packets (L3 payload)
+EtherIP carries: Full Ethernet FRAMES (L2 payload!)
+Difference: EtherIP inner = complete ETH frame
+including MAC addresses, EtherType, etc.
+= L2 access! ARP, STP, DHCP all possible.
+GRE/IP-in-IP = IP level only.
+
+A34.
+EtherIP inner payload = Layer 2 (Data Link Layer)
+Full Ethernet frame = MAC src, MAC dst, EtherType.
+Then inside ETH frame: IP (L3), TCP (L4), Data (L7).
+Stack: L3 outer → EtherIP (2B) → L2 → L3 → L4 → L7.
+
+A35.
+CVE-2021-0328 = EtherIP unauthenticated decapsulation.
+Affected: Cisco IOS, FreeBSD, OpenBSD, NetBSD, Linux.
+Vulnerable behavior:
+Receives Proto=97 → immediately decapsulates
+→ forwards inner ETH frame to bridge
+→ NO tunnel config check!
+= Anyone can inject Ethernet frames!
+
+A36.
+EtherIP bypasses RPF because:
+1. Inner ETH frame → bridge (L2 processing).
+2. Bridge operates at L2.
+3. RPF = L3 concept (checks routing table).
+4. L2 bridge doesn't perform RPF checks!
+5. Frame delivered to interface as "local frame".
+6. THEN IP layer processes it from that interface.
+7. RPF check: "came from Gi0/1?" YES (bridge delivered there).
+= Even strict RPF passes!
+
+A37.
+L2 attacks possible via EtherIP:
+1. ARP Poisoning (ETH dst=broadcast, ARP reply)
+2. STP Root Bridge takeover (BPDU priority=0)
+3. DHCP Starvation (random MACs, DHCP discover flood)
+4. Rogue DHCP Server (fake DHCP offer)
+5. VLAN Hopping (double 802.1Q tagging)
+6. MAC Flooding (overflow CAM table)
+7. CDP/LLDP Spoofing
+8. IPv6 RA Spoofing
+
+A38.
+EtherIP Version field = 3 (binary: 0011)
+Always must be 3.
+Occupies bits 0-3 of the 2-byte header.
+Remaining 12 bits = Reserved = 0.
+No other version values are defined.
+
+A39.
+YES — EtherIP supports multicast but INDIRECTLY.
+Mechanism:
+1. Inner ETH frame dst MAC = multicast MAC.
+   (e.g., 01:00:5E:00:00:05 for OSPF 224.0.0.5)
+2. Vulnerable device decapsulates.
+3. Inner ETH frame → bridge.
+4. Bridge sees multicast MAC → floods all ports.
+5. All bridge ports receive inner ETH frame.
+6. OSPF/RIP/etc. processes on each port.
+= Works but via bridge, not direct IP routing.
+
+A40.
+Device mode required = BRIDGING mode.
+Router must have:
+interface Tunnel0
+  tunnel mode etherip
+  bridge-group 1 (or similar bridge config)
+OR: Device accepts Proto=97 without config (vulnerable).
+Bridging mode = forwards L2 frames between segments.
+Without bridge = Proto=97 packet dropped.
+
+A41.
+YES — RPF check passes for unused IP via EtherIP.
+Reason:
+EtherIP → bridge (L2) → no RPF at bridge level.
+Then frame delivered to Gi0/1 as local.
+When IP processes on Gi0/1:
+"150.134.23.99 from Gi0/1?" = YES (bridge delivered).
+= Even STRICT RPF passes!
+= EtherIP + unused IP = double RPF bypass!
+
+A42.
+OSPF multicast group 224.0.0.5 → MAC = 01:00:5E:00:00:05
+Conversion rule: IP multicast → ETH multicast:
+01:00:5E + lower 23 bits of IP.
+224.0.0.5 binary last 23 bits = 00:00:05.
+MAC = 01:00:5E:00:00:05.
+Other examples:
+224.0.0.9 (RIP) → 01:00:5E:00:00:09
+224.0.0.18 (VRRP) → 01:00:5E:00:00:12
+
+A43.
+EtherIP enables STP manipulation:
+1. Craft inner ETH: dst = 01:80:C2:00:00:00 (STP multicast).
+2. Payload = STP BPDU with Priority=0 (lowest = root!).
+3. Root Bridge ID = attacker's MAC.
+4. EtherIP vulnerable device delivers to LAN.
+5. All switches receive BPDU.
+6. Election: Attacker priority 0 < real bridge 32768.
+7. Attacker becomes Root Bridge!
+8. All L2 traffic flows through attacker.
+
+A44.
+Key advantage over GRE with strict RPF:
+GRE + strict RPF: inner packet goes to routing engine.
+RPF checks interface. "Wrong interface" → DROP!
+EtherIP + strict RPF: inner ETH goes to bridge.
+Bridge delivers to correct interface as LOCAL.
+RPF: "Came from correct interface!" PASS!
+= EtherIP works even when GRE would be blocked!
+
+A45.
+Traditional EtherIP = YES, both endpoints need config.
+Router A: interface tunnel0, tunnel mode etherip,
+  tunnel src A, tunnel dst B, bridge-group 1.
+Router B: interface tunnel0, tunnel mode etherip,
+  tunnel src B, tunnel dst A, bridge-group 1.
+= Bidirectional Ethernet bridge over IP.
+Attack scenario: vulnerable device = no config needed.
+
+--- SECTION 4: NAT + ENCAPSULATION ---
+
+A46.
+IPSec AH breaks NAT technical reason:
+1. AH = Authentication Header.
+2. AH computes ICV (Integrity Check Value) over:
+   IP source address + IP dest address + payload.
+3. NAT changes source IP address.
+4. Changed IP → ICV verification FAILS at receiver.
+5. Receiver: "Packet modified! Reject!"
+6. NAT-T cannot help: AH covers outer IP headers.
+= Fundamentally incompatible. Use ESP instead.
+
+A47.
+NAT-T = NAT Traversal for IPSec.
+Port = UDP 4500.
+Mechanism:
+ESP packet (Proto=50, no port) → NAT drops.
+NAT-T wraps ESP inside UDP 4500:
+[IP][UDP 4500][Non-ESP Marker=0x00000000][ESP][Payload]
+NAT tracks UDP 4500 port → works through NAT.
+Negotiated via IKE: detects NAT in path, switches to 4500.
+
+A48.
+PPTP GRE Call ID for NAT multiple clients:
+Normal GRE = no port → NAT can't track multiple clients.
+Enhanced GRE (PPTP): Key field = Call ID (16-bit).
+Each PPTP client gets unique Call ID.
+NAT table: {private IP, Call ID} → {public IP, mapped CID}.
+Client 1: 192.168.1.10, CID=0x1234
+Client 2: 192.168.1.11, CID=0x1235
+NAT distinguishes by CID → multiple clients work!
+
+A49.
+Protocols with NO authentication by default:
+1. GRE (raw) — no auth, no encryption
+2. IP-in-IP — no auth, no encryption
+3. VXLAN — no auth, VNI = just an ID
+4. MPLS — no auth (RFC 3031 confirms)
+5. 6in4 — only src IP check (weak)
+6. EtherIP — no auth, no session ID
+7. L2TP standalone — no data channel encryption
+
+A50.
+ICV = Integrity Check Value in IPSec AH.
+Computation: HMAC(key, IP_src + IP_dst + AH_hdr + payload).
+NAT breaks it:
+Step 1: AH computed with src IP = 192.168.1.10.
+Step 2: NAT changes src IP to 1.2.3.4.
+Step 3: Receiver computes ICV with 1.2.3.4.
+Step 4: ICV mismatch! (was computed with 192.168.1.10)
+Step 5: Packet REJECTED.
+= NAT + AH = always broken.
+
+A51.
+Cisco ASA command for PPTP inspection:
+policy-map global_policy
+  class inspection_default
+    inspect pptp
+Applied via: service-policy global_policy global
+This enables ASA to track GRE Call IDs for PPTP.
+Multiple PPTP clients behind NAT work with this.
+
+A52.
+Raw GRE + Dynamic NAT failure reason:
+GRE = IP protocol 47, NO port number.
+NAT needs port number to track sessions.
+Multiple clients → same proto → cannot distinguish.
+Static 1:1 NAT: entire public IP maps to one private IP.
+No port needed → one GRE session works.
+Dynamic NAT/PAT: needs port → GRE has none → drops!
+
+A53.
+MS-CHAPv2 weaknesses in PPTP:
+1. Based on MD4 hash (broken algorithm).
+2. NTResponse = DES(MD4(password), challenge).
+3. DES = 56-bit key = crackable.
+4. MD4 = vulnerable to rainbow tables.
+5. Tools: chapcrack, asleap, cloudcracker.
+6. Offline attack: capture handshake → crack.
+7. Time to crack: hours to days with GPU.
+
+A54.
+PPTP encryption cipher = RC4-40 bit.
+RC4-40 = export-grade cipher (legacy US export law).
+Weaknesses:
+1. 40-bit key = only 2^40 combinations.
+2. RC4 = stream cipher with known biases.
+3. Crackable in hours with modern hardware.
+4. "40-bit" = deliberately weakened!
+5. MS-MPPE (encryption) = RC4-128 in newer versions
+   but still uses weak MS-CHAPv2 for auth.
+
+A55.
+Strong authentication VPN protocols (3 examples):
+1. IPSec ESP + IKEv2 with X.509 certificates
+   (PKI-based, Diffie-Hellman PFS, AES-256).
+2. WireGuard (Curve25519 public key, ChaCha20-Poly1305).
+3. SSTP (TLS 1.2/1.3 with certificates, AES-256).
+All three: cannot spoof, cannot replay,
+computationally infeasible to break.
+
+A56.
+Non-ESP Marker in NAT-T:
+Value = 0x00000000 (4 zero bytes).
+Purpose: Distinguish IKE traffic from ESP traffic
+inside UDP 4500.
+IKE packet: first 4 bytes = non-zero (ISAKMP header).
+ESP packet: first 4 bytes = 0x00000000 (Non-ESP Marker).
+Receiver reads 4 bytes → decides IKE or ESP processing.
+
+A57.
+VXLAN (UDP 4789) works better with NAT than GRE:
+1. VXLAN uses UDP → has src and dst port.
+2. NAT tracks UDP sessions by port numbers.
+3. Multiple VTEP sessions → different src ports.
+4. NAT table: {src IP, src port} → {public IP, mapped port}.
+GRE (proto 47) → no port → NAT can't track → drops!
+VXLAN = UDP = NAT-friendly by design.
+
+A58.
+FortiGate PPTP GRE passthrough mechanism:
+config system session-helper
+  edit [id]
+    set name pptp
+    set port 1723
+    set protocol 6 (TCP)
+This enables FortiGate to:
+1. Track TCP 1723 (PPTP control).
+2. Extract Call ID from GRE packets.
+3. Map GRE packets using Call ID as identifier.
+= Multiple PPTP clients behind FortiGate NAT.
+
+A59.
+Linux kernel modules for PPTP GRE NAT:
+1. nf_conntrack_pptp — tracks PPTP sessions.
+2. nf_nat_pptp — NATs GRE using Call ID.
+Load order matters:
+modprobe nf_conntrack_pptp
+modprobe nf_nat_pptp
+Without nf_conntrack_pptp: only 1 PPTP client works.
+With both: multiple clients, Call ID tracking.
+
+A60.
+IPSec ESP protocol number = 50 (0x32).
+NAT-T wraps ESP:
+[Outer IP][UDP Src=random Dst=4500]
+[Non-ESP Marker 0x00000000 4bytes]
+[ESP Header SPI=xxx][Encrypted payload][ICV]
+UDP 4500 = NAT tracks this port.
+ESP inside UDP = NAT sees UDP, not raw ESP.
+= NAT traversal works!
+
+--- SECTION 5: RPF + MARTIAN CHECKS ---
+
+A61.
+RPF = Reverse Path Forwarding.
+Purpose: Anti-spoofing mechanism.
+Logic: "From which interface should this source IP arrive?"
+If packet arrives from wrong interface → DROP!
+Checks routing table: "Best route to src IP via which interface?"
+If actual arrival interface ≠ best route interface → FAIL (strict).
+If route just exists (any interface) → PASS (loose).
+
+A62.
+Strict RPF:
+Packet must arrive on the EXACT interface
+that the routing table says is best for that src IP.
+= Strictest check. Any deviation → DROP.
+
+Loose RPF:
+Route to src IP must EXIST in routing table.
+Doesn't check which interface it arrives on.
+= More permissive. Only verifies route exists.
+
+No RPF:
+No check at all.
+= Any source IP passes.
+
+A63.
+Unused IP (e.g., 150.134.23.99) bypasses loose RPF:
+1. 150.134.23.99 in 150.134.23.0/24 subnet.
+2. 150.134.23.0/24 = connected route on Gi0/1.
+3. Route EXISTS in routing table ✅
+4. Loose RPF: "Route exists? YES → PASS!"
+5. Doesn't check if correct interface.
+= RPF bypass success with unused subnet IP!
+
+A64.
+Linux sysctl parameter for RPF:
+net.ipv4.conf.all.rp_filter
+Values:
+0 = No RPF check
+1 = Strict RPF (best route interface must match)
+2 = Loose RPF (route must exist anywhere)
+Default on most distros = 2 (loose).
+Set per interface: net.ipv4.conf.eth0.rp_filter
+
+A65.
+If inner src = router's own GRE interface IP (203.0.113.1):
+RPF check: "203.0.113.1 should arrive from... Gi0/0 (local!)"
+CEF check: "203.0.113.1 = MY OWN LOCAL ADDRESS!"
+Result: MARTIAN! DROP immediately!
+Reason: Own IP appearing as transit source = impossible/spoof.
+= 100% always dropped. No exception.
+
+A66.
+Martian source addresses (3 examples):
+1. Router's own interface IPs (locally originated)
+   e.g., 203.0.113.1 if that's router's Gi0/0.
+2. Loopback range: 127.0.0.0/8
+   (127.0.0.1 = local only, never transit)
+3. Broadcast address: 255.255.255.255
+   (broadcast cannot be source)
+Others: 0.0.0.0, 224.0.0.0/4 as source,
+169.254.0.0/16 (link-local).
+
+A67.
+Router's own interface IP as inner source always fails:
+Reason 1: Martian check — CEF sees "own IP" → DROP.
+Reason 2: RPF — "own IP should come from local,
+not from GRE tunnel" → FAIL.
+Reason 3: OSPF self-check — "Hello from my own IP?" →
+"Cannot neighbor with myself!" → DROP.
+Reason 4: Loop detection — "I am the source?" → DROP.
+= Multiple independent failure points.
+
+A68.
+EtherIP avoids RPF checks:
+GRE/IP-in-IP path: inner packet → routing engine → RPF check.
+EtherIP path: inner ETH frame → BRIDGE → no RPF!
+Bridge = L2 processing = no routing table = no RPF!
+After bridge delivers to Gi0/1 as local frame:
+IP layer sees packet "arriving on Gi0/1".
+RPF: "150.134.23.99 from Gi0/1?" = route matches! PASS!
+= EtherIP + bridge = RPF completely bypassed!
+
+A69.
+If strict RPF enabled, GRE attacker workaround:
+Option 1: Send outer packet to Gi0/1 directly
+(150.134.23.1) instead of GRE on Gi0/0.
+If Gi0/1 accepts GRE: packet arrives ON Gi0/1.
+RPF: "150.134.23.99 from Gi0/1" = PASS!
+Option 2: Use EtherIP instead (bridge bypasses RPF).
+Option 3: Use IP-in-IP to vulnerable device
+that doesn't enforce strict RPF.
+
+A70.
+CEF = Cisco Express Forwarding.
+= Hardware-accelerated packet forwarding in Cisco routers.
+Martian check relation:
+CEF maintains FIB (Forwarding Information Base).
+FIB includes local address table.
+When decapsulated inner src checked:
+CEF looks up src IP in local address table.
+Found? = Martian → DROP.
+Not found? = Continue processing.
+= CEF is the enforcement mechanism for martian checks.
+
+A71.
+Unused IP passes OSPF self-check because:
+OSPF self-check: "Is this src IP my own address?"
+Router's addresses: 203.0.113.1, 150.134.23.1, 198.51.100.1.
+Unused IP = 150.134.23.99.
+150.134.23.99 ≠ any of router's IPs.
+OSPF: "This is NOT my address → external neighbor!"
+= Self-check passes! Neighbor can form!
+
+A72.
+If inner src = router's own OSPF interface IP:
+OSPF receives Hello from e.g., 150.134.23.1 (Gi0/1).
+OSPF checks OSPF-enabled interfaces.
+Gi0/1 = OSPF running with IP 150.134.23.1.
+"Hello from 150.134.23.1 = MY OWN Gi0/1!"
+"This is a Hello from MYSELF!"
+OSPF rule: Cannot form adjacency with self.
+= DROP the Hello! Neighbor never forms.
+
+A73.
+3-interface router, inner src = another interface IP:
+Example: GRE on Gi0/0, inner src = Gi0/1 IP.
+Strict RPF result:
+"Gi0/1 IP should arrive from Gi0/1."
+"But arrived via GRE on Gi0/0."
+"Interface mismatch!" → STRICT RPF FAILS!
+Unless: Gi0/1 IP route points via Tunnel0 somehow.
+= Generally FAILS with strict RPF.
+
+A74.
+Inner src = unused IP (150.134.23.99),
+packet arrives via GRE on different interface (Gi0/0):
+Strict RPF: "150.134.23.99 via Gi0/1 expected,
+got via Gi0/0 (GRE)" → FAIL ❌
+Loose RPF: "Route to 150.134.23.0/24 exists?" YES
+→ PASS ✅
+No RPF: Always PASS ✅
+Real world: Most routers = loose or no RPF = PASS!
+
+A75.
+Juniper JunOS RPF for GRE decapsulated packets:
+Default: depends on interface config.
+If rpf-check configured on interface:
+  set interfaces ge-0/0/1 unit 0 family inet rpf-check
+  = Strict check enabled → may drop.
+If no rpf-check configured:
+  = No RPF checking → PASS.
+Junos loose mode:
+  set interfaces ge-0/0/1 unit 0 family inet rpf-check mode loose
+  = Loose RPF → route must exist → PASS.
+
+--- SECTION 6: OSPF ATTACKS ---
+
+A76.
+OSPF multicast addresses:
+224.0.0.5 = All OSPF Routers (Hello, LSUpdate to all).
+224.0.0.6 = OSPF Designated Routers (DR/BDR only).
+TTL = 1 (link-local, not forwarded by routers).
+Protocol number = 89.
+All OSPF-enabled interfaces listen on 224.0.0.5.
+
+A77.
+Five OSPF neighbor conditions:
+1. Same subnet/network mask.
+2. Same Hello interval (default 10s).
+3. Same Dead interval (default 40s).
+4. Same Area ID.
+5. Same authentication (type and key).
+Optional: Same MTU (may cause stuck in EXSTART).
+All must match → neighbor forms → adjacency possible.
+
+A78.
+MaxAge LSA Flush attack:
+Attacker sends LSUpdate with LS Age = 3600 (max).
+LS Age = 3600 = "This LSA is expired! Flush it!"
+Spoofed as legitimate router's LSA.
+All routers: "Router X's LSA expired! Remove!"
+Result: Router X removed from topology.
+Traffic to Router X's networks = BLACKHOLE!
+Tool to craft: scapy, GNS3 simulation.
+
+A79.
+Becoming OSPF DR via GRE injection:
+1. Inject OSPF Hello via GRE.
+2. Set Hello Priority = 255 (max, beats all default=1).
+3. Inner src = unused IP in OSPF subnet.
+4. Hello interval, dead interval match existing.
+5. Other routers receive Hello with Priority=255.
+6. DR election: Highest priority wins.
+7. Attacker's fake router (unused IP) = DR!
+8. All LSA flooding now goes through attacker.
+9. Attacker sees/controls all OSPF updates!
+
+A80.
+LSA Type 5 = AS External LSA = used to inject default route.
+Fields set:
+Link State ID = 0.0.0.0 (default route)
+Network Mask = 0.0.0.0
+Metric Type = 2
+Metric = 1 (lowest = preferred!)
+Forward Address = attacker's inner src IP.
+Advertising Router = attacker's fake router ID.
+All OSPF routers install: "0.0.0.0/0 via attacker!"
+
+A81.
+Inner source IP subnet MUST match:
+The OSPF-enabled interface subnet of the target.
+Example: OSPF on Gi0/1 = 150.134.23.0/24.
+Inner src = 150.134.23.x (same /24!).
+If different subnet: OSPF Hello rejected.
+OSPF: "Neighbor not in my subnet → ignore!"
+= Subnet check is critical for OSPF injection.
+
+A82.
+OSPF Router ID = 32-bit unique identifier per router.
+Typically = highest loopback IP or highest interface IP.
+Unused IP as Router ID matters because:
+1. Must be unique in OSPF domain.
+2. Unused IP = no conflict with real routers.
+3. OSPF uses RID to identify LSA originator.
+4. Fake RID = attacker's fake LSAs accepted.
+5. No collision = stable fake neighbor.
+
+A83.
+Network blackhole attack by spoofing neighbor:
+1. Identify real router IP (e.g., 150.134.23.2).
+2. Set inner src = 150.134.23.2 (spoof it!).
+3. Send MaxAge LSUpdate for 150.134.23.2's networks.
+OR send route update with metric=infinity (16 for RIP).
+Result: All OSPF routers think 150.134.23.2's
+networks are gone → blackhole!
+Alternative: Send Hello with Priority=0 =
+"I am leaving" → neighbor removed!
+
+A84.
+OSPF DR (Designated Router) election:
+Step 1: All routers on segment exchange Hellos.
+Step 2: Compare Router Priority (0-255).
+  Priority 0 = not eligible for DR.
+  Highest priority = wins DR.
+Step 3: Tie on priority → compare Router ID.
+  Highest RID = wins.
+Step 4: DR elected → BDR (Backup DR) = second highest.
+Attacker impact: set Priority=255 → always wins DR!
+All LSA exchange flows through attacker's position.
+
+A85.
+OSPF without MD5 = AuType=0 (null auth).
+Anyone can send OSPF packets.
+No shared secret verification.
+No cryptographic check.
+= Inject any LSA, any Hello, any route.
+Mitigation: ip ospf authentication message-digest
+  ip ospf message-digest-key 1 md5 SECRET
+With MD5: every OSPF packet has HMAC-MD5 signature.
+Without secret key: injection impossible.
+
+A86.
+OSPF LSUpdate (Type 4 packet):
+Header: OSPF common header + Num LSAs field.
+Carries: One or more LSAs (Link State Advertisements).
+LSA types inside:
+Type 1 = Router LSA (links of one router)
+Type 2 = Network LSA (DR generated)
+Type 3 = Summary LSA (inter-area routes)
+Type 4 = ASBR Summary LSA
+Type 5 = AS External LSA (external routes, default route)
+Attacker uses Type 5 to inject default route.
+
+A87.
+Inner TTL=1 role in GRE multicast OSPF attack:
+OSPF = link-local protocol.
+Real OSPF packets always have TTL=1.
+TTL=1 = cannot be forwarded by intermediate routers.
+Setting TTL=1 = packet looks legitimate OSPF.
+If TTL > 1 = suspicious, may trigger IDS.
+After GRE decapsulation:
+Inner TTL=1 delivered to OSPF process correctly.
+= Mimics real OSPF behavior.
+
+A88.
+Path redirection attack:
+Inject Router LSA or AS External LSA for specific network.
+Set metric lower than existing path:
+Real path: 192.168.50.0/24 metric=100.
+Fake LSA: 192.168.50.0/24 metric=1 via attacker.
+All routers prefer metric=1 → forward to attacker!
+Attacker can: capture, modify, or drop traffic.
+= Specific network traffic hijacked.
+
+A89.
+OSPF Backbone Area ID = 0.0.0.0
+Written as: area 0 (in Cisco IOS)
+All non-backbone areas must connect to area 0.
+Attacking area 0 = affects entire OSPF domain.
+Inner packet Area ID field must match target's area.
+For backbone attack: Area ID = 0.0.0.0.
+
+A90.
+Four attack actions after OSPF full adjacency via GRE:
+1. Default route injection: All internet traffic → attacker.
+2. Specific route hijacking: Redirect target networks.
+3. Route poisoning: Remove legitimate networks (blackhole).
+4. Topology reconnaissance: Full LSDB = entire network map.
+Bonus: DR position = control all LSA flooding on segment.
+
+--- SECTION 7: ROUTING PROTOCOL ATTACKS ---
+
+A91.
+RIPv2:
+Multicast address = 224.0.0.9
+UDP port = 520 (both src and dst)
+TTL = 2 (not strictly 1 like OSPF)
+Authentication: optional (often disabled)
+= Very easy to inject without auth.
+
+A92.
+RIPv2 infinity metric = 16
+Metric 16 = "Network unreachable/poisoned"
+Max valid metric = 15 hops.
+Attacker sets metric=16 for target network:
+All RIP routers: "That network = unreachable!"
+= Route removed from all routing tables.
+= Denial of service on that network!
+
+A93.
+EIGRP:
+Multicast address = 224.0.0.10
+IP Protocol number = 88 (not UDP/TCP, own protocol!)
+K-values: K1=1, K2=0, K3=1, K4=0, K5=0 (default).
+AS Number must match for neighbor formation.
+Auth: optional MD5 (often disabled).
+
+A94.
+EIGRP Goodbye message:
+Hello packet with Flags = 0x00000003 (Goodbye flag).
+Meaning: "I am shutting down / leaving."
+Attack use:
+Spoof existing neighbor's IP as inner src.
+Send Goodbye Hello from that IP.
+All routers: "Neighbor X left! Remove its routes!"
+= Instant neighbor removal + route withdrawal!
+= Traffic disruption without waiting for dead timer.
+
+A95.
+VRRP:
+Multicast address = 224.0.0.18
+IP Protocol number = 112
+TTL = 255 (MUST be 255! Strict requirement!)
+VRID = 1-255 (Virtual Router ID)
+Advertisement interval = 1 second default.
+
+A96.
+VRRP Priority = 255 = immediately becomes master.
+Normal master priority = 100 (default).
+Backup priority = lower values.
+Special value: Priority = 0 = "I am leaving (resign)!"
+255 = owner priority (IP address owner).
+Attack: Send VRRP adv with Priority=255.
+Result: All backups defer. Attacker = master!
+Virtual IP now responds to attacker's MAC.
+
+A97.
+HSRPv2:
+Multicast address = 224.0.0.102
+UDP port = 1985 (src and dst)
+HSRPv1 used 224.0.0.2 (different!)
+HSRPv2 uses 224.0.0.102.
+Group range: 0-255 per interface.
+Preempt: enabled by default in some configs.
+
+A98.
+PIM Bootstrap (BSR) message:
+Type = 11 in PIM header.
+Purpose: Elect Bootstrap Router and announce RP.
+BSR Priority = determines BSR winner.
+RP set = which router is Rendezvous Point per group.
+Attack:
+Send BSR with Priority=255 = "I am BSR!"
+Announce attacker IP as RP for all multicast groups.
+All PIM routers: "New RP = attacker!"
+All multicast traffic joins via attacker!
+= Complete multicast hijack!
+
+A99.
+PIM (Protocol Independent Multicast):
+Multicast address = 224.0.0.13
+IP Protocol number = 103
+TTL = 1 (link-local Hellos)
+Operates in: Sparse Mode (PIM-SM), Dense Mode (PIM-DM).
+PIM-SM needs RP (Rendezvous Point) = attack target.
+
+A100.
+VRRP TTL requirement = 255 (exact).
+VRRP spec: any VRRP packet with TTL ≠ 255 = DISCARD!
+This is a security feature to prevent remote attacks.
+BUT: Via GRE decapsulation, inner TTL can be set to 255.
+GRE strips outer IP. Inner TTL=255 preserved.
+= GRE injection can send VRRP with TTL=255!
+= VRRP TTL check bypassed via GRE!
+
+A101.
+Inner source IP for VRRP hijack via GRE:
+Best choice = Unused IP in VRRP subnet!
+e.g., 150.134.23.99 if VRRP on 150.134.23.0/24.
+Reason:
+VRRP src IP = must be in same subnet as VIP.
+VRRP advertisement src = VRRP router's interface IP.
+Unused IP = no conflict, no duplicate.
+VRRP group only checks Priority, not auth (if no auth).
+Inner TTL must = 255 (VRRP requirement).
+
+A102.
+VRRP Master Takeover:
+Attacker's advertisement Priority=255 > current master.
+Attacker becomes new master.
+Virtual IP → attacker's MAC.
+All hosts: default gateway → attacker.
+
+VRRP Master Confusion:
+Spoof current master's IP as inner src.
+Send conflicting advertisements at higher frequency.
+Both master and fake send Priority=100.
+Backup routers confused → election loop!
+Result: Network instability, packet drops,
+intermittent connectivity.
+
+A103.
+BGP port = TCP 179.
+BGP via GRE attack difference from OSPF:
+OSPF: multicast Hello → any unused IP → new neighbor.
+BGP: unicast TCP 179 → must match configured peer IP!
+BGP attack via GRE:
+Must SPOOF existing BGP peer's IP as inner src.
+TCP session already established → inject UPDATE.
+Requires: sequence number prediction (hard!).
+OR: Existing TCP session MITM via GRE.
+= BGP attack harder than OSPF via GRE.
+
+A104.
+RFC 3031 = MPLS Architecture.
+States explicitly:
+"MPLS does not, by itself, provide any
+ confidentiality or authentication."
+= Officially documented: no security!
+Label = 20-bit number, no cryptographic protection.
+Sniff label → replay → router forwards!
+= MPLS security relies on physical/network isolation.
+
+A105.
+GLBP = Gateway Load Balancing Protocol (Cisco).
+Multicast address = 224.0.0.102 (same as HSRPv2!).
+UDP port = 3222.
+GLBP role: Multiple gateways share load.
+AVG = Active Virtual Gateway (master).
+AVF = Active Virtual Forwarder.
+GLBP attack: Send Hello with priority=255 → become AVG!
+Control all gateway assignments.
+
+--- SECTION 8: INNER SOURCE IP SELECTION ---
+
+A106.
+Best inner source IP for OSPF injection via GRE:
+Target subnet Gi0/1 = 150.134.23.0/24.
+Best choice = 150.134.23.99 (UNUSED IP in subnet!).
+Reasons:
+1. Not router's own IP → no martian.
+2. In OSPF subnet → subnet check passes.
+3. No device owns it → no conflict.
+4. Route exists → loose RPF passes.
+5. OSPF self-check: not own address → passes.
+= All checks pass. Neighbor forms. Attack succeeds!
+
+A107.
+Inner src = 203.0.113.1 (router's WAN IP) fails:
+Failure 1 (Martian): 203.0.113.1 = router's own Gi0/0.
+CEF: "Own IP as source!" → Martian → DROP!
+Failure 2 (OSPF subnet): 203.0.113.1 ∉ 150.134.23.0/24.
+OSPF: "Not in my subnet!" → REJECT!
+Failure 3 (OSPF self): If OSPF on Gi0/0, it's known address.
+= Three independent failure points.
+
+A108.
+Three conditions for inner source IP in GRE OSPF attack:
+1. Must NOT be the router's own IP (any interface).
+   → Avoids martian check.
+2. Must be in the same subnet as the target OSPF interface.
+   → OSPF subnet check passes.
+3. Route to that IP must exist (for loose RPF).
+   → RPF check passes.
+Bonus condition: Must not be assigned to any real device.
+→ Avoids IP conflicts and duplicate responses.
+
+A109.
+Risk of using existing device IP (150.134.23.5):
+1. Duplicate IP conflict!
+   Real device also responds to OSPF.
+   Two devices with same IP → routing confusion.
+2. Detection risk:
+   Network admin sees two sources for same IP.
+   ARP table shows two MACs for same IP.
+3. Unstable neighbor:
+   Real device and attacker both sending OSPF.
+   Router confused by conflicting Hellos.
+4. Real device may reset session repeatedly.
+= Detectable + unstable. Unused IP is better.
+
+A110.
+Best inner source IP for 150.134.23.0/24 OSPF:
+= 150.134.23.99 (or any unused IP in that /24)
+Check: Is 150.134.23.99 assigned to any device? NO.
+Is it in 150.134.23.0/24? YES.
+Is it router's own IP? NO.
+Route exists? YES (connected subnet).
+OSPF subnet match? YES.
+OSPF self-check? NOT own address.
+= Perfect choice. All conditions satisfied.
+
+A111.
+3-interface router, all public IPs, Outer Dst selection:
+Rule: Outer Dst = Internet-reachable IP that
+accepts GRE (proto 47).
+Best = WAN interface (Gi0/0 = 203.0.113.1).
+Why: Internet routers forward to WAN IP.
+GRE enabled on Gi0/0 → accepted there.
+Inner packet then routed internally.
+
+If GRE enabled on Gi0/1 (150.134.23.1):
+Outer Dst = 150.134.23.1 (if internet-reachable).
+= Both work if internet-reachable!
+Key rule: Outer Dst = reachable + GRE-enabled interface.
+
+A112.
+Using another router's physical interface IP:
+Works when:
+1. Loose RPF configured (route exists via tunnel).
+2. OSPF NOT enabled on that specific interface.
+   (Router doesn't recognize IP as "own OSPF address".)
+3. Subnet matches target OSPF segment.
+4. No strict martian check (platform-dependent).
+Advantage: Trusted IP! Other routers may have
+ACLs permitting that IP for OSPF.
+Risk: OSPF may detect as "my address" if OSPF runs there.
+
+A113.
+OSPF subnet check:
+Each OSPF interface has IP + subnet mask.
+Incoming Hello: src IP checked against interface subnet.
+If src IP not in interface's subnet → REJECT!
+Example:
+Gi0/1 = 150.134.23.1/24 → subnet = 150.134.23.0/24.
+Hello from 150.134.23.99 → IN subnet → ACCEPT.
+Hello from 203.0.113.5 → NOT in subnet → REJECT!
+= Ensures OSPF neighbors are truly on same segment.
+
+A114.
+IP-in-IP with inner src = 150.134.23.99, all checks:
+1. Martian check: 150.134.23.99 ≠ own IP → PASS ✅
+2. RPF (loose): Route 150.134.23.0/24 exists → PASS ✅
+3. RPF (strict): Wrong interface → FAIL ❌
+4. OSPF self-check: Not own address → PASS ✅
+5. OSPF subnet check: In 150.134.23.0/24 → PASS ✅
+6. OSPF Hello params: If matched → PASS ✅
+7. IP-in-IP decap: Protocol=4 accepted → PASS ✅
+= Loose/No RPF environment: ALL PASS! Attack succeeds!
+
+A115.
+Inner src = router's loopback IP (e.g., 1.1.1.1):
+Martian check: 1.1.1.1 = router's own loopback → Martian!
+CEF: "This is my loopback!" → DROP!
+Even if passes: OSPF Router ID check.
+Loopback = typically Router ID.
+"Hello from my own Router ID!" → "MYSELF!" → REJECT!
+RPF: "1.1.1.1 should come from Loopback0, not tunnel" → FAIL!
+= Multiple failures. Never use loopback as inner src.
+
+A116.
+Unused IP preferred over existing device IP:
+1. No Duplicate IP conflict (existing device keeps running).
+2. No ARP conflict (no two MACs for same IP).
+3. No unstable neighbor (real device doesn't confuse things).
+4. Harder to detect (no duplicate ARP alerts).
+5. Predictable behavior (only attacker responds).
+6. OSPF adjacency is stable (no competing Hello).
+= Cleaner, stealthier, more reliable attack.
+
+A117.
+RPF result: inner src=150.134.23.99, GRE on Gi0/0:
+Strict RPF:
+"150.134.23.99 → 150.134.23.0/24 → Gi0/1 (best route)."
+"But arrived via GRE on Gi0/0."
+"MISMATCH!" → FAIL ❌ → DROP.
+
+Loose RPF:
+"Route to 150.134.23.0/24 exists?" YES (Gi0/1 connected).
+"PASS!" → ✅ → Forward.
+
+No RPF: Always PASS ✅.
+Real world: mostly loose or no RPF → PASS!
+
+A118.
+NO — Inner source IP cannot be from different subnet.
+OSPF subnet check is STRICT.
+If OSPF on Gi0/1 = 150.134.23.0/24:
+Inner src must be in 150.134.23.0/24.
+Any IP outside this subnet → Hello rejected.
+"Your subnet mask says /24, your IP is not in it" → reject.
+= Subnet match is mandatory for OSPF neighbor.
+
+A119.
+EtherIP inner Ethernet frame source MAC:
+Can be ANY spoofed MAC address.
+Common choices:
+1. Fake invented MAC: DE:AD:BE:EF:00:63 (memorable).
+2. Derived from IP: last octet of inner IP = last octet.
+   150.134.23.99 → MAC ends in :63 (99=0x63).
+3. Vendor-spoofed: use real vendor prefix + fake suffix.
+No real validation of inner src MAC.
+= MAC spoofing trivial in EtherIP attacks.
+
+A120.
+Relationship between inner src IP subnet and OSPF:
+Mandatory link: inner src IP MUST be in same subnet
+as the OSPF-enabled interface on the target router.
+Why: OSPF neighbor adjacency requires neighbors
+to be on the same network segment.
+OSPF verifies: "Is your IP in my interface's subnet?"
+If NO → Hello discarded. No adjacency.
+If YES → Continue with other checks.
+= Subnet matching = first gateway to OSPF neighbor.
+
+--- SECTION 9: VXLAN + NVGRE + GENEVE ---
+
+A121.
+VXLAN details:
+UDP port = 4789 (IANA assigned)
+VNI (VXLAN Network ID) = 24 bits
+24 bits = 2^24 = 16,777,216 possible segments!
+(vs VLAN = 12 bits = 4094 segments)
+VNI in VXLAN header = last 3 bytes of 8-byte header.
+Flag byte: I-bit must be set (I=1) for VNI to be valid.
+
+A122.
+VXLAN BUM (Broadcast, Unknown unicast, Multicast) forwarding:
+1. Admin assigns multicast group per VNI.
+   e.g., VNI 100 → multicast group 239.1.1.1.
+2. All VTEPs for VNI 100 join 239.1.1.1.
+3. BUM traffic sent to 239.1.1.1 (outer IP dst).
+4. All VTEPs in group receive it.
+5. Each VTEP decapsulates → delivers to local VMs.
+= Flood to all VTEPs using IP multicast!
+
+A123.
+NVGRE = Network Virtualization GRE (Microsoft).
+RFC = Microsoft proprietary (Windows Server 2012+).
+Standard GRE Key field = optional tunnel ID.
+NVGRE: Key field = VSID (Virtual Subnet ID, 24 bits)
+             + FlowID (8 bits for load balancing).
+NVGRE EtherType = 0x6558 (Ethernet in GRE).
+Standard GRE = any payload.
+NVGRE = Ethernet frames inside GRE + VSID for segmentation.
+Used in: Hyper-V, Azure (historically).
+
+A124.
+VSID = Virtual Subnet ID in NVGRE.
+Size = 24 bits (upper 24 bits of GRE Key field).
+Range = 0 to 16,777,215.
+Purpose: Identify virtual network segment.
+Similar to VXLAN VNI (also 24 bits).
+Lower 8 bits of GRE Key = FlowID (entropy for ECMP).
+VSID 100 = separate virtual network = isolated broadcast domain.
+
+A125.
+GENEVE = Generic Network Virtualization Encapsulation.
+UDP port = 6081.
+RFC = RFC 8926 (2020).
+Designed to replace VXLAN + NVGRE + STT.
+Key feature: Extensible TLV options in header.
+Protocol type field: what inner payload is
+(e.g., 0x6558 = Ethernet, 0x0800 = IPv4).
+VNI field = 24 bits (same as VXLAN).
+
+A126.
+GENEVE vs VXLAN extensibility:
+VXLAN header = fixed 8 bytes. No options.
+GENEVE header = variable length with TLV options!
+TLV = Type, Length, Value.
+Options can carry: metadata, security context,
+   encryption keys, tenant info, etc.
+Option Len field in GENEVE = specifies header size.
+= GENEVE more flexible for SDN/NFV.
+VXLAN-GPE = attempt to extend VXLAN (less flexible).
+
+A127.
+For targeted VXLAN VNI segment attack:
+Attacker needs to know:
+1. VTEP IP address (outer dst).
+2. VNI number of target segment.
+3. Target VM's MAC address (for unicast) or broadcast.
+VNI scanning: try VNI 0-16777215, see responses.
+Tools: vxlan-scan, custom scapy scripts.
+No auth = brute force VNI trivially easy.
+
+A128.
+VNI scanning:
+Attack: Send VXLAN packets with VNI 1, 2, 3... 16777215.
+Send inner ARP request inside each.
+If response received = VNI exists! Active segment!
+Security risk:
+1. Enumerate all active virtual networks.
+2. Map tenant segments.
+3. Target specific tenant's VMs.
+4. Inject into discovered segments.
+No authentication = VNI is just a number, not a secret.
+
+A129.
+VXLAN built-in authentication: NO!
+VNI = identifier, not authenticator.
+No cryptographic protection in RFC 7348.
+Security implications:
+1. Anyone can inject VXLAN packets to VTEP.
+2. VNI can be scanned/guessed.
+3. Inner frames not encrypted.
+4. Man-in-the-middle possible.
+Mitigation: VXLAN over IPSec, or VXLAN-GPE with security.
+Production: Often deployed without auth = RISK!
+
+A130.
+NVGRE EtherType for Ethernet payload:
+Protocol field in GRE = 0x6558
+0x6558 = Transparent Ethernet Bridging.
+= "Inner payload is a raw Ethernet frame!"
+Same value used in standard GRE for L2 carry.
+NVGRE uses this to carry VM-to-VM Ethernet frames.
+Followed by: full Ethernet frame (dst MAC, src MAC, type).
+
+A131.
+VXLAN BUM flooding multicast range:
+Typically admin-scoped multicast: 239.0.0.0/8.
+239.0.0.0/8 = Organization-local scope (RFC 2365).
+Example ranges:
+239.1.1.0/24 = VNI-to-multicast mapping
+VNI 100 → 239.1.1.100
+VNI 200 → 239.1.1.200
+(mapping is configurable, not standard).
+224.0.0.0/4 = all multicast = technically usable.
+
+A132.
+NVGRE vs VXLAN multiple virtual networks:
+Both use 24-bit segment identifier.
+NVGRE: VSID (Virtual Subnet ID) in GRE Key.
+VXLAN: VNI (VXLAN Network ID) in VXLAN header.
+NVGRE transport: GRE (IP proto 47).
+VXLAN transport: UDP 4789 (NAT-friendly!).
+NVGRE = harder with NAT (GRE, no port).
+VXLAN = NAT-friendly (UDP has port).
+VXLAN = won industry adoption over NVGRE.
+
+A133.
+LISP = Locator/ID Separation Protocol.
+RFC = RFC 6830.
+Data plane UDP port = 4341.
+Control plane = Map-Server/Map-Resolver.
+Purpose: Separate endpoint ID from routing locator.
+Used in: Cisco SD-Access, SD-WAN.
+Attack surface: Map-Register, Map-Notify spoofing.
+Instance ID = LISP equivalent of VNI (32 bits).
+
+A134.
+GENEVE TLV options attack surface:
+Options are variable-length, extensible.
+Each TLV: Type (2 bytes) + Length (1 byte) + Value.
+Attack possibilities:
+1. Inject malformed TLVs → crash parsing code.
+2. Spoof metadata TLVs → bypass security policies.
+3. Inject security context TLVs → policy bypass.
+4. Overflow option parsing → buffer overflow potential.
+5. Type confusion attacks via unknown TLV types.
+VXLAN has no options = less attack surface there.
+
+A135.
+VXLAN vs NVGRE transport protocol:
+VXLAN = UDP (User Datagram Protocol) port 4789.
+NVGRE = GRE (IP Protocol 47), no port.
+Impact:
+VXLAN = NAT traversal easy (UDP has port).
+NVGRE = NAT problematic (GRE = no port).
+VXLAN = Load balancing easy (UDP src port for ECMP).
+NVGRE = FlowID field for load balancing.
+VXLAN = Won: cloud providers, open source adopted VXLAN.
+NVGRE = Mostly Microsoft Azure (legacy).
+
+--- SECTION 10: IP OPTIONS + SOURCE ROUTING ---
+
+A136.
+Three IP option types for routing:
+1. Record Route: Type=7 (0x07)
+   = Each router records its IP. Path discovery.
+2. Strict Source Route (SSR): Type=137 (0x89)
+   = Packet MUST follow exact specified path.
+3. Loose Source Route (LSR): Type=131 (0x83)
+   = Packet MUST visit specified IPs (any path between).
+
+A137.
+SSR vs LSR:
+SSR (Strict):
+Packet must follow EXACT sequence of specified IPs.
+ANY deviation from path = packet DROPPED.
+Very rigid. Modern networks mostly block.
+
+LSR (Loose):
+Packet must VISIT specified waypoints in order.
+Between waypoints: any path allowed!
+More flexible. Better for firewall bypass.
+Both: Destination IP in main header shifts as packet traverses.
+
+A138.
+Record Route IP option (Type=7):
+Each router along path WRITES its outgoing interface IP
+into the Record Route option field.
+Attacker sends packet with empty RR slots.
+Packet returns with ALL router IPs filled in!
+Reveals: Internal router IPs, private RFC1918 addresses,
+network topology, hop count, intermediate devices.
+= Passive topology discovery!
+
+A139.
+IP option type byte structure (8 bits):
+Bit 7: Copied flag (1=copy to fragments, 0=don't)
+Bits 6-5: Option class (00=control, 10=debug)
+Bits 4-0: Option number (5-bit number)
+Examples:
+RR=0|00|00111 = 00000111 = 7
+SSR=1|00|01001 = 10001001 = 137
+LSR=1|00|00011 = 10000011 = 131
+Copied=1 for SSR/LSR = copied to fragments!
+
+A140.
+LSR + SNMP for topology discovery:
+LSR routes packet via trusted/whitelisted IP.
+SNMP packet (UDP 161) with LSR option:
+Reaches internal router via LSR waypoint.
+SNMP GET: sysDescr, ifTable, ipRouteTable.
+Response reveals:
+- Device type and OS version
+- All interface IPs
+- Complete routing table
+- Admin contact, physical location
+- Neighbor information
+= Full network map from single probe!
+
+A141.
+LSR targets NetBIOS:
+Port = UDP 137 (NetBIOS Name Service)
+Information extractable:
+1. Computer name (NBSTAT response)
+2. Domain/Workgroup name
+3. Logged-in username
+4. Domain Controller presence (0x1C name)
+5. File sharing status (0x20 name)
+6. PDC location (0x1B name)
+7. MAC address of NIC
+= Full Windows AD reconnaissance via single LSR packet!
+
+A142.
+Cisco IOS command to disable IP source routing:
+no ip source-route
+(Global configuration mode)
+This disables SSR and LSR options on all interfaces.
+Verification: show ip traffic | include source
+Linux equivalent: net.ipv4.conf.all.accept_source_route=0
+
+A143.
+TTL fingerprinting via ICMP with LSR:
+Windows: TTL starts at 128 → received TTL ≈ 128.
+Linux/macOS/Android: TTL starts at 64 → ≈ 64.
+Cisco IOS: TTL starts at 255 → ≈ 255.
+Solaris/AIX: TTL starts at 255 → ≈ 255.
+FreeBSD: TTL starts at 64 → ≈ 64.
+Method: Send ICMP echo via LSR to internal host.
+Receive reply → check TTL → determine OS family!
+= Remote OS fingerprinting of internal hosts!
+
+A144.
+Record Route Pointer field:
+= Byte offset pointing to next empty slot.
+Initial value = 4 (points to first IP slot).
+After Router 1 writes IP: Pointer = 8 (next slot).
+After Router 2 writes IP: Pointer = 12.
+...continues until all slots filled.
+When full: Pointer > Length → no more writes.
+Attacker reads returned packet → all IPs in order!
+= Complete path reconstruction.
+
+A145.
+SSR Destination IP shift:
+Initial: Main header Dst IP = First hop in SSR list.
+Firewall sees: Dst = first hop (maybe whitelisted!).
+At First hop: Main Dst IP ← SWAPPED with next SSR entry.
+Main Dst becomes second hop.
+At Second hop: Main Dst ← SWAPPED again = final target.
+Pointer in SSR option advances with each swap.
+= Destination shifts hop-by-hop through SSR list!
+= Firewall only sees first hop as destination!
+
+A146.
+Snort/IDS rule for IP-in-IP (VU#636397):
+alert ip any any -> any any
+(msg:"IP-in-IP Tunneling VU#636397";
+ ip_proto:4;
+ sid:1367636397;
+ rev:1;)
+This alerts on ANY packet with IP protocol=4.
+Direct from CERT advisory VU#636397.
+Can be adapted for nftables:
+nft add rule ip filter INPUT ip protocol 4 drop
+
+A147.
+Linux sysctl to disable IP source routing acceptance:
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.default.accept_source_route=0
+Apply permanently in /etc/sysctl.conf.
+Apply immediately: sysctl -w net.ipv4.conf.all.accept_source_route=0
+This drops all packets with SSR or LSR options.
+= Eliminates source routing attack vector.
+
+A148.
+LSR firewall bypass mechanism:
+Normal: Attacker → Target = BLOCKED by firewall.
+LSR: Attacker → [Whitelist IP waypoint] → Target.
+Firewall sees: Dst = Whitelist IP = ALLOWED!
+Packet reaches Whitelist IP → LSR shifts Dst to Target.
+Target receives: Src = Whitelist IP (trusted!).
+= Both firewall bypass AND source spoofing!
+Whitelist IP must forward LSR packets (many do by default).
+
+A149.
+Record Route maximum IP addresses:
+IP options max length = 40 bytes.
+RR option header = 3 bytes (type, length, pointer).
+Remaining = 37 bytes for IPs.
+Each IP = 4 bytes.
+37 / 4 = 9.25 → maximum = 9 IP addresses!
+= Only 9 hops can be recorded.
+For longer paths: incomplete recording.
+Timestamp option: max 4 timestamps/IPs.
+
+A150.
+GRE vs IP-in-IP vs EtherIP comparison:
+
+Target configuration needed?
+GRE unicast: YES (both ends).
+GRE + multicast: NO (targets = subscribers).
+IP-in-IP traditional: YES (both ends).
+IP-in-IP CVE/multicast: NO (vulnerable/multicast).
+EtherIP traditional: YES (both ends).
+EtherIP vulnerable/broadcast: NO.
+
+Native multicast support?
+GRE: YES (inner IP dst = 224.x.x.x, direct!).
+IP-in-IP: YES (inner IP dst = 224.x.x.x, direct!).
+EtherIP: YES but INDIRECT (via bridge + multicast MAC).
+
+L2 access (MAC/Ethernet level)?
+GRE: NO (unless EtherType=0x6558, then yes).
+IP-in-IP: NO (L3 only).
+EtherIP: YES! Full Ethernet frame! ARP, STP, DHCP, VLAN all possible!
+
+Best for:
+GRE: Routing protocol injection, common support.
+IP-in-IP: Simplest attack, CVE proven, firewall evasion.
+EtherIP: L2 attacks + RPF bypass via bridge.
+
+================================================================
+END OF ANSWERS — 150 TOTAL
+================================================================

@@ -1,0 +1,628 @@
+================================================================
+ENCAPSULATION PROTOCOLS & NETWORK ATTACKS — 150 QUESTIONS
+English + Tamil (Per Question)
+================================================================
+
+--- SECTION 1: GRE BASICS (Q1-Q15) ---
+
+Q1.
+EN: What does GRE stand for and what is its IP protocol number?
+TA: GRE என்றால் என்ன, அதன் IP protocol number என்ன?
+
+Q2.
+EN: What is the EtherType value used in GRE header to carry a raw Ethernet frame inside GRE?
+TA: GRE-க்குள் raw Ethernet frame carry பண்ண GRE header-ல் என்ன EtherType value use பண்றோம்?
+
+Q3.
+EN: In a traditional GRE tunnel, do both endpoints need to be configured? Why?
+TA: Traditional GRE tunnel-ல் இரண்டு endpoints-உம் configure பண்ணணுமா? ஏன்?
+
+Q4.
+EN: What is the GRE protocol number in the IP header?
+TA: IP header-ல் GRE-க்கான protocol number என்ன?
+
+Q5.
+EN: What is the purpose of the Key field in GRE (RFC 2890)?
+TA: GRE-ல் (RFC 2890) Key field-ரோட purpose என்ன?
+
+Q6.
+EN: Why does GRE with multicast inner destination NOT require configuration on target devices?
+TA: GRE + multicast inner destination-ல் target devices-ல் configuration ஏன் தேவையில்லை?
+
+Q7.
+EN: What is the difference between GRE unicast and GRE multicast in terms of attack scenarios?
+TA: Attack scenario-ல் GRE unicast-உம் GRE multicast-உம் என்ன மாதிரி differ ஆகுது?
+
+Q8.
+EN: In a GRE attack, what should the Outer Destination IP be? Why?
+TA: GRE attack-ல் Outer Destination IP என்னவாக இருக்கணும்? ஏன்?
+
+Q9.
+EN: What is the PPTP GRE Call ID and why is it important for NAT?
+TA: PPTP GRE Call ID என்னன்னா, NAT-க்கு ஏன் முக்கியம்?
+
+Q10.
+EN: What is the GRE header size when no optional fields are present?
+TA: Optional fields இல்லாம GRE header size என்ன?
+
+Q11.
+EN: Which Cisco IOS command enables GRE NAT support for raw GRE tunnels?
+TA: Raw GRE tunnel-க்கு GRE NAT support enable பண்ண எந்த Cisco IOS command use பண்றோம்?
+
+Q12.
+EN: What is the inner TTL value typically set to when injecting OSPF via GRE?
+TA: GRE வழியா OSPF inject பண்ணும்போது inner TTL value என்னவாக set பண்றோம்?
+
+Q13.
+EN: What GRE protocol type value carries IPv4 inside GRE?
+TA: GRE-க்குள் IPv4 carry பண்ண GRE protocol type value என்ன?
+
+Q14.
+EN: Can GRE carry MPLS traffic? What EtherType is used?
+TA: GRE MPLS traffic carry பண்ணுமா? என்ன EtherType use பண்றது?
+
+Q15.
+EN: What is the GRE header flag field 'C' and what does it indicate?
+TA: GRE header-ல் 'C' flag என்ன, அது என்ன indicate பண்றது?
+
+--- SECTION 2: IP-in-IP (Q16-Q30) ---
+
+Q16.
+EN: What RFC defines IP-in-IP encapsulation and what is its protocol number?
+TA: IP-in-IP encapsulation-ஐ எந்த RFC define பண்றது, அதன் protocol number என்ன?
+
+Q17.
+EN: What is CVE-2020-10136 and which protocol does it affect?
+TA: CVE-2020-10136 என்னன்னா, அது எந்த protocol-ஐ affect பண்றது?
+
+Q18.
+EN: In CVE-2020-10136, what validation does a vulnerable device SKIP when receiving IP-in-IP packets?
+TA: CVE-2020-10136-ல் vulnerable device IP-in-IP packets receive பண்ணும்போது என்ன validation skip பண்றது?
+
+Q19.
+EN: What is the CERT advisory number associated with the IP-in-IP vulnerability?
+TA: IP-in-IP vulnerability-க்கான CERT advisory number என்ன?
+
+Q20.
+EN: How does IP-in-IP differ structurally from GRE?
+TA: IP-in-IP GRE-லிருந்து structurally எப்படி differ ஆகுது?
+
+Q21.
+EN: In an IP-in-IP attack with multicast inner destination, what happens at the intermediate vulnerable device?
+TA: Multicast inner destination-உடன் IP-in-IP attack-ல் intermediate vulnerable device-ல் என்ன நடக்குது?
+
+Q22.
+EN: Does the target server need to have IP-in-IP configured to receive the inner packet? Explain.
+TA: Inner packet receive பண்ண target server-ல் IP-in-IP configure பண்ணணுமா? விளக்கு.
+
+Q23.
+EN: What is the RFC keyword "SHOULD" in RFC 2003 and why is it the root cause of CVE-2020-10136?
+TA: RFC 2003-ல் "SHOULD" என்ற keyword என்னன்னா, CVE-2020-10136-ரோட root cause ஏன் அது?
+
+Q24.
+EN: What is a Martian packet and why does it get dropped?
+TA: Martian packet என்னன்னா, அது ஏன் drop ஆகுது?
+
+Q25.
+EN: If inner source IP is set to the router's own receiving interface IP in IP-in-IP, what happens?
+TA: IP-in-IP-ல் inner source IP = router's own receiving interface IP-ஆ set பண்ணினா என்னாகும்?
+
+Q26.
+EN: What advantage does IP-in-IP have over GRE from a firewall evasion perspective?
+TA: Firewall evasion perspective-ல் GRE-ஐ விட IP-in-IP-க்கு என்ன advantage இருக்கு?
+
+Q27.
+EN: What is the packet structure difference between GRE and IP-in-IP when carrying OSPF?
+TA: OSPF carry பண்ணும்போது GRE-உம் IP-in-IP-உம் packet structure-ல் எப்படி differ ஆகுது?
+
+Q28.
+EN: In IP-in-IP attacks, why is an unused IP in the target subnet chosen as inner source?
+TA: IP-in-IP attack-ல் inner source-ஆக target subnet-ல் unused IP ஏன் choose பண்றோம்?
+
+Q29.
+EN: What CERT recommendation was made for IP-in-IP vulnerable devices?
+TA: IP-in-IP vulnerable devices-க்கு CERT என்ன recommendation கொடுத்தது?
+
+Q30.
+EN: Can IP-in-IP carry IPv6 traffic? What protocol number is used for IPv6-in-IPv4?
+TA: IP-in-IP IPv6 traffic carry பண்ணுமா? IPv6-in-IPv4-க்கு என்ன protocol number?
+
+--- SECTION 3: EtherIP (Q31-Q45) ---
+
+Q31.
+EN: What RFC defines EtherIP and what is its IP protocol number?
+TA: EtherIP-ஐ எந்த RFC define பண்றது, அதன் IP protocol number என்ன?
+
+Q32.
+EN: What is the size of the EtherIP header and what fields does it contain?
+TA: EtherIP header-ரோட size என்ன, அதில் என்ன fields இருக்கு?
+
+Q33.
+EN: How does EtherIP differ from GRE and IP-in-IP in terms of what it carries?
+TA: EtherIP carry பண்றதில் GRE + IP-in-IP-லிருந்து எப்படி differ ஆகுது?
+
+Q34.
+EN: What layer of the OSI model does EtherIP operate at for its inner payload?
+TA: Inner payload-க்கு EtherIP OSI model-ரோட எந்த layer-ல் operate பண்றது?
+
+Q35.
+EN: What CVE is associated with unauthenticated EtherIP decapsulation?
+TA: Unauthenticated EtherIP decapsulation-க்கு எந்த CVE associated?
+
+Q36.
+EN: Why does EtherIP bypass RPF checks more effectively than GRE or IP-in-IP?
+TA: EtherIP GRE/IP-in-IP-ஐ விட RPF checks-ஐ எப்படி effectively bypass பண்றது?
+
+Q37.
+EN: What L2 attacks become possible when EtherIP is used to inject frames into a LAN?
+TA: EtherIP use பண்ணி LAN-ல் frames inject பண்ணும்போது என்ன L2 attacks possible?
+
+Q38.
+EN: What is the EtherIP header version field value?
+TA: EtherIP header-ரோட version field value என்ன?
+
+Q39.
+EN: Does EtherIP support multicast delivery? Explain the mechanism.
+TA: EtherIP multicast delivery support பண்றதா? Mechanism விளக்கு.
+
+Q40.
+EN: What device mode is required for EtherIP to forward inner Ethernet frames to a LAN segment?
+TA: EtherIP inner Ethernet frames-ஐ LAN segment-க்கு forward பண்ண என்ன device mode தேவை?
+
+Q41.
+EN: In an EtherIP attack with unused inner IP (150.134.23.99), does RPF check pass? Why?
+TA: Unused inner IP (150.134.23.99) உடன் EtherIP attack-ல் RPF check pass ஆகுமா? ஏன்?
+
+Q42.
+EN: What multicast MAC address corresponds to OSPF multicast group 224.0.0.5?
+TA: OSPF multicast group 224.0.0.5-க்கு எந்த multicast MAC address correspond பண்றது?
+
+Q43.
+EN: How does EtherIP enable STP manipulation attacks?
+TA: EtherIP எப்படி STP manipulation attacks-ஐ enable பண்றது?
+
+Q44.
+EN: What is the key advantage of EtherIP over GRE when strict RPF is configured?
+TA: Strict RPF configured இருக்கும்போது GRE-ஐ விட EtherIP-ரோட key advantage என்ன?
+
+Q45.
+EN: In traditional EtherIP setup, do both endpoints need configuration?
+TA: Traditional EtherIP setup-ல் இரண்டு endpoints-உம் configuration வேணுமா?
+
+--- SECTION 4: NAT + ENCAPSULATION (Q46-Q60) ---
+
+Q46.
+EN: Why does IPSec AH always break with NAT? Explain the technical reason.
+TA: IPSec AH NAT-உடன் எப்பவும் ஏன் break ஆகுது? Technical reason விளக்கு.
+
+Q47.
+EN: What is NAT-T and which port does it use to solve ESP NAT traversal?
+TA: NAT-T என்னன்னா, ESP NAT traversal solve பண்ண எந்த port use பண்றது?
+
+Q48.
+EN: How does PPTP GRE use the Call ID field to support multiple clients behind NAT?
+TA: PPTP GRE Call ID field-ஐ use பண்ணி NAT-க்கு பின்னால் multiple clients-ஐ எப்படி support பண்றது?
+
+Q49.
+EN: Which encapsulation protocols have NO authentication by default?
+TA: Default-ஆ NO authentication இருக்குற encapsulation protocols எவை?
+
+Q50.
+EN: What is the ICV in IPSec AH and why does NAT break it?
+TA: IPSec AH-ல் ICV என்னன்னா, NAT அதை ஏன் break பண்றது?
+
+Q51.
+EN: What Cisco IOS command enables PPTP inspection on ASA?
+TA: ASA-ல் PPTP inspection enable பண்ண என்ன Cisco IOS command?
+
+Q52.
+EN: Why does raw GRE fail through dynamic NAT but work with static 1:1 NAT?
+TA: Dynamic NAT-ல் raw GRE ஏன் fail ஆகுது ஆனா static 1:1 NAT-ல் work ஆகுது?
+
+Q53.
+EN: What authentication weakness exists in MS-CHAPv2 used by PPTP?
+TA: PPTP use பண்ற MS-CHAPv2-ல் என்ன authentication weakness இருக்கு?
+
+Q54.
+EN: What encryption cipher does PPTP use and why is it considered weak?
+TA: PPTP என்ன encryption cipher use பண்றது, அது ஏன் weak?
+
+Q55.
+EN: Which VPN protocols are considered strong authentication? List three.
+TA: Strong authentication கொண்ட VPN protocols எவை? மூன்று list பண்ணு.
+
+Q56.
+EN: What is the Non-ESP Marker in NAT-T and what is its value?
+TA: NAT-T-ல் Non-ESP Marker என்னன்னா, அதன் value என்ன?
+
+Q57.
+EN: Why does VXLAN (UDP 4789) work better with NAT compared to GRE?
+TA: GRE-உடன் compare பண்ணும்போது VXLAN (UDP 4789) NAT-உடன் ஏன் better work ஆகுது?
+
+Q58.
+EN: What NAT mechanism does FortiGate use for PPTP GRE passthrough?
+TA: PPTP GRE passthrough-க்கு FortiGate என்ன NAT mechanism use பண்றது?
+
+Q59.
+EN: Which Linux kernel modules are needed for PPTP GRE NAT support?
+TA: PPTP GRE NAT support-க்கு என்ன Linux kernel modules தேவை?
+
+Q60.
+EN: What is IPSec ESP protocol number and how does NAT-T wrap it?
+TA: IPSec ESP protocol number என்ன, NAT-T அதை எப்படி wrap பண்றது?
+
+--- SECTION 5: RPF + MARTIAN CHECKS (Q61-Q75) ---
+
+Q61.
+EN: What is Reverse Path Forwarding (RPF) and what is its purpose?
+TA: Reverse Path Forwarding (RPF) என்னன்னா, அதன் purpose என்ன?
+
+Q62.
+EN: What is the difference between strict RPF and loose RPF?
+TA: Strict RPF-உம் loose RPF-உம் என்ன மாதிரி differ ஆகுது?
+
+Q63.
+EN: Why does using an unused IP from the target subnet bypass loose RPF?
+TA: Target subnet-ல் unused IP use பண்றது ஏன் loose RPF bypass பண்றது?
+
+Q64.
+EN: What Linux kernel parameter controls RPF checking?
+TA: RPF checking-ஐ control பண்ற Linux kernel parameter என்ன?
+
+Q65.
+EN: If inner src IP = router's own GRE interface IP, what does RPF check conclude?
+TA: Inner src IP = router's own GRE interface IP-ஆ இருந்தா RPF check என்ன conclude பண்றது?
+
+Q66.
+EN: What is a Martian source address? Give three examples.
+TA: Martian source address என்னன்னா? மூன்று examples கொடு.
+
+Q67.
+EN: Why does using a router's own interface IP as inner source always fail?
+TA: Router's own interface IP-ஐ inner source-ஆ use பண்றது ஏன் எப்பவும் fail ஆகுது?
+
+Q68.
+EN: How does EtherIP avoid RPF checks that affect GRE and IP-in-IP?
+TA: GRE + IP-in-IP-ஐ affect பண்ற RPF checks-ஐ EtherIP எப்படி avoid பண்றது?
+
+Q69.
+EN: In a GRE attack, if strict RPF is enabled, how can the attacker work around it?
+TA: GRE attack-ல் strict RPF enable இருந்தா attacker எப்படி work around பண்ணலாம்?
+
+Q70.
+EN: What is CEF (Cisco Express Forwarding) and how does it relate to Martian checks?
+TA: CEF (Cisco Express Forwarding) என்னன்னா, Martian checks-உடன் எப்படி relate ஆகுது?
+
+Q71.
+EN: Why does an unused IP in the target subnet pass the OSPF self-check on the router?
+TA: Target subnet-ல் unused IP OSPF self-check-ஐ ஏன் pass பண்றது?
+
+Q72.
+EN: What happens during OSPF neighbor formation if the inner src IP matches the router's own OSPF interface IP?
+TA: Inner src IP = router's own OSPF interface IP-ஆ இருந்தா OSPF neighbor formation-ல் என்னாகும்?
+
+Q73.
+EN: In a 3-interface router scenario, if inner src = another interface's IP (not GRE interface), does strict RPF pass?
+TA: 3-interface router-ல் inner src = another interface IP (GRE interface இல்லை) — strict RPF pass ஆகுமா?
+
+Q74.
+EN: What is the RPF check result when inner src = unused IP and packet arrives via GRE on a different interface?
+TA: Inner src = unused IP + packet different interface-ல் GRE வழியா வரும்போது RPF check result என்ன?
+
+Q75.
+EN: How does Juniper JunOS handle RPF for GRE decapsulated packets by default?
+TA: Juniper JunOS GRE decapsulated packets-க்கு default-ஆ RPF எப்படி handle பண்றது?
+
+--- SECTION 6: OSPF ATTACKS (Q76-Q90) ---
+
+Q76.
+EN: What multicast address does OSPF use for Hello packets?
+TA: OSPF Hello packets-க்கு என்ன multicast address use பண்றது?
+
+Q77.
+EN: What are the five conditions OSPF checks before forming a neighbor?
+TA: OSPF neighbor form பண்ணு முன்னால் என்ன five conditions check பண்றது?
+
+Q78.
+EN: What OSPF attack uses MaxAge=3600 to remove a legitimate router from the topology?
+TA: MaxAge=3600 use பண்ணி legitimate router-ஐ topology-லிருந்து remove பண்ற OSPF attack என்ன?
+
+Q79.
+EN: How can an attacker become OSPF DR by injecting a Hello via GRE?
+TA: GRE வழியா Hello inject பண்ணி attacker எப்படி OSPF DR ஆகலாம்?
+
+Q80.
+EN: What LSA type is used to inject a default route in OSPF?
+TA: OSPF-ல் default route inject பண்ண என்ன LSA type use பண்றது?
+
+Q81.
+EN: In the GRE + OSPF attack, what must the inner source IP subnet match?
+TA: GRE + OSPF attack-ல் inner source IP subnet என்னை match பண்ணணும்?
+
+Q82.
+EN: What is OSPF Router ID and why does setting it to an unused IP matter for attacks?
+TA: OSPF Router ID என்னன்னா, attack-க்கு unused IP-ஆ set பண்றது ஏன் matter?
+
+Q83.
+EN: What OSPF attack can cause a network blackhole by spoofing an existing neighbor?
+TA: Existing neighbor spoof பண்ணி network blackhole create பண்ற OSPF attack என்ன?
+
+Q84.
+EN: What is the OSPF DR election process and how does priority value affect it?
+TA: OSPF DR election process என்னன்னா, priority value அதை எப்படி affect பண்றது?
+
+Q85.
+EN: Why does OSPF without MD5 authentication make route injection trivial?
+TA: MD5 authentication இல்லாம OSPF route injection ஏன் trivial ஆகுது?
+
+Q86.
+EN: What is an OSPF LSUpdate packet and what does it carry?
+TA: OSPF LSUpdate packet என்னன்னா, அது என்ன carry பண்றது?
+
+Q87.
+EN: In a GRE multicast attack targeting OSPF, what is the role of the inner TTL=1?
+TA: OSPF target பண்ற GRE multicast attack-ல் inner TTL=1-ரோட role என்ன?
+
+Q88.
+EN: What OSPF attack allows an attacker to redirect specific network traffic to themselves?
+TA: Specific network traffic-ஐ attacker-க்கு redirect பண்ண எந்த OSPF attack use பண்றோம்?
+
+Q89.
+EN: What is the OSPF backbone area ID?
+TA: OSPF backbone area ID என்ன?
+
+Q90.
+EN: After OSPF full adjacency is formed via GRE injection, what four attack actions are possible?
+TA: GRE injection வழியா OSPF full adjacency form ஆனா என்ன four attack actions possible?
+
+--- SECTION 7: ROUTING PROTOCOL ATTACKS (Q91-Q105) ---
+
+Q91.
+EN: What multicast address does RIPv2 use and what UDP port?
+TA: RIPv2 என்ன multicast address + UDP port use பண்றது?
+
+Q92.
+EN: What metric value in RIPv2 indicates a network is unreachable (infinity)?
+TA: RIPv2-ல் network unreachable (infinity) indicate பண்ற metric value என்ன?
+
+Q93.
+EN: What multicast address does EIGRP use and what is EIGRP's IP protocol number?
+TA: EIGRP என்ன multicast address use பண்றது, EIGRP-ரோட IP protocol number என்ன?
+
+Q94.
+EN: What is an EIGRP Goodbye message and how can it be used in an attack?
+TA: EIGRP Goodbye message என்னன்னா, attack-ல் அதை எப்படி use பண்ணலாம்?
+
+Q95.
+EN: What multicast address does VRRP use and what IP protocol number?
+TA: VRRP என்ன multicast address use பண்றது, VRRP-ரோட IP protocol number என்ன?
+
+Q96.
+EN: What VRRP priority value causes a router to immediately become VRRP master?
+TA: Router-ஐ immediately VRRP master ஆக்கும் VRRP priority value என்ன?
+
+Q97.
+EN: What HSRPv2 multicast address is used and what UDP port?
+TA: HSRPv2 என்ன multicast address + UDP port use பண்றது?
+
+Q98.
+EN: What is a PIM Bootstrap message (BSR) and how can it be used in an attack?
+TA: PIM Bootstrap message (BSR) என்னன்னா, attack-ல் எப்படி use பண்ணலாம்?
+
+Q99.
+EN: What is the PIM multicast address and protocol number?
+TA: PIM multicast address + protocol number என்ன?
+
+Q100.
+EN: What VRRP TTL value is required for VRRP packets to be accepted?
+TA: VRRP packets accept ஆக என்ன TTL value required?
+
+Q101.
+EN: In a VRRP hijack via GRE, what inner source IP should be used and why?
+TA: GRE வழியா VRRP hijack-ல் என்ன inner source IP use பண்ணணும், ஏன்?
+
+Q102.
+EN: What is the difference between VRRP Master Takeover and VRRP Master Confusion attacks?
+TA: VRRP Master Takeover-உம் VRRP Master Confusion attack-உம் என்ன மாதிரி differ ஆகுது?
+
+Q103.
+EN: What BGP port is used and why is BGP attack via GRE different from OSPF attack?
+TA: BGP port என்ன, GRE வழியா BGP attack OSPF attack-லிருந்து ஏன் different?
+
+Q104.
+EN: What MPLS RFC documents the lack of authentication in MPLS?
+TA: MPLS-ல் authentication இல்லாமல் இருப்பதை எந்த MPLS RFC document பண்றது?
+
+Q105.
+EN: What is GLBP and what multicast address does it share with HSRPv2?
+TA: GLBP என்னன்னா, HSRPv2-உடன் என்ன multicast address share பண்றது?
+
+--- SECTION 8: INNER SOURCE IP SELECTION (Q106-Q120) ---
+
+Q106.
+EN: In a GRE attack targeting OSPF via a router with Gi0/1=150.134.23.1, what is the best inner source IP?
+TA: Gi0/1=150.134.23.1 உள்ள router வழியா OSPF target பண்ற GRE attack-ல் best inner source IP என்ன?
+
+Q107.
+EN: Why does setting inner src = router's own WAN IP (203.0.113.1) fail in OSPF injection?
+TA: Inner src = router's own WAN IP (203.0.113.1) OSPF injection-ல் ஏன் fail ஆகுது?
+
+Q108.
+EN: What three conditions must an inner source IP satisfy for a successful GRE OSPF attack?
+TA: Successful GRE OSPF attack-க்கு inner source IP என்ன three conditions satisfy பண்ணணும்?
+
+Q109.
+EN: If inner src = existing device IP (e.g., 150.134.23.5), what risk does this introduce?
+TA: Inner src = existing device IP (e.g., 150.134.23.5) ஆ இருந்தா என்ன risk introduce ஆகுது?
+
+Q110.
+EN: What is the best inner source IP when targeting OSPF on the 150.134.23.0/24 subnet?
+TA: 150.134.23.0/24 subnet-ல் OSPF target பண்ணும்போது best inner source IP என்ன?
+
+Q111.
+EN: In a 3-interface router (all public IPs), which interface IP should be the Outer Dst for GRE?
+TA: 3-interface router-ல் (எல்லாம் public IPs) GRE-க்கு Outer Dst எந்த interface IP ஆக இருக்கணும்?
+
+Q112.
+EN: Why does using another router's physical interface IP as inner src sometimes work?
+TA: Another router's physical interface IP-ஐ inner src-ஆ use பண்றது சில நேரம் ஏன் work ஆகுது?
+
+Q113.
+EN: What is the OSPF subnet check and why does it reject inner src from a different subnet?
+TA: OSPF subnet check என்னன்னா, different subnet-ல் inner src-ஐ ஏன் reject பண்றது?
+
+Q114.
+EN: In IP-in-IP attack, if inner src = 150.134.23.99 (unused), list all checks and their results.
+TA: IP-in-IP attack-ல் inner src = 150.134.23.99 (unused) ஆ இருந்தா எல்லா checks-உம் அவற்றின் results என்ன?
+
+Q115.
+EN: What happens to OSPF neighbor formation when inner src = router's loopback IP?
+TA: Inner src = router's loopback IP-ஆ இருந்தா OSPF neighbor formation-ல் என்னாகும்?
+
+Q116.
+EN: Why is an unused IP preferred over spoofing an existing device's IP in encapsulation attacks?
+TA: Encapsulation attacks-ல் existing device IP spoof பண்றதை விட unused IP ஏன் prefer பண்றோம்?
+
+Q117.
+EN: What is the RPF result when inner src = 150.134.23.99 and GRE arrives on Gi0/0 (203.0.113.1)?
+TA: Inner src = 150.134.23.99 + GRE Gi0/0 (203.0.113.1)-ல் வரும்போது RPF result என்ன?
+
+Q118.
+EN: Can the inner source IP be from a completely different subnet than the target OSPF interface?
+TA: Inner source IP target OSPF interface-ரோட subnet-லிருந்து completely different-ஆ இருக்கலாமா?
+
+Q119.
+EN: In EtherIP attack, what MAC address should the inner Ethernet frame source be set to?
+TA: EtherIP attack-ல் inner Ethernet frame source MAC address என்னவாக set பண்ணணும்?
+
+Q120.
+EN: What is the relationship between inner source IP subnet and OSPF neighbor acceptance?
+TA: Inner source IP subnet-உம் OSPF neighbor acceptance-உம் என்ன relationship?
+
+--- SECTION 9: VXLAN + NVGRE + GENEVE (Q121-Q135) ---
+
+Q121.
+EN: What UDP port does VXLAN use and what is the VNI field size?
+TA: VXLAN என்ன UDP port use பண்றது, VNI field size என்ன?
+
+Q122.
+EN: How does VXLAN use multicast for BUM traffic forwarding?
+TA: VXLAN BUM traffic forwarding-க்கு multicast-ஐ எப்படி use பண்றது?
+
+Q123.
+EN: What is NVGRE and how does it differ from standard GRE?
+TA: NVGRE என்னன்னா, standard GRE-லிருந்து எப்படி differ ஆகுது?
+
+Q124.
+EN: What is the VSID in NVGRE and how many bits is it?
+TA: NVGRE-ல் VSID என்னன்னா, அது எத்தனை bits?
+
+Q125.
+EN: What UDP port does GENEVE use and what RFC defines it?
+TA: GENEVE என்ன UDP port use பண்றது, அதை எந்த RFC define பண்றது?
+
+Q126.
+EN: How does GENEVE differ from VXLAN in terms of extensibility?
+TA: Extensibility-ல் GENEVE VXLAN-லிருந்து எப்படி differ ஆகுது?
+
+Q127.
+EN: In a VXLAN injection attack, what does the attacker need to know to target a specific VNI segment?
+TA: VXLAN injection attack-ல் specific VNI segment target பண்ண attacker என்ன தெரிஞ்சிருக்கணும்?
+
+Q128.
+EN: What is VNI scanning and why is it a security risk in VXLAN deployments?
+TA: VNI scanning என்னன்னா, VXLAN deployments-ல் அது ஏன் security risk?
+
+Q129.
+EN: Does VXLAN have built-in authentication? What is the security implication?
+TA: VXLAN-க்கு built-in authentication இருக்கா? Security implication என்ன?
+
+Q130.
+EN: What is the EtherType inside NVGRE that indicates an Ethernet payload?
+TA: NVGRE-க்குள் Ethernet payload indicate பண்ற EtherType என்ன?
+
+Q131.
+EN: What multicast group range is typically used for VXLAN BUM flooding?
+TA: VXLAN BUM flooding-க்கு typically என்ன multicast group range use பண்றது?
+
+Q132.
+EN: How does NVGRE handle multiple virtual networks compared to VXLAN?
+TA: Multiple virtual networks-ஐ NVGRE VXLAN-உடன் compare பண்ணும்போது எப்படி handle பண்றது?
+
+Q133.
+EN: What is LISP and what UDP port does it use for data plane?
+TA: LISP என்னன்னா, data plane-க்கு என்ன UDP port use பண்றது?
+
+Q134.
+EN: In a GENEVE attack, what additional attack surface does the TLV options field provide?
+TA: GENEVE attack-ல் TLV options field என்ன additional attack surface provide பண்றது?
+
+Q135.
+EN: What is the difference between VXLAN and NVGRE in terms of transport protocol?
+TA: Transport protocol-ல் VXLAN-உம் NVGRE-உம் என்ன மாதிரி differ ஆகுது?
+
+--- SECTION 10: IP OPTIONS + SOURCE ROUTING (Q136-Q150) ---
+
+Q136.
+EN: What are the three IP header option types related to routing and their type values?
+TA: Routing-உடன் related IP header option types மூன்று என்னென்ன, அவற்றின் type values என்ன?
+
+Q137.
+EN: What is the difference between Strict Source Routing (SSR) and Loose Source Routing (LSR)?
+TA: Strict Source Routing (SSR)-உம் Loose Source Routing (LSR)-உம் என்ன மாதிரி differ ஆகுது?
+
+Q138.
+EN: What is the Record Route IP option and what information does it collect?
+TA: Record Route IP option என்னன்னா, அது என்ன information collect பண்றது?
+
+Q139.
+EN: What is the IP option type byte structure (copied, class, number fields)?
+TA: IP option type byte structure (copied, class, number fields) என்ன?
+
+Q140.
+EN: How does LSR combined with SNMP enable full network topology discovery?
+TA: LSR + SNMP combine பண்றது எப்படி full network topology discovery enable பண்றது?
+
+Q141.
+EN: What NetBIOS port does LSR target and what information can be extracted?
+TA: LSR எந்த NetBIOS port target பண்றது, என்ன information extract பண்ணலாம்?
+
+Q142.
+EN: What Cisco IOS command disables IP source routing?
+TA: IP source routing disable பண்ண என்ன Cisco IOS command?
+
+Q143.
+EN: What TTL fingerprinting reveals about OS type when using ICMP via LSR?
+TA: LSR வழியா ICMP use பண்ணும்போது TTL fingerprinting OS type பத்தி என்ன reveal பண்றது?
+
+Q144.
+EN: What is the Pointer field in Record Route option and how does it advance?
+TA: Record Route option-ல் Pointer field என்னன்னา, அது எப்படி advance ஆகுது?
+
+Q145.
+EN: In SSR, what happens to the Destination IP field in the main IP header as the packet traverses routers?
+TA: SSR-ல் packet routers-வழியா traverse ஆகும்போது main IP header-ல் Destination IP field-க்கு என்னாகுது?
+
+Q146.
+EN: What Snort/IDS rule can detect IP-in-IP tunneling (VU#636397)?
+TA: IP-in-IP tunneling (VU#636397) detect பண்ண என்ன Snort/IDS rule use பண்றோம்?
+
+Q147.
+EN: What Linux sysctl command disables IP source route acceptance?
+TA: IP source route acceptance disable பண்ண என்ன Linux sysctl command?
+
+Q148.
+EN: How does LSR enable firewall bypass by using a whitelisted intermediate IP?
+TA: LSR whitelisted intermediate IP use பண்ணி firewall bypass-ஐ எப்படி enable பண்றது?
+
+Q149.
+EN: What is the maximum number of IP addresses that can be recorded in a Record Route option?
+TA: Record Route option-ல் maximum எத்தனை IP addresses record பண்ணலாம்?
+
+Q150.
+EN: Compare GRE, IP-in-IP and EtherIP: which requires target configuration, which supports multicast natively, and which provides L2 access?
+TA: GRE, IP-in-IP, EtherIP compare பண்ணு: எது target configuration தேவைப்படுது, எது natively multicast support பண்றது, எது L2 access provide பண்றது?
+
+================================================================
+END OF QUESTIONS — 150 TOTAL
+================================================================
