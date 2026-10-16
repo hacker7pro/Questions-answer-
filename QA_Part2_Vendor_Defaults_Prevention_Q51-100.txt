@@ -1,0 +1,985 @@
+================================================================
+  NETWORK SECURITY Q&A — PART 2 (Q51–Q100)
+  Topic: Vendor Default Behavior & Selective Allow / Prevention
+  Language: Tamil/English Bilingual
+================================================================
+
+────────────────────────────────────────────────────────────────
+SECTION F: VENDOR DEFAULT BEHAVIOR
+────────────────────────────────────────────────────────────────
+
+Q51. Cisco IOS default-ஆக IP options handle பண்ணுவது எப்படி?
+A51. Cisco IOS default = ALLOW (pass-through).
+     IP options உள்ள packets default-ஆக forward ஆகும்.
+     No automatic blocking.
+     Router LSR/SSR options follow பண்ணும் — traffic redirect possible.
+     Manual block தேவை:
+       ip options drop        (global command)
+     Verify current behavior:
+       show running-config | include ip options
+     Note: IOS 12.4+, 15.x = ip options drop available.
+     Older IOS: ACL மூலம் மட்டுமே block possible.
+
+────────────────────────────────────────────────────────────────
+
+Q52. Cisco IOS default-ஆக GRE, IP-in-IP, EtherIP handle பண்ணுவது எப்படி?
+A52. Cisco IOS defaults (Router mode):
+     GRE   (Proto 47): ALLOW — pass-through
+     IP-in-IP (Proto 4): ALLOW — pass-through
+     EtherIP  (Proto 97): ALLOW — pass-through
+     6in4  (Proto 41): ALLOW — pass-through
+     Reason: Cisco IOS router = forward packets, not inspect.
+     "Routing function first, security second" philosophy.
+     Pen test implication: Fresh IOS router = all encap protocols pass.
+     Hardening required: Explicit ACL deny for each protocol.
+
+────────────────────────────────────────────────────────────────
+
+Q53. Cisco ASA-ல் IP options default behavior என்ன?
+A53. Cisco ASA default = DENY IP options (secure by default).
+     ASA automatically drops packets with:
+     - LSR (Option 131)
+     - SSR (Option 137)
+     - Record Route (Option 7)
+     - Timestamp (Option 68)
+     - Router Alert (Option 148)
+     ASA drop reason: "ip-options"
+     Verify: show asp drop frame ip-option-drop
+     Override (allow specific): ip options {option-name} allow
+     ASA philosophy: "Security first" — deny unknown/suspicious.
+
+────────────────────────────────────────────────────────────────
+
+Q54. Cisco ASA-ல் GRE மற்றும் 6in4 default behavior என்ன?
+A54. Cisco ASA defaults:
+     GRE (Proto 47):  ALLOW — stateful inspection
+     IP-in-IP (Proto 4): DENY — not typical traffic
+     EtherIP (Proto 97): DENY — unknown/unusual
+     6in4 (Proto 41): ALLOW (if IPv6 inspection enabled)
+     IPSec ESP (50): ALLOW (IPSec pass-through by default)
+     Note: GRE allow ஆனால் inspection shallow.
+     "inspect gre" command deeper inspection enable பண்ணும்.
+     ASA 9.x+: GRE tunnel endpoint tracking available.
+
+────────────────────────────────────────────────────────────────
+
+Q55. FortiGate FortiOS default encapsulation behavior என்ன?
+A55. FortiGate defaults:
+     IP Options: PARTIAL — depends on IPS profile
+     GRE   (47): ALLOW — implicit permit (no explicit block)
+     IP-in-IP (4): ALLOW — implicit permit
+     EtherIP (97): ALLOW — no built-in block
+     6in4  (41): ALLOW — implicit permit
+     IPSec (50): ALLOW — VPN use case
+     FortiGate philosophy: "Application-aware, but permissive base"
+     Important: FortiGate policy default = deny all UNLESS explicit allow.
+     But protocol-level L3 pass-through can occur before policy match.
+     Hardening: Explicit deny service objects for proto 4/47/97.
+
+────────────────────────────────────────────────────────────────
+
+Q56. Juniper SRX default zone-based behavior encapsulation-க்கு என்ன?
+A56. Juniper SRX defaults:
+     IP Options: DENY — implicit via zone policy
+     GRE   (47): PARTIAL — inter-zone permit required
+     IP-in-IP (4): DENY — not default permitted
+     EtherIP (97): DENY — unknown proto, inter-zone blocked
+     6in4  (41): DENY — IPv6 explicit config needed
+     IPSec (50): PARTIAL — IKE negotiation required
+     SRX philosophy: "Zone-based — no implicit inter-zone permit"
+     Default: trust→untrust = permit outbound
+     untrust→trust = DENY all unless explicit policy.
+     Most secure default among major vendors.
+
+────────────────────────────────────────────────────────────────
+
+Q57. Linux kernel default encapsulation protocol behavior என்ன?
+A57. Linux kernel defaults:
+     IP Options: ALLOW — kernel passes through
+     GRE   (47): ALLOW (if ip_gre module loaded)
+     IP-in-IP (4): ALLOW (if ipip module loaded)
+     EtherIP (97): ALLOW — raw socket receive possible
+     6in4  (41): ALLOW (if sit module loaded)
+     IPSec (50): PARTIAL (strongSwan/libreswan needed)
+     Linux philosophy: "Permissive kernel, security via iptables"
+     Default iptables = ACCEPT all (no rules loaded at boot).
+     Hardening: Load iptables/nftables rules at startup.
+     Check loaded modules: lsmod | grep -E "ipip|gre|sit"
+
+────────────────────────────────────────────────────────────────
+
+Q58. Windows Server 2019 default encapsulation behavior என்ன?
+A58. Windows Server 2019 defaults:
+     IP Options: ALLOW — WFP (Windows Filtering Platform) passes
+     GRE   (47): PARTIAL — RRAS role required
+     IP-in-IP (4): DENY — not natively processed
+     EtherIP (97): DENY — no native driver
+     6in4  (41): ALLOW — 6to4 auto-tunnel default enabled
+     IPSec (50): PARTIAL — Windows Firewall with IPSec rules
+     Critical: 6to4 (Proto 41) = default ALLOW = major risk.
+     Disable: netsh interface 6to4 set state disabled
+     Also disable Teredo: netsh interface teredo set state disabled
+
+────────────────────────────────────────────────────────────────
+
+Q59. F5 BIG-IP TMOS default encapsulation behavior என்ன?
+A59. F5 BIG-IP defaults:
+     IP Options: PARTIAL — LTM profile dependent
+     GRE   (47): ALLOW — tunnel profile available
+     IP-in-IP (4): ALLOW — ipip tunnel profile
+     EtherIP (97): ALLOW — raw IP forwarding
+     6in4  (41): ALLOW — IPv6 forwarding
+     IPSec (50): ALLOW — built-in IPSec support
+     F5 philosophy: "Load balancer first, firewall second"
+     AFM (Advanced Firewall Module) separate — not default.
+     Without AFM: permissive behavior.
+     With AFM: explicit policy required.
+
+────────────────────────────────────────────────────────────────
+
+Q60. pfSense/OPNsense default encapsulation behavior என்ன?
+A60. pfSense/OPNsense (FreeBSD pf) defaults:
+     IP Options: DENY — pf "scrub" rule strips options
+     GRE   (47): ALLOW — pass rule needed but proto not blocked
+     IP-in-IP (4): ALLOW — pf pass-through
+     EtherIP (97): ALLOW — unknown proto pass-through
+     6in4  (41): ALLOW — IPv6 transition support
+     IPSec (50): ALLOW — auto-generated IPSec rules
+     pf scrub command (pf.conf):
+       scrub in all no-df random-id reassemble tcp
+     This strips IP options automatically.
+     But other encap protocols not blocked by default.
+
+────────────────────────────────────────────────────────────────
+
+Q61. Vendor comparison-ல் "most secure by default" யார்?
+A61. Security ranking (most secure → least):
+     1. Juniper SRX — Zone deny-by-default, explicit permit needed
+     2. Cisco ASA   — IP options drop default, deny unusual protos
+     3. pfSense     — pf scrub strips IP options
+     4. FortiGate   — Policy deny-all base, but L3 passthrough possible
+     5. Windows Srv — 6to4 default allow (risk), others blocked
+     6. F5 BIG-IP   — Load balancer default = permissive
+     7. Linux       — Kernel permissive, iptables not auto-loaded
+     8. Cisco IOS   — Router forward-first, manual ACL needed
+     Pen test note: Cisco IOS router = easiest target for encap bypass.
+
+────────────────────────────────────────────────────────────────
+
+Q62. Cisco IOS-ல் pen test time "ip options" active-ஆ என்று check பண்ண?
+A62. Verification commands:
+     Check if ip options drop is configured:
+       show running-config | include ip options
+     Check ACLs blocking options:
+       show access-lists | include option
+     Check interface-level ACL:
+       show ip interface GigabitEthernet0/0 | include access list
+     Test with nmap:
+       nmap --ip-options R <target>    (Record Route)
+       nmap --ip-options L <router_ip> <target>  (LSR)
+     If response received = ip options NOT blocked.
+
+────────────────────────────────────────────────────────────────
+
+Q63. FortiGate-ல் GRE default allow-ஆ என்று verify பண்ண எப்படி?
+A63. FortiGate verification:
+     GUI: Policy & Objects → IPv4 Policy → check for GRE service
+     CLI:
+       show firewall service custom | grep -i gre
+       show firewall policy | grep -i gre
+       diagnose firewall iprope show 100004 (GRE service)
+     Traffic test:
+       diagnose sniffer packet any 'proto 47' 4 10
+     Log check:
+       execute log filter category 1
+       execute log display
+     If no explicit deny = ALLOW by default.
+
+────────────────────────────────────────────────────────────────
+
+Q64. Windows Server-ல் 6to4 tunnel active-ஆ என்று check பண்ண?
+A64. Windows verification:
+     Command prompt:
+       netsh interface 6to4 show state
+       netsh interface ipv6 show interfaces
+       ipconfig /all | findstr "Tunnel adapter"
+     PowerShell:
+       Get-NetAdapter | Where-Object {$_.Name -like "*6to4*"}
+       Get-NetTunnelEndpoint
+     If "6to4 Adapter" present = 6to4 active = Proto 41 traffic possible.
+     Disable:
+       netsh interface 6to4 set state disabled
+       Set-NetAdapterBinding -Name "6to4*" -Enabled $false
+
+────────────────────────────────────────────────────────────────
+SECTION G: SELECTIVE ALLOW IMPLEMENTATION
+────────────────────────────────────────────────────────────────
+
+Q65. "Default deny, selective allow" strategy என்றால் என்ன?
+A65. Strategy:
+     Default: DENY all encapsulation protocols (4, 41, 47, 97, 50)
+     Exception: PERMIT only from/to trusted IP list
+     Implementation order (ACL):
+       Line 1: permit proto X from trusted_host_A    ← first
+       Line 2: permit proto X to   trusted_host_A
+       Line 3: deny   proto X any any log             ← catch all
+       Line 4: permit ip any any                      ← normal traffic
+     Critical: Cisco ACL = top-down processing.
+     Trusted entries must be BEFORE blanket deny.
+
+────────────────────────────────────────────────────────────────
+
+Q66. Cisco IOS Named ACL — specific IP-க்கு மட்டும் GRE allow பண்ண?
+A66. Named ACL implementation:
+     ip access-list extended TUNNEL-POLICY
+       remark --- GRE allowed only from VPN peer ---
+       permit 47 host 203.0.113.10 any
+       permit 47 any host 203.0.113.10
+       remark --- EtherIP allowed only from trusted host ---
+       permit 97 host 192.168.10.5 any
+       permit 97 any host 192.168.10.5
+       remark --- Block all other encap ---
+       deny 47 any any log
+       deny 97 any any log
+       deny 4  any any log
+       deny 41 any any log
+       permit ip any any
+     interface GigabitEthernet0/0
+       ip access-group TUNNEL-POLICY in
+
+────────────────────────────────────────────────────────────────
+
+Q67. Cisco ASA Object-group approach-ல் trusted tunnel peers configure பண்ண?
+A67. ASA object-group configuration:
+     object-group network TRUSTED-PEERS
+       network-object host 203.0.113.10
+       network-object host 192.168.10.5
+       network-object 10.10.0.0 255.255.0.0
+     object-group protocol ENCAP-PROTOS
+       protocol-object 4
+       protocol-object 47
+       protocol-object 97
+       protocol-object 41
+     access-list OUTSIDE extended permit \
+       object-group ENCAP-PROTOS \
+       object-group TRUSTED-PEERS any
+     access-list OUTSIDE extended deny \
+       object-group ENCAP-PROTOS any any log
+     access-group OUTSIDE in interface outside
+
+────────────────────────────────────────────────────────────────
+
+Q68. Linux iptables-ல் trusted host மட்டும் EtherIP allow variable approach?
+A68. iptables with variables:
+     TRUSTED_ETHERIP="192.168.10.5"
+     TRUSTED_GRE="203.0.113.10"
+     TRUSTED_SUBNET="10.10.0.0/16"
+
+     # EtherIP — trusted host only
+     iptables -A FORWARD -p 97 -s $TRUSTED_ETHERIP -j ACCEPT
+     iptables -A FORWARD -p 97 -d $TRUSTED_ETHERIP -j ACCEPT
+     iptables -A FORWARD -p 97 -j LOG \
+       --log-prefix "ETHERIP-BLOCKED: " --log-level 4
+     iptables -A FORWARD -p 97 -j DROP
+
+     # GRE — trusted peer only
+     iptables -A FORWARD -p 47 -s $TRUSTED_GRE -j ACCEPT
+     iptables -A FORWARD -p 47 -d $TRUSTED_GRE -j ACCEPT
+     iptables -A FORWARD -p 47 -j DROP
+
+────────────────────────────────────────────────────────────────
+
+Q69. nftables set-based approach trusted IPs manage பண்ண எப்படி?
+A69. nftables sets (dynamic update possible):
+     table inet filter {
+       set TRUSTED_GRE {
+         type ipv4_addr
+         elements = { 203.0.113.10, 203.0.113.20 }
+       }
+       set TRUSTED_ETHERIP {
+         type ipv4_addr
+         elements = { 192.168.10.5 }
+       }
+       chain forward {
+         type filter hook forward priority 0; policy drop;
+         ip protocol 97 ip saddr @TRUSTED_ETHERIP accept
+         ip protocol 97 ip daddr @TRUSTED_ETHERIP accept
+         ip protocol 97 log prefix "ETHERIP-BLOCKED: " drop
+         ip protocol 47 ip saddr @TRUSTED_GRE accept
+         ip protocol 47 ip daddr @TRUSTED_GRE accept
+         ip protocol 47 log prefix "GRE-BLOCKED: " drop
+         ct state established,related accept
+         ip protocol tcp accept
+         ip protocol udp accept
+       }
+     }
+
+────────────────────────────────────────────────────────────────
+
+Q70. nftables set-ல் runtime-ல் trusted IP add பண்ண எப்படி?
+A70. Runtime set modification:
+     # IP add (no restart needed)
+     nft add element inet filter TRUSTED_GRE { 203.0.113.30 }
+     nft add element inet filter TRUSTED_ETHERIP { 192.168.10.6 }
+
+     # IP remove
+     nft delete element inet filter TRUSTED_GRE { 203.0.113.20 }
+
+     # Current set view
+     nft list set inet filter TRUSTED_GRE
+
+     # Full ruleset view
+     nft list ruleset
+
+     # Save current rules
+     nft list ruleset > /etc/nftables.conf
+     systemctl reload nftables
+
+────────────────────────────────────────────────────────────────
+
+Q71. FortiGate-ல் trusted peer object group create பண்ணி tunnel allow பண்ண?
+A71. FortiGate CLI:
+     config firewall address
+       edit "GRE-PEER-1"
+         set subnet 203.0.113.10 255.255.255.255
+       next
+       edit "ETHERIP-PEER-1"
+         set subnet 192.168.10.5 255.255.255.255
+       next
+     end
+     config firewall addrgrp
+       edit "TRUSTED-TUNNEL-PEERS"
+         set member "GRE-PEER-1" "ETHERIP-PEER-1"
+       next
+     end
+     config firewall policy
+       edit 10
+         set srcaddr "TRUSTED-TUNNEL-PEERS"
+         set dstaddr "all"
+         set action accept
+         set service "GRE" "EtherIP"
+       next
+       edit 11
+         set srcaddr "all"
+         set action deny
+         set service "GRE" "EtherIP"
+         set logtraffic all
+       next
+     end
+
+────────────────────────────────────────────────────────────────
+
+Q72. Juniper SRX address book + firewall filter selective allow config?
+A72. Juniper SRX:
+     # Address book
+     set security zones security-zone untrust \
+       address-book address GRE-PEER 203.0.113.10/32
+     set security zones security-zone untrust \
+       address-book address ETHERIP-PEER 192.168.10.5/32
+
+     # Firewall filter
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term allow-gre-peer \
+       from source-address 203.0.113.10/32
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term allow-gre-peer from protocol gre
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term allow-gre-peer then accept
+
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term block-all-encap from protocol [ gre 4 97 41 ]
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term block-all-encap then { discard; log; syslog; }
+
+     set firewall family inet filter SELECTIVE-TUNNEL \
+       term permit-rest then accept
+
+────────────────────────────────────────────────────────────────
+
+Q73. IP Options selective allow — specific audit host-க்கு மட்டும் LSR permit?
+A73. Cisco IOS implementation:
+     ip access-list extended IP-OPTIONS-SELECTIVE
+       remark Permit audit host LSR for network testing
+       permit ip host 10.1.1.100 any option lsrr
+       permit ip any host 10.1.1.100 option lsrr
+       remark Block all other LSR/SSR
+       deny ip any any option lsrr log
+       deny ip any any option ssrr log
+       remark Block recon options
+       deny ip any any option record-route log
+       deny ip any any option timestamp log
+       permit ip any any
+     interface GigabitEthernet0/1
+       ip access-group IP-OPTIONS-SELECTIVE in
+     Verification:
+       show access-lists IP-OPTIONS-SELECTIVE
+
+────────────────────────────────────────────────────────────────
+
+Q74. ACL order தப்பினால் என்ன ஆகும்? Example கொடு.
+A74. Wrong order example:
+     WRONG:
+       deny 47 any any         ← இது first match
+       permit 47 host A any    ← never reached!
+     Result: Trusted host A-ம் block ஆகும்.
+
+     CORRECT:
+       permit 47 host A any    ← trusted first
+       deny 47 any any         ← then block rest
+     Result: Host A allow, others block.
+
+     Cisco ACL rule: First match wins. Top-down processing.
+     Always: trusted entries → TOP
+             blanket deny   → BOTTOM
+
+────────────────────────────────────────────────────────────────
+
+Q75. Windows Server-ல் PowerShell மூலம் selective IPSec policy configure பண்ண?
+A75. PowerShell IPSec:
+     # Allow IPSec from specific peer only
+     New-NetIPsecRule -DisplayName "Allow-IPSec-Trusted" `
+       -InboundSecurity Require `
+       -RemoteAddress "203.0.113.10" `
+       -Protocol ESP
+
+     # Block all other ESP/AH
+     New-NetFirewallRule -DisplayName "Block-ESP-Untrusted" `
+       -Direction Inbound `
+       -Protocol 50 `
+       -Action Block `
+       -RemoteAddress Any
+
+     # Block EtherIP
+     New-NetFirewallRule -DisplayName "Block-EtherIP" `
+       -Direction Inbound `
+       -Protocol 97 `
+       -Action Block
+
+────────────────────────────────────────────────────────────────
+SECTION H: ADVANCED PREVENTION TECHNIQUES
+────────────────────────────────────────────────────────────────
+
+Q76. NGFW deep packet inspection encapsulation tunnel inspect பண்ண எப்படி?
+A76. NGFW tunnel inspection:
+     Palo Alto:
+       set network profiles tunnel-monitor enable yes
+       security rule: application = gre / ipsec
+       decryption policy: SSL/TLS forward proxy
+
+     FortiGate:
+       config firewall policy
+         set inspection-mode proxy
+         set ssl-ssh-profile "deep-inspection"
+       end
+
+     Checkpoint:
+       Application layer gateway for GRE
+       Identity Awareness for tunnel user tracking
+
+     Key capability: Strip outer header, inspect inner payload
+     against all security policies.
+
+────────────────────────────────────────────────────────────────
+
+Q77. GRE tunnel inspection-ல் Cisco ASA "inspect gre" என்ன செய்கிறது?
+A77. ASA inspect gre:
+     policy-map global_policy
+       class inspection_default
+         inspect gre
+     service-policy global_policy global
+
+     What it does:
+     1. GRE tunnel endpoint tracking (stateful)
+     2. Inside GRE packets inspection
+     3. NAT translation for GRE endpoints
+     4. PPTP GRE (enhanced inspection for VPN)
+     5. Prevents GRE spoofing attacks
+     Limitation: Does not inspect inner payload protocol deeply.
+     For deep inspection: Use NGFW or third-party solution.
+
+────────────────────────────────────────────────────────────────
+
+Q78. Rate limiting encapsulation protocols DoS prevent பண்ண Cisco IOS config?
+A78. Rate limiting with CoPP (Control Plane Policing):
+     ip access-list extended GRE-TRAFFIC
+       permit 47 any any
+     class-map match-all GRE-CLASS
+       match access-group name GRE-TRAFFIC
+     policy-map COPP-POLICY
+       class GRE-CLASS
+         police rate 1000000 bps burst 50000 byte
+           conform-action transmit
+           exceed-action drop
+           violate-action drop
+     control-plane
+       service-policy input COPP-POLICY
+     Apply per-interface rate limiting:
+     interface GigabitEthernet0/0
+       rate-limit input access-group 101 8000 1500 2000
+         conform-action transmit exceed-action drop
+
+────────────────────────────────────────────────────────────────
+
+Q79. Snort 3.0-ல் GRE inner payload HTTP detect பண்ண rule எழுது?
+A79. Snort 3.0 rule:
+     alert ip any any -> any any (
+       msg:"HTTP GET inside GRE tunnel";
+       ip_proto:47;
+       raw_data;
+       content:"|00 00 08 00|";  offset:0; depth:4; (GRE header)
+       content:"GET "; offset:24; depth:4;
+       sid:3000001; rev:1;
+       metadata:policy security-ips alert;
+     )
+     Alternative: Use preprocessors
+       preprocessor gre: both
+     Then normal HTTP rules apply to inner payload.
+
+────────────────────────────────────────────────────────────────
+
+Q80. Linux kernel-ல் GRE module unload செய்தால் protocol 47 traffic block ஆகுமா?
+A80. Module unload analysis:
+     GRE module: ip_gre
+     Unload: modprobe -r ip_gre
+     Effect:
+     - New GRE tunnels create ஆகாது
+     - Existing tunnels down ஆகும்
+     - BUT: protocol 47 packets still pass through kernel
+       (routing layer processes them, not module)
+     - Module only needed for TUNNEL TERMINATION
+     Conclusion: Module unload alone = NOT sufficient for blocking.
+     Still need: iptables/nftables DROP rule for proto 47.
+     Prevent module reload: echo "blacklist ip_gre" >> /etc/modprobe.d/blacklist.conf
+
+────────────────────────────────────────────────────────────────
+
+Q81. FortiGate IPS signature encapsulation attack detect பண்ண எப்படி?
+A81. FortiGate IPS:
+     config ips sensor
+       edit "Encap-Attack-Sensor"
+         config entries
+           edit 1
+             set rule 23456    (GRE anomaly signature)
+             set action block
+           next
+           edit 2
+             set rule 34567    (EtherIP tunnel signature)
+             set action block
+           next
+         end
+         set extended-log enable
+       next
+     end
+     Apply to policy:
+     config firewall policy
+       edit 1
+         set ips-sensor "Encap-Attack-Sensor"
+       next
+     end
+     Check signatures: get ips status | grep encap
+
+────────────────────────────────────────────────────────────────
+
+Q82. Cisco ASA-ல் EtherIP traffic test பண்ண packet-tracer use பண்ண எப்படி?
+A82. ASA packet-tracer:
+     packet-tracer input outside \
+       rawip 192.168.10.5 97 192.168.1.100 detailed
+     Expected output (if blocked):
+       Phase: 2 — ACCESS-LIST
+       Result: DROP
+       Config: access-list OUTSIDE_IN deny ip ...
+       Additional: Implicit rule or explicit deny
+     Expected output (if allowed):
+       Phase: X — ALLOW
+       Result: ALLOW
+     Use this to verify before/after ACL changes.
+
+────────────────────────────────────────────────────────────────
+
+Q83. Firewall rule verify process — encapsulation block confirm பண்ண steps?
+A83. Verification steps:
+     Step 1: Lab test with safe traffic
+       hping3 --proto 97 -c 1 <target>    (EtherIP test packet)
+       hping3 --proto 47 -c 1 <target>    (GRE test packet)
+
+     Step 2: Check ACL hit counters
+       show access-lists (Cisco)
+       iptables -L -v -n (Linux)
+
+     Step 3: Check firewall logs
+       show logging | include proto-97
+       tail -f /var/log/ufw.log | grep ETHERIP
+
+     Step 4: PCAP confirm
+       tcpdump -i eth0 proto 97 -c 10
+
+     Step 5: IDS alert confirm
+       tail -f /var/log/snort/alert | grep EtherIP
+
+────────────────────────────────────────────────────────────────
+
+Q84. VPN environment-ல் GRE allow பண்ணி EtherIP block பண்ண எப்படி?
+A84. Split policy (GRE allow, EtherIP block):
+     Cisco IOS:
+     ip access-list extended VPN-ENCAP-POLICY
+       remark GRE — VPN peers only
+       permit 47 host 203.0.113.10 any
+       permit 47 host 203.0.113.20 any
+       remark EtherIP — block completely
+       deny 97 any any log
+       remark IP-in-IP — block completely
+       deny 4 any any log
+       remark 6in4 — block completely
+       deny 41 any any log
+       remark All GRE from unknown sources — block
+       deny 47 any any log
+       permit ip any any
+     Key: GRE from KNOWN VPN peers = allow
+          GRE from unknown = deny
+          EtherIP = always deny
+
+────────────────────────────────────────────────────────────────
+
+Q85. pfSense-ல் pf scrub rule IP options handle பண்றது எப்படி?
+A85. pfSense pf scrub:
+     pf.conf:
+       scrub in all no-df random-id reassemble tcp
+     What scrub does:
+     1. no-df: IP fragment don't-fragment bit clear பண்ணும்
+     2. random-id: IP ID field randomize பண்ணும்
+     3. reassemble tcp: fragmented TCP reassemble பண்ணும்
+     4. IP options: scrub strips all IP options!
+     GUI: Firewall → Normalization → Add rule
+     Verify: pfctl -s rules | grep scrub
+     Note: Only IP options stripped, not encap protocols.
+     Additional rules needed for proto 47/97/4.
+
+────────────────────────────────────────────────────────────────
+SECTION I: CISCO SPECIFIC ADVANCED CONFIGS
+────────────────────────────────────────────────────────────────
+
+Q86. Cisco ASA service policy-ல் GRE inspect enable பண்ண full config?
+A86. ASA complete GRE inspection config:
+     class-map inspection_default
+       match default-inspection-traffic
+     class-map GRE_CLASS
+       match access-list GRE_TRAFFIC
+     access-list GRE_TRAFFIC permit 47 any any
+     policy-map type inspect gre GRE_INSPECT
+     policy-map global_policy
+       class inspection_default
+         inspect gre
+       class GRE_CLASS
+         inspect gre
+     service-policy global_policy global
+     Verify:
+       show service-policy inspect gre
+       show conn protocol gre
+
+────────────────────────────────────────────────────────────────
+
+Q87. Cisco IOS Zone-Based Firewall (ZBF) encapsulation block பண்ண?
+A87. ZBF configuration:
+     zone security OUTSIDE
+     zone security INSIDE
+     class-map type inspect match-any ENCAP-PROTOS
+       match protocol gre
+       match protocol ipsec-msft
+     class-map type inspect match-any TRUSTED-GRE
+       match access-group name TRUSTED-GRE-ACL
+     ip access-list extended TRUSTED-GRE-ACL
+       permit 47 host 203.0.113.10 any
+     policy-map type inspect OUTSIDE-TO-INSIDE
+       class type inspect TRUSTED-GRE
+         inspect
+       class type inspect ENCAP-PROTOS
+         drop log
+       class class-default
+         drop
+     zone-pair security OUT-IN source OUTSIDE destination INSIDE
+       service-policy type inspect OUTSIDE-TO-INSIDE
+
+────────────────────────────────────────────────────────────────
+
+Q88. Cisco ASA syslog-ல் EtherIP drop message எப்படி தெரியும்?
+A88. ASA syslog messages:
+     Implicit deny:
+       %ASA-4-106023: Deny protocol 97 src outside:192.168.1.1
+       dst inside:10.0.0.1 by access-group "OUTSIDE_IN"
+
+     ACL drop:
+       %ASA-3-710003: {TCP|UDP} access denied by ACL from
+       192.168.1.1/0 to 10.0.0.1/0 flags proto 97
+
+     ip-option drop:
+       %ASA-4-209005: Discard IP with options [options-type],
+       src: 1.1.1.1 dst: 2.2.2.2
+
+     Syslog level filter:
+       logging list ENCAP-FILTER level errors
+       logging trap debugging
+       logging host inside 192.168.1.200
+
+────────────────────────────────────────────────────────────────
+
+Q89. Cisco IOS Extended ACL-ல் subnet-based EtherIP selective allow?
+A89. Subnet-based selective allow:
+     ip access-list extended SUBNET-ENCAP-POLICY
+       remark EtherIP from 10.10.0.0/16 subnet only
+       permit 97 10.10.0.0 0.0.255.255 any
+       permit 97 any 10.10.0.0 0.0.255.255
+       remark GRE from 172.16.5.0/24 only
+       permit 47 172.16.5.0 0.0.0.255 any
+       permit 47 any 172.16.5.0 0.0.0.255
+       remark Block all other encap
+       deny 97 any any log
+       deny 47 any any log
+       deny 4  any any log
+       permit ip any any
+     Note: Wildcard mask = inverse of subnet mask
+     255.255.0.0 subnet → 0.0.255.255 wildcard
+
+────────────────────────────────────────────────────────────────
+
+Q90. Cisco show commands encapsulation traffic monitor பண்ண?
+A90. Monitoring commands:
+     Traffic statistics:
+       show ip traffic           (protocol breakdown)
+       show interface stats      (packet counters)
+
+     ACL hits:
+       show access-lists         (hit counts per rule)
+       clear access-list counters (reset counters)
+
+     ASA specific:
+       show asp drop             (accelerated path drops)
+       show asp table classify   (classification rules)
+       show conn protocol gre    (active GRE connections)
+
+     Debug (careful in production):
+       debug ip packet 101 detail (ACL 101 matched only)
+       no debug all               (stop all debugging)
+
+────────────────────────────────────────────────────────────────
+SECTION J: LINUX ADVANCED CONFIGS
+────────────────────────────────────────────────────────────────
+
+Q91. Linux-ல் GRE tunnel interface create பண்ணி selective traffic allow பண்ண?
+A91. Legitimate GRE tunnel setup + security:
+     # Create GRE tunnel interface
+     ip tunnel add gre1 mode gre \
+       remote 203.0.113.10 local 192.168.1.1 ttl 255
+     ip link set gre1 up
+     ip addr add 10.0.0.1/30 dev gre1
+
+     # Allow only specific traffic on tunnel
+     iptables -A FORWARD -i gre1 -s 10.10.0.0/16 -j ACCEPT
+     iptables -A FORWARD -i gre1 -j DROP
+
+     # Block GRE from untrusted sources on physical interface
+     iptables -A INPUT -p 47 ! -s 203.0.113.10 -j DROP
+     iptables -A INPUT -p 47 -s 203.0.113.10 -j ACCEPT
+
+────────────────────────────────────────────────────────────────
+
+Q92. Linux ipset-ல் trusted tunnel peers manage பண்ண (scalable approach)?
+A92. ipset approach (scales to 1000s of IPs):
+     # Create ipset
+     ipset create TRUSTED-GRE hash:ip
+     ipset create TRUSTED-ETHERIP hash:ip
+     ipset create TRUSTED-IPINIP hash:net
+
+     # Add trusted IPs
+     ipset add TRUSTED-GRE 203.0.113.10
+     ipset add TRUSTED-GRE 203.0.113.20
+     ipset add TRUSTED-ETHERIP 192.168.10.5
+     ipset add TRUSTED-IPINIP 10.10.0.0/16
+
+     # iptables rules using ipset
+     iptables -A FORWARD -p 47 -m set --match-set TRUSTED-GRE src -j ACCEPT
+     iptables -A FORWARD -p 97 -m set --match-set TRUSTED-ETHERIP src -j ACCEPT
+     iptables -A FORWARD -p 47 -j DROP
+     iptables -A FORWARD -p 97 -j DROP
+
+     # Save
+     ipset save > /etc/ipset.conf
+
+────────────────────────────────────────────────────────────────
+
+Q93. Linux fail2ban-ல் repeated EtherIP scan auto-block பண்ண?
+A93. fail2ban configuration:
+     /etc/fail2ban/filter.d/etherip.conf:
+       [Definition]
+       failregex = ETHERIP-BLOCKED.*SRC=<HOST>
+       ignoreregex =
+
+     /etc/fail2ban/jail.d/etherip.conf:
+       [etherip-block]
+       enabled = true
+       filter = etherip
+       logpath = /var/log/syslog
+       maxretry = 5
+       findtime = 300
+       bantime = 3600
+       action = iptables-multiport[name=etherip, protocol=all]
+
+     Restart: systemctl restart fail2ban
+     Status:  fail2ban-client status etherip
+
+────────────────────────────────────────────────────────────────
+
+Q94. Linux sysctl-ல் IP forwarding மற்றும் source routing disable பண்ண?
+A94. sysctl hardening:
+     /etc/sysctl.d/99-security.conf:
+       # Disable IP source routing
+       net.ipv4.conf.all.accept_source_route = 0
+       net.ipv4.conf.default.accept_source_route = 0
+       net.ipv6.conf.all.accept_source_route = 0
+
+       # Disable ICMP redirect acceptance
+       net.ipv4.conf.all.accept_redirects = 0
+       net.ipv4.conf.default.accept_redirects = 0
+
+       # Enable reverse path filtering (anti-spoofing)
+       net.ipv4.conf.all.rp_filter = 1
+       net.ipv4.conf.default.rp_filter = 1
+
+       # Log martian packets
+       net.ipv4.conf.all.log_martians = 1
+
+     Apply: sysctl -p /etc/sysctl.d/99-security.conf
+
+────────────────────────────────────────────────────────────────
+
+Q95. Linux-ல் EtherIP receive handle பண்ற kernel code எங்கே உள்ளது?
+A95. Kernel source analysis:
+     EtherIP driver: net/ethernet/eth.c (partial)
+     Protocol handler: net/ipv4/ip_input.c
+     Proto 97 registration:
+       drivers/net/ethernet/... (vendor specific)
+     Check if proto 97 has handler:
+       cat /proc/net/protocols | grep 97
+     If no handler: packet dropped at kernel level.
+     Raw socket can still receive:
+       socket(AF_INET, SOCK_RAW, 97) = receives all proto 97
+     Security implication: Raw socket root access needed,
+     but if attacker has root = already compromised.
+
+────────────────────────────────────────────────────────────────
+SECTION K: MONITORING AND INCIDENT RESPONSE
+────────────────────────────────────────────────────────────────
+
+Q96. Encapsulation attack incident response checklist?
+A96. IR Checklist:
+     1. IDENTIFY:
+        - Protocol number (4/41/47/97)
+        - Source IP, destination IP
+        - Traffic volume/duration
+        - Time of first occurrence
+
+     2. CONTAIN:
+        - Block source IP at perimeter
+        - Isolate affected segments
+        - Capture PCAP for analysis
+
+     3. ANALYZE:
+        - Decode inner payload (Wireshark/Scapy)
+        - Identify inner protocol and content
+        - Determine what data was tunneled
+
+     4. ERADICATE:
+        - Remove unauthorized tunnel endpoints
+        - Apply permanent ACL rules
+        - Patch if CVE-related
+
+     5. RECOVER + DOCUMENT:
+        - Update firewall rules
+        - Add IDS signatures
+        - Pen test to verify fix
+
+────────────────────────────────────────────────────────────────
+
+Q97. EtherIP attack inner payload reconstruct பண்ண Wireshark steps?
+A97. Wireshark reconstruction:
+     Step 1: Filter: ip.proto == 97
+     Step 2: Select packet → Packet Details pane
+     Step 3: Expand "Data" field (EtherIP payload)
+     Step 4: Right-click Data → "Decode As"
+     Step 5: Select "Ethernet" for inner protocol
+     Step 6: Inner Ethernet frame visible!
+     Step 7: Analyze → Follow Stream for inner content
+     CLI alternative (tshark):
+       tshark -r capture.pcap -Y "ip.proto==97" \
+         -T fields -e ip.src -e ip.dst -e data
+     Scapy:
+       pkt = IP(raw_bytes)
+       inner = Ether(bytes(pkt.payload)[2:])
+       inner.show()
+
+────────────────────────────────────────────────────────────────
+
+Q98. Automated daily report — encapsulation protocol attempts count பண்ண script?
+A98. Bash script:
+     #!/bin/bash
+     # /usr/local/bin/encap-report.sh
+     DATE=$(date +%Y-%m-%d)
+     LOG="/var/log/syslog"
+     REPORT="/var/reports/encap-$DATE.txt"
+
+     echo "Encapsulation Attack Report — $DATE" > $REPORT
+     echo "================================" >> $REPORT
+     echo "" >> $REPORT
+
+     for PROTO in "ETHERIP" "GRE-BLOCKED" "IPINIP-BLOCKED" "SixIN4-BLOCKED"; do
+       COUNT=$(grep "$PROTO" $LOG | grep "$DATE" | wc -l)
+       TOP_SRC=$(grep "$PROTO" $LOG | grep "$DATE" \
+         | grep -oP 'SRC=\K[\d.]+' | sort | uniq -c \
+         | sort -rn | head -3)
+       echo "Protocol: $PROTO" >> $REPORT
+       echo "  Total attempts: $COUNT" >> $REPORT
+       echo "  Top sources:" >> $REPORT
+       echo "$TOP_SRC" | sed 's/^/    /' >> $REPORT
+     done
+
+     mail -s "Encap Report $DATE" security@company.com < $REPORT
+
+────────────────────────────────────────────────────────────────
+
+Q99. Pen test scope-ல் encapsulation bypass test methodology என்ன?
+A99. Test methodology:
+     Phase 1 — Discovery:
+       nmap -sO <target>     (protocol scan)
+       nmap -p 0:65535 --ip-protocol 4,41,47,97 <target>
+       hping3 --proto 97 <target>
+
+     Phase 2 — Verification:
+       Send crafted EtherIP packet (Scapy):
+         pkt = IP(dst="target", proto=97)/Raw(b"\x30\x00")
+         /Ether()/IP(dst="internal")/TCP()
+         send(pkt)
+
+     Phase 3 — Bypass test:
+       Create GRE tunnel to internal hop
+       Check if HTTP/SMB through tunnel reaches internal hosts
+
+     Phase 4 — Document:
+       PCAP evidence, firewall rule gap, remediation recommendation.
+
+────────────────────────────────────────────────────────────────
+
+Q100. Defense summary — top 10 controls encapsulation attacks prevent பண்ண?
+A100. Top 10 Controls:
+      1.  ip options drop (Cisco IOS global)
+      2.  deny proto 97 any any (EtherIP — always)
+      3.  deny proto 4 any any (IP-in-IP — unless VPN)
+      4.  GRE permit only from known VPN peers
+      5.  deny proto 41 any any (6in4 — disable unless needed)
+      6.  Disable 6to4/Teredo on Windows hosts
+      7.  NGFW tunnel inspection / deep packet inspection
+      8.  Snort/Suricata rules for encap protocols
+      9.  sysctl: accept_source_route = 0
+      10. NetFlow anomaly detection + SIEM alerting
+
+================================================================
+END OF PART 2 — Questions 51 to 100
+================================================================

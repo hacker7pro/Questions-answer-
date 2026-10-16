@@ -1,0 +1,708 @@
+================================================================
+  NETWORK SECURITY Q&A — PART 1 (Q1–Q50)
+  Topic: IP Options Abuse & Encapsulation Protocol Attacks
+  Language: Tamil/English Bilingual
+================================================================
+
+────────────────────────────────────────────────────────────────
+SECTION A: IP OPTIONS FUNDAMENTALS
+────────────────────────────────────────────────────────────────
+
+Q1. IP header-ல் "Options" field என்றால் என்ன?
+A1. IP header-ல் fixed fields (TTL, Protocol, Source/Destination IP) தவிர,
+    optional variable-length fields உள்ளன. இவை routing, timestamping,
+    security tagging போன்ற special functions-க்கு use ஆகும்.
+    Maximum IP header size: 60 bytes (options உட்பட).
+    Default header without options: 20 bytes.
+
+────────────────────────────────────────────────────────────────
+
+Q2. IP Options field-ல் எத்தனை bytes வரை data வரலாம்?
+A2. IP Options maximum = 40 bytes (60 - 20 = 40).
+    ஏனென்றால் IP header maximum = 60 bytes,
+    Fixed header = 20 bytes,
+    எனவே Options-க்கு = 40 bytes மட்டுமே கிடைக்கும்.
+
+────────────────────────────────────────────────────────────────
+
+Q3. Loose Source Routing (LSR) என்றால் என்ன? Option number என்ன?
+A3. LSR = Option Type 131 (0x83).
+    Attacker தான் விரும்பும் intermediate hops-ஐ specify பண்ணுவார்.
+    Routers அந்த path வழியே packet forward பண்ணும்.
+    "Loose" = specified hops-க்கு இடையே other routers இருக்கலாம்.
+    Attack use: MITM (Man-in-the-Middle) traffic interception.
+
+────────────────────────────────────────────────────────────────
+
+Q4. Strict Source Routing (SSR) LSR-இலிருந்து எவ்வாறு வேறுபடுகிறது?
+A4. SSR = Option Type 137 (0x89).
+    Exact hop sequence mandatory — ஒவ்வொரு router-ம் specified list-ல்
+    இருக்க வேண்டும். "Strict" = no intermediate unlisted routers allowed.
+    LSR vs SSR:
+    - LSR: A→B→(anything)→C→D  [flexible]
+    - SSR: A→B→C→D exactly      [rigid, harder to use but more precise]
+    Attack use: Firewall bypass by routing through trusted hosts.
+
+────────────────────────────────────────────────────────────────
+
+Q5. Record Route Option என்ன செய்கிறது? Attacker எவ்வாறு இதை abuse பண்ணுவார்?
+A5. Record Route = Option Type 7 (0x07).
+    Packet traverse ஆகும் ஒவ்வொரு router-ம் தன் IP address-ஐ
+    option field-ல் append பண்ணும்.
+    Attack use: Network topology enumeration.
+    Attacker single packet அனுப்பி entire routing path map பண்ணுவார்.
+    Max hops recorded: 9 (40 bytes / 4 bytes per IP = 10, minus header).
+
+────────────────────────────────────────────────────────────────
+
+Q6. IP Timestamp Option எவ்வாறு fingerprinting-க்கு use ஆகும்?
+A6. Timestamp Option = Option Type 68 (0x44).
+    Routers packet receive பண்ணும் time-ஐ record பண்ணும்.
+    Attacker இந்த timing data-ஐ பயன்படுத்தி:
+    1. Device uptime estimate பண்ணலாம்
+    2. OS type fingerprint பண்ணலாம் (timestamp format OS-specific)
+    3. Network latency map பண்ணலாம்
+    4. NTP sync status detect பண்ணலாம்
+
+────────────────────────────────────────────────────────────────
+
+Q7. Router Alert Option என்றால் என்ன? DoS attack-க்கு எவ்வாறு use ஆகும்?
+A7. Router Alert = Option Type 148 (0x94).
+    இந்த option set ஆனால், ஒவ்வொரு router-ம் packet-ஐ
+    fast-path (hardware) பதிலாக slow-path (CPU) processing-க்கு
+    எடுத்துக்கொள்ளும்.
+    DoS attack: Attacker high-rate packets with Router Alert அனுப்பினால்,
+    router CPU 100% ஆகி legitimate traffic drop ஆகும்.
+    Real-world use: RSVP, IGMP — இவற்றுக்கு legitimate use உண்டு.
+
+────────────────────────────────────────────────────────────────
+
+Q8. IP Options field-ஐ Cisco IOS-ல் drop பண்ண என்ன command use ஆகும்?
+A8. Global command:
+      ip options drop
+    இது LSR, SSR, Record Route, Timestamp உட்பட
+    அனைத்து IP options-ஐயும் drop பண்ணும்.
+    Verification:
+      show ip interface GigabitEthernet0/0
+      show ip traffic  (drops counter பார்க்கலாம்)
+
+────────────────────────────────────────────────────────────────
+
+Q9. ACL மூலம் specific IP option-ஐ மட்டும் block பண்ண எப்படி?
+A9. Cisco IOS ACL syntax:
+      access-list 101 deny ip any any option lsrr
+      access-list 101 deny ip any any option ssrr
+      access-list 101 deny ip any any option record-route
+      access-list 101 deny ip any any option timestamp
+      access-list 101 permit ip any any
+    Interface-ல் apply:
+      interface GigabitEthernet0/0
+        ip access-group 101 in
+
+────────────────────────────────────────────────────────────────
+
+Q10. IP Options-ஐ Cisco ASA verify பண்ண என்ன command?
+A10. ASA default-ஆக IP options drop பண்ணும்.
+     Verify command:
+       show asp drop frame ip-option-drop
+     இது dropped packet count காட்டும்.
+     ASA-ல் manually enable செய்ய:
+       ip options {allow | drop}
+
+────────────────────────────────────────────────────────────────
+SECTION B: ENCAPSULATION PROTOCOL ATTACKS
+────────────────────────────────────────────────────────────────
+
+Q11. Encapsulation protocol attack என்றால் என்ன? Basic principle என்ன?
+A11. Encapsulation attack = outer IP header-ல் normal traffic போல் தெரிந்து,
+     inner payload-ல் malicious content hide பண்ணுவது.
+     Firewall/IDS outer header மட்டும் check பண்ணும்.
+     Inner payload bypass ஆகும்.
+     Principle: "Packet within a packet" — நீங்கள் permitted protocol-ஐ
+     wrapper-ஆக use பண்ணி, தடுக்கப்பட்ட traffic smuggle பண்ணுவீர்கள்.
+
+────────────────────────────────────────────────────────────────
+
+Q12. GRE tunneling என்றால் என்ன? Protocol number என்ன?
+A12. GRE = Generic Routing Encapsulation.
+     Protocol Number: 47.
+     RFC: 2784, 2890.
+     Use: Any L3 protocol-ஐ IP-ல் encapsulate பண்ணலாம்.
+     Header: 4 bytes minimum (flags + protocol type).
+     Attack use: Firewall-ல் GRE whitelist ஆனால்,
+     malicious traffic GRE stream-ல் hide பண்ணலாம்.
+
+────────────────────────────────────────────────────────────────
+
+Q13. IP-in-IP tunneling என்றால் என்ன? Attack scenario விளக்கு.
+A13. IP-in-IP = Protocol Number 4.
+     Plain IP packet-ஐ another IP packet-ல் encapsulate பண்ணுவது.
+     RFC: 2003.
+     Attack scenario:
+     1. Attacker outer src IP = trusted address (spoofed)
+     2. Inner packet = actual malicious payload
+     3. Firewall outer header பார்க்கும் → permit
+     4. Inner payload destination reach ஆகும்
+     5. ACL bypass complete.
+
+────────────────────────────────────────────────────────────────
+
+Q14. EtherIP என்றால் என்ன? இது மற்ற encapsulation protocols-இலிருந்து
+     எவ்வாறு unique ஆகும்?
+A14. EtherIP = Ethernet frames-ஐ IP packets-ல் encapsulate பண்ணுவது.
+     Protocol Number: 97.
+     RFC: 3378.
+     Unique feature: Layer 2 (Ethernet) frame-ஐ Layer 3 (IP) tunnel-ல்
+     carry பண்ணுவது.
+     இதனால்:
+     - MAC addresses encapsulated ஆகும்
+     - VLAN tags (802.1Q) inner frame-ல் இருக்கலாம்
+     - ARP frames tunnel பண்ணலாம்
+     - MAC-based ACL useless ஆகும்
+     - L2 IDS inspection bypass ஆகும்
+
+────────────────────────────────────────────────────────────────
+
+Q15. EtherIP frame structure என்ன? Header format விளக்கு.
+A15. EtherIP frame structure (outer to inner):
+     [IPv4 Header] → [EtherIP Header (16-bit)] → [Ethernet Frame]
+     → [Optional VLAN Tag] → [Inner L3 Payload] → [FCS]
+
+     EtherIP 16-bit header:
+     - Bits 0-3:  Version (must be 0x3)
+     - Bits 4-15: Reserved (must be 0)
+
+     Protocol field in IPv4 header = 97 (0x61)
+     இதை identify பண்ண: tcpdump -i eth0 proto 97
+
+────────────────────────────────────────────────────────────────
+
+Q16. 6in4 tunneling என்றால் என்ன? Security risk என்ன?
+A16. 6in4 = IPv6 packets-ஐ IPv4-ல் encapsulate பண்றது.
+     Protocol Number: 41.
+     RFC: 4213.
+     Security risk:
+     - IPv4-only firewall rules IPv6 payload பார்க்காது
+     - IPv6 ACL/IDS rules apply ஆகாது
+     - Attacker IPv6-only malware IPv4 network-ல் bypass பண்ணலாம்
+     - IPv6 extension headers additional evasion தரும்
+     Common tunnel brokers: Hurricane Electric (he.net), SixXS
+
+────────────────────────────────────────────────────────────────
+
+Q17. Teredo tunneling என்றால் என்ன? ஏன் இது particularly dangerous?
+A17. Teredo = IPv6-over-UDP (port 3544) tunneling.
+     RFC: 4380.
+     Particularly dangerous ஏனென்றால்:
+     1. UDP-ல் இயங்கும் → NAT traverse பண்ணும்
+     2. No explicit firewall rule தேவையில்லை
+     3. Windows-ல் default enabled (XP SP2 முதல்)
+     4. IPv6 traffic IPv4 UDP-ல் hide ஆகும்
+     5. Deep packet inspection இல்லாமல் detect கஷ்டம்
+     Windows-ல் disable: netsh interface teredo set state disabled
+
+────────────────────────────────────────────────────────────────
+
+Q18. ISATAP என்றால் என்ன? Enterprise network-ல் risk என்ன?
+A18. ISATAP = Intra-Site Automatic Tunnel Addressing Protocol.
+     RFC: 5214.
+     Enterprise risk:
+     - Internal IPv4 network-ல் automatic IPv6 tunnel create ஆகும்
+     - Host-to-host direct IPv6 communication bypass firewall
+     - Internal segmentation circumvent ஆகும்
+     - IDS IPv4 மட்டும் monitor பண்ணினால் blind spot
+     Disable Windows: netsh interface isatap set state disabled
+
+────────────────────────────────────────────────────────────────
+
+Q19. IPSec ESP abuse என்றால் என்ன? IDS எவ்வாறு blind ஆகும்?
+A19. IPSec ESP = Protocol 50, Encapsulating Security Payload.
+     Abuse scenario:
+     1. Attacker rogue IPSec ESP packets உருவாக்குவார்
+     2. IDS/IPS decryption key இல்லாமல் payload inspect பண்ண முடியாது
+     3. Protocol 50 permit ஆனால் encrypted malicious payload pass ஆகும்
+     4. "Encrypted tunnel" excuse misuse பண்ணலாம்
+     Mitigation: SSL/TLS inspection, certificate pinning, IKE policy enforce.
+
+────────────────────────────────────────────────────────────────
+
+Q20. L2TP tunneling security risk என்ன?
+A20. L2TP = Layer 2 Tunneling Protocol, UDP port 1701.
+     RFC: 2661.
+     Security risks:
+     1. L2TP/no-IPSec = unencrypted L2 frames travel over internet
+     2. PPP authentication bypass possible (CHAP downgrade)
+     3. Tunnel endpoint impersonation
+     4. Inner frame VLAN tags manipulation
+     5. UDP fragmentation attacks possible
+     Best practice: Always use L2TP/IPSec combination.
+
+────────────────────────────────────────────────────────────────
+SECTION C: ATTACK MECHANICS — DEEP DIVE
+────────────────────────────────────────────────────────────────
+
+Q21. Source Routing attack-ஐ real network-ல் detect பண்ண எப்படி?
+A21. Detection methods:
+     1. Wireshark filter:
+          ip.options.type == 131   (LSR)
+          ip.options.type == 137   (SSR)
+     2. Snort rule:
+          alert ip any any -> any any (ipopts lsrr;
+          msg:"Loose Source Route detected"; sid:1001;)
+     3. NetFlow analysis: unusual routing paths
+     4. Syslog: "ip options drop" messages from router
+     5. SIEM correlation: same source IP with option-set packets
+
+────────────────────────────────────────────────────────────────
+
+Q22. GRE tunnel abuse-ஐ Wireshark-ல் எவ்வாறு analyze பண்ணுவீர்கள்?
+A22. Wireshark steps:
+     1. Filter: ip.proto == 47
+     2. Right-click → "Decode As" → GRE
+     3. Inner packet பார்க்கலாம்: Analyze → Follow → GRE Stream
+     4. Inner IP header source/destination பார்க்கவும்
+     5. Inner payload protocol identify பண்ணவும்
+     CLI alternative:
+       tcpdump -i eth0 proto gre -v
+       tcpdump -i eth0 proto 47 -X -nn
+
+────────────────────────────────────────────────────────────────
+
+Q23. EtherIP attack-ல் VLAN hopping எவ்வாறு possible?
+A23. VLAN hopping via EtherIP:
+     1. Attacker EtherIP tunnel உருவாக்குகிறார்
+     2. Inner Ethernet frame-ல் VLAN tag 802.1Q insert பண்ணுகிறார்
+     3. VLAN tag = target VLAN ID (e.g., VLAN 100 — finance)
+     4. Outer firewall protocol 97 allow பண்ணினால் → pass ஆகும்
+     5. Destination switch inner frame process பண்ணும்
+     6. VLAN 100 segment breach ஆகும்
+     Prevention: deny proto 97, VLAN ACL (VACL), private VLAN.
+
+────────────────────────────────────────────────────────────────
+
+Q24. NAT Slipstreaming attack என்றால் என்ன? Encapsulation-உடன் தொடர்பு என்ன?
+A24. NAT Slipstreaming = browser-based attack NAT bypass பண்றது.
+     Mechanism:
+     1. SIP ALG NAT-ல் enable ஆனால், browser HTTP→SIP payload injection
+     2. NAT device SIP payload rewrite பண்ணும்
+     3. Internal host arbitrary port expose ஆகும்
+     Encapsulation link: SIP-within-HTTP encapsulation abuse.
+     Prevention: SIP ALG disable, strict HTTP inspection.
+
+────────────────────────────────────────────────────────────────
+
+Q25. IP fragmentation-ஐ encapsulation attack-உடன் combine பண்ணுவது எப்படி?
+A25. Combined attack:
+     1. Large malicious payload → fragment into small pieces
+     2. Each fragment GRE/EtherIP tunnel-ல் encapsulate பண்ணுவார்கள்
+     3. Firewall fragments individually inspect பண்ணும் → incomplete view
+     4. Destination reassemble பண்ணும் → complete malicious payload
+     Detection: stateful inspection with fragment reassembly.
+     Cisco ASA: ip verify fragmentation (default enabled).
+
+────────────────────────────────────────────────────────────────
+
+Q26. Recursive encapsulation attack என்றால் என்ன?
+A26. Recursive encapsulation = tunnel within a tunnel.
+     Example: GRE → GRE → GRE (triple encapsulation)
+     Attack benefit:
+     - Each layer strip பண்ண additional processing தேவை
+     - IDS inspection depth limit bypass பண்ணலாம்
+     - Packet TTL manipulation with each layer
+     Cisco ASA: maximum tunnel depth = 3 (configurable)
+     Prevention: Set max tunnel depth, rate-limit encap protocols.
+
+────────────────────────────────────────────────────────────────
+
+Q27. Protocol 97 (EtherIP) packet-ஐ Linux-ல் capture பண்ண எந்த command?
+A27. Linux capture commands:
+     tcpdump:
+       tcpdump -i eth0 proto 97 -v -X -nn
+       tcpdump -i eth0 'ip[9] = 97'    (proto field at offset 9)
+     tshark:
+       tshark -i eth0 -f "proto 97"
+       tshark -i eth0 ip.proto==97
+     Scapy (Python):
+       from scapy.all import *
+       sniff(filter="proto 97", prn=lambda x: x.show())
+
+────────────────────────────────────────────────────────────────
+
+Q28. iptables-ல் EtherIP (proto 97) block பண்ண exact command என்ன?
+A28. iptables commands:
+       iptables -A INPUT   -p 97 -j DROP
+       iptables -A OUTPUT  -p 97 -j DROP
+       iptables -A FORWARD -p 97 -j DROP
+     Specific source block:
+       iptables -A FORWARD -p 97 ! -s 192.168.10.5 -j DROP
+     Log பண்ணி block:
+       iptables -A FORWARD -p 97 -j LOG --log-prefix "ETHERIP-BLOCKED: "
+       iptables -A FORWARD -p 97 -j DROP
+     Persistent: iptables-save > /etc/iptables/rules.v4
+
+────────────────────────────────────────────────────────────────
+
+Q29. nftables-ல் multiple encapsulation protocols ஒரே நேரத்தில் block பண்ண?
+A29. nftables syntax:
+     table inet filter {
+       chain forward {
+         type filter hook forward priority 0; policy drop;
+         ip protocol { 4, 41, 47, 97 } log prefix "ENCAP-BLOCK: " drop
+         ct state established,related accept
+         ip protocol tcp accept
+         ip protocol udp accept
+         ip protocol icmp accept
+       }
+     }
+     Apply: nft -f /etc/nftables.conf
+     Verify: nft list ruleset
+
+────────────────────────────────────────────────────────────────
+
+Q30. Suricata rule-ல் GRE tunnel-ல் HTTP traffic detect பண்ண எப்படி?
+A30. Suricata nested detection rule:
+     alert gre any any -> any any
+       (msg:"HTTP inside GRE tunnel";
+        gre.inner.ip;
+        gre.inner.tcp;
+        content:"GET"; http_method;
+        sid:2000001; rev:1;)
+     Basic GRE detect:
+     alert ip any any -> any any
+       (msg:"GRE tunnel detected";
+        ip_proto:47;
+        sid:2000002; rev:1;)
+
+────────────────────────────────────────────────────────────────
+SECTION D: SPECIFIC PROTOCOL ANALYSIS
+────────────────────────────────────────────────────────────────
+
+Q31. IPv6 transition mechanisms எத்தனை உள்ளன? பட்டியலிடு.
+A31. Major IPv6 transition mechanisms:
+     1. 6in4   (Proto 41)  — Manual tunnel, RFC 4213
+     2. 6to4   (Proto 41)  — Automatic, anycast 192.88.99.1, RFC 3056
+     3. Teredo (UDP 3544)  — NAT traversal, RFC 4380
+     4. ISATAP             — Intra-site, RFC 5214
+     5. DS-Lite            — IPv4 in IPv6, RFC 6333
+     6. MAP-E              — Address mapping, RFC 7597
+     7. 464XLAT            — Android/mobile, RFC 6877
+     Security note: எல்லாமே IPv4 firewall bypass possible.
+
+────────────────────────────────────────────────────────────────
+
+Q32. GRE header-ல் checksum மற்றும் key fields என்ன செய்கின்றன?
+A32. GRE header fields:
+     - Checksum present bit: outer checksum enable/disable
+     - Key present bit: 32-bit key for tunnel identification
+     - Sequence number: packet ordering (optional)
+     - Routing: source route entries (rare)
+     Attack significance:
+     - Key field absent = any source can inject packets
+     - No encryption = payload visible
+     - No authentication = spoofing possible
+     Secure GRE: Use GRE + IPSec combination.
+
+────────────────────────────────────────────────────────────────
+
+Q33. MPLS label spoofing encapsulation attack என்றால் என்ன?
+A33. MPLS attack:
+     Protocol: MPLS labels in IP payload (EtherType 0x8847/0x8848)
+     Attack:
+     1. Attacker forged MPLS label stack create பண்ணுகிறார்
+     2. Label switching table மூலம் arbitrary path routing
+     3. BGP/LDP না பார்க்காமல் traffic redirect
+     4. PHP (Penultimate Hop Popping) abuse
+     Prevention:
+     - Label filtering at MPLS edge
+     - TTL propagation control
+     - LDP MD5 authentication
+
+────────────────────────────────────────────────────────────────
+
+Q34. Protocol 4 (IP-in-IP) vs Protocol 47 (GRE) — security perspective வேறுபாடு?
+A34. Comparison:
+     IP-in-IP (Proto 4):
+     - Header overhead: 20 bytes (just another IP header)
+     - No authentication/encryption
+     - Simpler, harder to detect
+     - Linux: ipip module
+
+     GRE (Proto 47):
+     - Header overhead: 4-16 bytes
+     - Optional key field (weak auth)
+     - Can carry non-IP protocols
+     - More common in enterprise (VPN)
+     - Easier to detect (proto 47 well-known)
+
+     Security: IP-in-IP more dangerous (smaller footprint, less monitored).
+
+────────────────────────────────────────────────────────────────
+
+Q35. Zeek (Bro) மூலம் EtherIP traffic log பண்ண எவ்வாறு?
+A35. Zeek approach:
+     conn.log-ல் proto field "97" check பண்ணவும்:
+       cat conn.log | zeek-cut id.orig_h id.resp_h proto \
+         | awk '$3 == 97 {print "EtherIP: "$1" -> "$2}'
+     Custom Zeek script:
+       event connection_established(c: connection) {
+         if ( c$conn$proto == 97 )
+           print fmt("EtherIP tunnel: %s -> %s",
+                     c$id$orig_h, c$id$resp_h);
+       }
+     Also check: weird.log for unknown protocol entries.
+
+────────────────────────────────────────────────────────────────
+
+Q36. FortiGate-ல் encapsulation protocols block பண்ண policy எவ்வாறு உருவாக்குவீர்கள்?
+A36. FortiGate CLI:
+     config firewall policy
+       edit 100
+         set name "Block-Encap-Protos"
+         set srcintf "wan1"
+         set dstintf "internal"
+         set srcaddr "all"
+         set dstaddr "all"
+         set action deny
+         set schedule "always"
+         set service "GRE" "ESP" "AH"
+         set logtraffic all
+         set comments "Block encapsulation protocols"
+       next
+     end
+     Custom service for EtherIP:
+     config firewall service custom
+       edit "EtherIP"
+         set protocol IP
+         set protocol-number 97
+       next
+     end
+
+────────────────────────────────────────────────────────────────
+
+Q37. Juniper SRX-ல் EtherIP (proto 97) block firewall filter எழுது.
+A37. Juniper SRX filter:
+     set firewall family inet filter BLOCK-ENCAP
+       term deny-etherip from protocol 97
+     set firewall family inet filter BLOCK-ENCAP
+       term deny-etherip then {
+         discard
+         log
+         syslog
+         count ETHERIP-DROPPED
+       }
+     set firewall family inet filter BLOCK-ENCAP
+       term deny-ipinip from protocol 4
+     set firewall family inet filter BLOCK-ENCAP
+       term deny-ipinip then discard
+     set firewall family inet filter BLOCK-ENCAP
+       term permit-rest then accept
+     Apply:
+     set interfaces ge-0/0/0 unit 0 family inet
+       filter input BLOCK-ENCAP
+
+────────────────────────────────────────────────────────────────
+
+Q38. RFC 3378 என்ன define பண்ணுகிறது?
+A38. RFC 3378 = EtherIP: Tunneling Ethernet Frames in IP Datagrams.
+     Published: 2002.
+     Key definitions:
+     - Protocol number 97 reservation
+     - 16-bit EtherIP header format (version=3, reserved=0)
+     - Encapsulation procedure
+     - Fragmentation handling
+     - Security considerations (explicitly notes: no auth, no encrypt)
+     RFC note: "This protocol is not intended for use as a general
+     tunneling mechanism" — but attacker-கள் abuse பண்றார்கள்.
+
+────────────────────────────────────────────────────────────────
+
+Q39. IP-in-IP tunnel Cisco IOS-ல் configure பண்ண எப்படி? (legitimate use)
+A39. Cisco IOS IP-in-IP tunnel:
+     interface Tunnel0
+       ip address 10.0.0.1 255.255.255.252
+       tunnel source 203.0.113.1
+       tunnel destination 203.0.113.2
+       tunnel mode ipip
+     ip route 192.168.2.0 255.255.255.0 Tunnel0
+     Security note: Default mode = passthrough.
+     Pen test: enumerate tunnel interfaces with
+       show interfaces tunnel
+       show ip route tunnel
+
+────────────────────────────────────────────────────────────────
+
+Q40. Windows 6to4 auto-tunnel default behavior என்ன? Pen test significance என்ன?
+A40. Windows 6to4 default:
+     - Windows Vista/7/8/10/Server 2008+ = 6to4 auto-enabled
+     - Anycast address: 192.88.99.1
+     - Protocol 41 packets automatically processed
+     Pen test significance:
+     - IPv4-only perimeter firewall bypass via 6to4
+     - Internal Windows hosts IPv6 reachable without explicit config
+     - IPv6 lateral movement possible
+     Detection: netsh interface 6to4 show state
+     Disable: netsh interface 6to4 set state disabled
+
+────────────────────────────────────────────────────────────────
+SECTION E: DETECTION AND FORENSICS
+────────────────────────────────────────────────────────────────
+
+Q41. Network forensics-ல் encapsulation attack evidence எங்கே தேடுவீர்கள்?
+A41. Evidence locations:
+     1. Firewall logs: unusual protocol numbers (4, 41, 47, 97)
+     2. NetFlow/IPFIX: high-volume unusual protocol traffic
+     3. PCAP files: reconstruct inner payloads
+     4. Router debug logs: "ip options" messages
+     5. IDS alerts: encapsulation signatures
+     6. Endpoint logs: new tunnel interface creation
+     7. DNS logs: tunnel broker domain queries
+     8. Syslog: kernel module load (Linux ipip/gre/sit)
+
+────────────────────────────────────────────────────────────────
+
+Q42. Snort rule-ல் IP Record Route option detect பண்ண எழுது.
+A42. Snort rules:
+     alert ip any any -> any any
+       (msg:"IP Record Route Option";
+        ipopts:rr;
+        sid:1000010; rev:1;)
+     alert ip any any -> any any
+       (msg:"IP Timestamp Option";
+        ipopts:ts;
+        sid:1000011; rev:1;)
+     alert ip any any -> any any
+       (msg:"IP Loose Source Route";
+        ipopts:lsrr;
+        sid:1000012; rev:1;)
+     alert ip any any -> any any
+       (msg:"IP Strict Source Route";
+        ipopts:ssrr;
+        sid:1000013; rev:1;)
+
+────────────────────────────────────────────────────────────────
+
+Q43. PCAP file-ல் EtherIP inner frame-ஐ extract பண்ண எப்படி? (Python)
+A43. Python/Scapy approach:
+     from scapy.all import *
+     packets = rdpcap("capture.pcap")
+     for pkt in packets:
+         if IP in pkt and pkt[IP].proto == 97:
+             print(f"EtherIP packet: {pkt[IP].src} -> {pkt[IP].dst}")
+             inner_raw = bytes(pkt[IP].payload)[2:]  # skip 2-byte header
+             inner_eth = Ether(inner_raw)
+             print(f"  Inner src MAC: {inner_eth.src}")
+             print(f"  Inner dst MAC: {inner_eth.dst}")
+             inner_eth.show()
+
+────────────────────────────────────────────────────────────────
+
+Q44. NetFlow analysis-ல் encapsulation attack எவ்வாறு identify பண்ணுவீர்கள்?
+A44. NetFlow indicators:
+     Suspicious patterns:
+     1. Protocol 47/97/4 traffic = unusual (most networks don't use)
+     2. Long duration flows with proto 47 = possible persistent tunnel
+     3. High byte count with small packet count = large encapsulated frames
+     4. Asymmetric flows (one direction only) = possible covert channel
+     nfdump query:
+       nfdump -R /var/netflow -o long
+         'proto 97 or proto 4 or proto 47'
+     Tools: ntopng, SiLK, Argus
+
+────────────────────────────────────────────────────────────────
+
+Q45. SIEM-ல் IP options attack alert rule எவ்வாறு create பண்ணுவீர்கள்?
+A45. SIEM rule (generic pseudo-code):
+     Rule: IP_OPTIONS_ABUSE
+     Condition:
+       event.type = "firewall_deny"
+       AND (
+         event.ip_option IN ["lsrr","ssrr","record_route","timestamp"]
+         OR event.protocol IN [4, 47, 97, 41]
+       )
+     AND event.src_ip NOT IN trusted_tunnel_peers
+     Threshold: > 10 events / 5 minutes from same source
+     Action: Alert SOC, block source IP (auto or manual)
+     MITRE ATT&CK: T1572 (Protocol Tunneling)
+
+────────────────────────────────────────────────────────────────
+
+Q46. Pen test report-ல் EtherIP vulnerability எவ்வாறு document பண்ணுவீர்கள்?
+A46. Report template:
+     Finding: EtherIP (Protocol 97) Permitted — Unrestricted
+     Severity: HIGH
+     CVSS: 7.5 (Network, Low complexity, No auth)
+     MITRE: T1572 — Protocol Tunneling
+     Description:
+       Protocol 97 (EtherIP/RFC 3378) perimeter firewall-ல்
+       explicitly block ஆகவில்லை. Full Ethernet frames IP-ல்
+       encapsulate பண்ணி inner L2 traffic smuggle பண்ணலாம்.
+     Impact: MAC ACL bypass, VLAN hopping, L2 recon
+     Evidence: [PCAP sample, firewall rule screenshot]
+     Remediation: deny proto 97 on perimeter ACL
+
+────────────────────────────────────────────────────────────────
+
+Q47. Cisco IOS-ல் source routing attack verify பண்ண debug command என்ன?
+A47. Debug commands:
+       debug ip packet detail
+       debug ip packet 101 detail   (ACL 101 matched packets மட்டும்)
+     Log பார்க்க:
+       show ip traffic | include option
+     Specific verification:
+       show access-lists 101          (hit counts)
+       show ip interface Gi0/0        (access-list applied?)
+     Note: Production-ல் debug ip packet careful-ஆக use பண்ணவும்
+     (high traffic இருந்தால் CPU spike ஆகும்).
+
+────────────────────────────────────────────────────────────────
+
+Q48. Encapsulation attacks MITRE ATT&CK framework-ல் எந்த technique-ல் map ஆகும்?
+A48. MITRE ATT&CK mapping:
+     T1572 — Protocol Tunneling
+       Sub-techniques:
+       - DNS tunneling
+       - ICMP tunneling
+       - GRE tunneling
+       - Custom protocol encapsulation
+     T1599 — Network Boundary Bridging
+       - Firewall bypass via encapsulation
+     T1337 — Transfer Data to Cloud Account (via tunnel)
+     T1048 — Exfiltration Over Alternative Protocol
+     Tactic: Command and Control (TA0011)
+     Also: Exfiltration (TA0010)
+
+────────────────────────────────────────────────────────────────
+
+Q49. IPv4 header-ல் Protocol field எத்தனை bits? Important protocol numbers பட்டியலிடு.
+A49. Protocol field: 8 bits (1 byte), offset = 9 in IP header.
+     Important protocol numbers:
+     1   = ICMP
+     4   = IP-in-IP
+     6   = TCP
+     17  = UDP
+     41  = IPv6 (6in4)
+     47  = GRE
+     50  = ESP (IPSec)
+     51  = AH (IPSec)
+     89  = OSPF
+     97  = EtherIP
+     103 = PIM
+     132 = SCTP
+     Reference: IANA Protocol Numbers registry.
+
+────────────────────────────────────────────────────────────────
+
+Q50. Encapsulation attack-க்கு Defense-in-Depth strategy என்ன?
+A50. Defense-in-Depth layers:
+     Layer 1 — Perimeter: ACL deny unusual protocols (4,41,47,97)
+     Layer 2 — NGFW: Deep packet inspection, tunnel decap
+     Layer 3 — IDS/IPS: Snort/Suricata rules for encap protocols
+     Layer 4 — NetFlow: Baseline + anomaly detection
+     Layer 5 — Endpoint: Host-based firewall (iptables/WFP)
+     Layer 6 — Monitoring: SIEM alerting, SOC review
+     Layer 7 — Policy: Whitelist only approved tunnel endpoints
+     Layer 8 — Audit: Regular pen testing for new encap methods
+
+================================================================
+END OF PART 1 — Questions 1 to 50
+================================================================
