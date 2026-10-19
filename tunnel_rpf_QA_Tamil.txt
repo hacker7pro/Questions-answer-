@@ -1,0 +1,341 @@
+TUNNEL RPF BYPASS & INNER LAYER PROCESSING
+100 கேள்விகள் & பதில்கள் — Pentester / Security கோணம்
+மொழி: தமிழ்
+==============================================================
+
+பிரிவு 1: அடிப்படைகள் (Q1–Q15)
+==============================================================
+
+கேள்வி 1. Tunnel decapsulation நடந்த பிறகு packet-க்கு என்ன ஆகும்?
+பதில் 1. Decapsulation நடந்த பிறகு inner packet kernel-ல் brand new packet மாதிரி re-inject ஆகும். Outer tunnel headers strip ஆகும், inner packet protocol type-ஐ வைத்து process ஆகும் — unicast destinations-க்கு unicast routing table, multicast-க்கு RPF + PIM. என்ன checks நடக்கும் என்பது protocol, OS configuration, மற்றும் platform design மூன்றையும் பொறுத்தது.
+
+கேள்வி 2. RPF (Reverse Path Forwarding) என்றால் என்ன, tunneling-ல் அது ஏன் முக்கியம்?
+பதில் 2. RPF என்பது ஒரு security check — ஒரு packet-ன் source IP address அது வந்த interface வழியாக reachable-ஆ என்று verify செய்யும். Tunneling-ல் RPF மிக முக்கியம்: inner packet decap பிறகு re-inject ஆகும் — RPF weak-ஆக இருந்தால் அல்லது இல்லாமல் இருந்தால், attacker tunnel-ல் எந்த source IP-யும் spoof செய்து அனுப்பலாம், receiving system அதை accept செய்யும்.
+
+கேள்வி 3. Inner layer RPF check நடக்குமா, நடக்காதா என்பதை தீர்மானிக்கும் மூன்று factors என்ன?
+பதில் 3. மூன்று factors: (1) Protocol — எந்த tunnel protocol பயன்படுத்தப்படுகிறது (GRE, IPinIP, EtherIP). (2) Configuration — multicast routing, PIM, uRPF, மற்றும் related commands enable-ஆ. (3) Platform/OS design — OS அல்லது routing platform-ன் default RPF behavior (Cisco IOS, Linux, MikroTik, Juniper).
+
+கேள்வி 4. GRE inner packet processing மற்றும் EtherIP inner packet processing-ல் என்ன வித்தியாசம்?
+பதில் 4. GRE (Proto 47) outer header-ஐ strip செய்து inner IP packet re-inject செய்யும் — multicast மற்றும் PIM configured-ஆனால் RPF check நடக்கும். EtherIP (Proto 97) outer header strip செய்தால் கிடைப்பது inner Ethernet FRAME — Layer 2 structure. RPF Layer 3 mechanism ஆதலால் EtherIP inner payloads-க்கு structurally impossible. MAC table lookup மட்டுமே நடக்கும்.
+
+கேள்வி 5. Linux-ல் default rp_filter value என்ன, pentester-க்கு அதன் அர்த்தம் என்ன?
+பதில் 5. பல Linux distributions, OpenWRT, VyOS-ல் default rp_filter = 0 — அதாவது RPF check இல்லவே இல்லை. Pentester-க்கு அர்த்தம்: Linux-based tunnel endpoint-ல் inner packet-ல் எந்த spoofed source IP-யும் validation இல்லாமல் pass ஆகும். Configuration bypass தேவையில்லை — இது OS-level default.
+
+கேள்வி 6. "Config-based bypass" மற்றும் "config-based drop" வித்தியாசம் என்ன?
+பதில் 6. Config-based bypass: admin-ஆல் explicit-ஆக configure செய்யப்பட்ட setting (ip mroute, uRPF loose mode) RPF-ஐ spoofed source IP-க்கும் pass ஆகச் செய்கிறது — packet forward ஆகும். Config-based drop: missing configuration (ip multicast-routing இல்லாமல்) packet-ஐ silently discard செய்கிறது — RPF run ஆகவே ஆகாது, packet drop ஆகும், forward ஆகாது. Drop scenario-ல் attacker-க்கு எந்த பயனும் இல்லை.
+
+கேள்வி 7. Configuration எதுவாக இருந்தாலும் inner RPF check NEVER நடக்காத scenario என்ன?
+பதில் 7. Inner payload Ethernet frame ஆக இருக்கும்போது (EtherIP, Proto 97) — எந்த configuration-ஆலும் RPF நடக்காது. இது design-level bypass: inner content Layer 2, RPF Layer 3 mechanism. எந்த Cisco command, Linux setting-ஆலும் Layer 2 frame-ஐ RPF check செய்ய முடியாது.
+
+கேள்வி 8. PIM என்றால் என்ன, tunnel interface-ல் அதன் presence ஏன் முக்கியம்?
+பதில் 8. PIM (Protocol Independent Multicast) multicast routing protocol. Tunnel interface-ல் PIM presence இல்லாமல் multicast routing table-ல் entry create ஆகாது — OIL (Outgoing Interface List) empty ஆகும், multicast packets forward ஆகாது, RPF pass ஆனாலும். Pentester: RPF pass ஆனாலும் multicast-based attacks propagate ஆகுமா என்பதற்கு PIM configuration verify செய்ய வேண்டும்.
+
+கேள்வி 9. OIL (Outgoing Interface List) என்றால் என்ன, அது empty-ஆக இருந்தால் என்ன நடக்கும்?
+பதில் 9. OIL என்பது multicast packet forward செய்யப்படும் interfaces-ன் list. PIM configured-ஆக இல்லாவிட்டால் OIL empty ஆகும் — RPF pass ஆனாலும் multicast packet drop ஆகும். இது bypass அல்ல — configuration இல்லாமல் forwarding failure.
+
+கேள்வி 10. Tunnel decapsulation context-ல் "kernel-ல் re-injection" என்றால் என்ன?
+பதில் 10. Tunnel endpoint packet decapsulate செய்யும்போது inner packet-ஐ directly forward செய்வதில்லை — kernel network stack-க்கு virtual அல்லது physical interface-ல் வந்தது போல் pass செய்கிறது. Kernel அந்த re-injected packet-க்கு எல்லா relevant checks-ம் apply செய்கிறது (routing lookup, RPF, firewall rules). இதனால் inner packet security properties முக்கியமாகிறது.
+
+கேள்வி 11. Proto 47, Proto 4, மற்றும் Proto 97 என்றால் என்ன?
+பதில் 11. IP protocol numbers: Proto 47 = GRE (Generic Routing Encapsulation). Proto 4 = IPinIP (IP-in-IP encapsulation). Proto 97 = EtherIP (Ethernet over IP). GRE மற்றும் IPinIP inner IP packets carry செய்கின்றன — L3 checks apply ஆகும். EtherIP inner Ethernet frames carry செய்கிறது — L3 checks structurally inapplicable.
+
+கேள்வி 12. Properly configured environment-லும் unicast inner packet multicast RPF-ஐ ஏன் bypass செய்கிறது?
+பதில் 12. Multicast RPF inner packet-ல் multicast destination address (224.0.0.0/4) இருந்தால் மட்டும் trigger ஆகும். Inner destination unicast address ஆனால் kernel unicast routing table வழியாக route செய்யும் — multicast RPF invoke ஆகாது. இது misconfiguration அல்ல — design-by. Multicast RPF only multicast traffic-க்கு மட்டும்.
+
+கேள்வி 13. PIM Register message என்றால் என்ன, அதன் decapsulation RPF-ஐ ஏன் bypass செய்கிறது?
+பதில் 13. PIM Register message என்பது Designated Router (DR)-ல் இருந்து Rendezvous Point (RP)-க்கு புதிய multicast source register செய்வதற்காக அனுப்பப்படும். Kernel PIM Register decapsulate செய்யும்போது inner source RPF check இல்லாமல் (*, G) wildcard route வைத்து forward செய்கிறது — Register mechanism data forwarding-க்கு அல்ல, source registration-க்கு design செய்யப்பட்டது. இது protocol design bypass, misconfiguration அல்ல.
+
+கேள்வி 14. Juniper fast-tap / RTT behavior என்றால் என்ன, inner packet inspection-உடன் எப்படி தொடர்புடையது?
+பதில் 14. Juniper MX/PTX-ல் fast-tap mechanism pre-decapsulation headers மட்டும் பயன்படுத்தி high-speed packet processing செய்கிறது. Post-decapsulation inner packet headers same filter context-ல் re-parsed ஆகாது. Security impact: outer tunnel interface-ல் applied firewall filters inner packet source IP validation-க்கு automatically extend ஆகாது. Attacker Juniper tunnel endpoints-ல் spoofed source IPs inject செய்யலாம் — explicit post-decap filters இல்லாவிட்டால் bypass ஆகும்.
+
+கேள்வி 15. Inner RPF bypass அல்லது non-check scenarios-ன் நான்கு main categories என்ன?
+பதில் 15. நான்கு categories: (1) Design-based bypass — protocol அல்லது platform architecture-ஆலேயே structurally impossible (EtherIP L2, unicast inner, Juniper fast-tap, PIM Register). (2) OS default bypass — configuration இல்லாமலே default-ஆக RPF disabled (Linux rp_filter=0, MikroTik loose mode). (3) Config-based bypass — admin-ஆல் spoofed sources-க்கும் RPF pass ஆகும்படி configure செய்யப்பட்டது (ip mroute, uRPF loose, no rpf-check). (4) Config-based drop — missing configuration-ஆல் packet drop ஆகும் — இது bypass அல்ல.
+
+==============================================================
+பிரிவு 2: CISCO IOS SPECIFIC (Q16–Q35)
+==============================================================
+
+கேள்வி 16. Tunnel interface-ல் static multicast route create செய்யும் Cisco IOS command என்ன?
+பதில் 16. Command: ip mroute 0.0.0.0 0.0.0.0 Tunnel0. Router-க்கு எந்த multicast source-ம் (0.0.0.0/0) Tunnel0 வழியாக reachable என்று declare செய்கிறது. Result: அந்த tunnel வழியாக வரும் எந்த inner source IP-க்கும் RPF check always pass — routing table source-ஐ Tunnel0 வழியாக reachable என்று confirm செய்கிறது.
+
+கேள்வி 17. ip mroute 0.0.0.0 0.0.0.0 Tunnel0-ன் security implication என்ன?
+பதில் 17. இந்த command tunnel வழியாக வரும் எல்லா multicast traffic-க்கும் RPF effectively bypass செய்கிறது. Multicast packet-ல் எந்த spoofed source IP-யும் RPF pass ஆகும் — mroute entry எல்லா IP-யும் Tunnel0 வழியாக reachable-ஆக காட்டுகிறது. Tunnel-ல் packets inject செய்ய முடியும் attacker-க்கு எந்த multicast source IP-யும் spoof செய்ய RPF trigger ஆகாது.
+
+கேள்வி 18. Cisco tunnel interface-ல் "ip verify unicast source reachable-via any" என்ன செய்கிறது?
+பதில் 18. இது uRPF (Unicast Reverse Path Forwarding) loose mode enable செய்கிறது. Loose mode-ல் router source IP address routing table-ல் ANY interface வழியாக exist செய்கிறதா என்று மட்டும் check செய்கிறது — packet வந்த specific interface வழியாக அல்ல. Strict mode-ஐ விட weak — default route அல்லது globally routable source IP இருந்தால் bypass ஆகும்.
+
+கேள்வி 19. Pentester கோணத்தில் uRPF strict mode மற்றும் loose mode வித்தியாசம் என்ன?
+பதில் 19. Strict mode (reachable-via rx): source IP packet வந்த exact interface வழியாக reachable என்று verify செய்கிறது — spoof செய்வது மிகவும் கஷ்டம். Loose mode (reachable-via any): source IP routing table-ல் any interface வழியாக exist-ஆ என்று மட்டும் — default route இருந்தால் எந்த IP-யும் "reachable" ஆகும், easily bypassed. Pentester எந்த mode active என்று check செய்ய வேண்டும் — loose mode common misconfiguration.
+
+கேள்வி 20. Multicast RPF check முழுவதுமாக disable செய்யும் Cisco command என்ன?
+பதில் 20. Command: no ip pim rpf-check. Device-ல் எல்லா multicast traffic-க்கும் RPF checking globally disable ஆகும். இந்த command-க்கு பிறகு எந்த inner src IP-யும் pass — validation இல்லை. மிகவும் permissive bypass, serious security misconfiguration.
+
+கேள்வி 21. Cisco router-ல் ip multicast-routing configure செய்யாவிட்டால் என்ன நடக்கும்?
+பதில் 21. ip multicast-routing இல்லாமல் router multicast routing table (mroute table) build செய்யாது. Decap பிறகு multicast inner packet வந்தால் check செய்ய table இல்லை — packet silently dropped. இது bypass அல்ல — drop. Packet destination-க்கு reach ஆகாது, multicast-based attacks block ஆகும், ஆனால் legitimate multicast traffic-ம் block ஆகும்.
+
+கேள்வி 22. Unicast route routing table-ல் add செய்வது Cisco-ல் inner RPF-ஐ எப்படி bypass செய்யும்?
+பதில் 22. ip route [inner-src] 255.255.255.255 Tunnel0 add ஆனால் source IP unicast routing table-ல் Tunnel0 வழியாக reachable-ஆக appear ஆகும். uRPF run ஆகும்போது routing table check செய்து entry கண்டுபிடித்து packet pass செய்யும். Specific source IP routing table-ல் இருக்க வேண்டும் என்பது static route-based RPF bypass.
+
+கேள்வி 23. Cisco IOS-ல் PIM RPF lookup process என்ன?
+பதில் 23. Multicast packet வரும்போது Cisco IOS RPF lookup செய்கிறது: unicast routing table (அல்லது mroute commands இருந்தால் mroute table) check செய்து multicast source IP-க்கு best return path கண்டுபிடிக்கிறது. அந்த path packet வந்த interface-ஐ point செய்தால் — RPF passes. இல்லாவிட்டால் — RPF fails, packet dropped. mroute table unicast table-ஐ multicast RPF lookups-க்கு override செய்கிறது.
+
+கேள்வி 24. Tunnel interface-ல் "ip pim sparse-mode" command-ன் role என்ன?
+பதில் 24. ip pim sparse-mode tunnel interface-ல் PIM Sparse Mode enable செய்கிறது — multicast routing-ல் participate செய்ய, RP-யுடன் communicate செய்ய, OIL build செய்ய. இந்த command tunnel interface-ல் இல்லாமல் tunnel வழியாக வரும் multicast packets forward ஆகாது, RPF pass ஆனாலும். Multicast tunnel traverse ஆக RPF pass மட்டும் போதாது, PIM configuration-ம் வேண்டும்.
+
+கேள்வி 25. Pentester Cisco router-ல் tunnel-ல் multicast enable-ஆ என்று எப்படி identify செய்வார்?
+பதில் 25. Key commands: show ip pim interface (PIM-enabled interfaces), show ip mroute (multicast routing table மற்றும் OIL), show ip route (RPF affect செய்யும் routes), show running-config | include mroute (static mroute entries), show ip interface Tunnel0 (uRPF mode). இந்த commands complete multicast மற்றும் RPF posture reveal செய்யும்.
+
+கேள்வி 26. GRE tunnel keepalive mechanism inner packet processing-ஐ affect செய்யுமா?
+பதில் 26. GRE keepalives tunnel liveliness verify செய்யும் control plane packets. Tunnel endpoint-ல் process ஆகும், inner data packet processing-ஐ affect செய்யாது — RPF checks, PIM forwarding, routing decisions inner data packets-க்கு apply ஆகும், keepalives-க்கு அல்ல. Keepalives availability (tunnel up/down) பற்றியது, inner layer security bypass analysis-ல் relevant இல்லை.
+
+கேள்வி 27. "ip mroute 0.0.0.0 0.0.0.0 Tunnel0" configured-ஆனால் show ip mroute என்ன காட்டும்?
+பதில் 27. show ip mroute Tunnel0-ஐ point செய்யும் static mroute entry 0.0.0.0/0-க்கு காட்டும். இந்த entry multicast routing table-ல் administrative static route-ஆக appear ஆகும், RPF lookups-க்கு unicast routing table-ஐ override செய்கிறது. எந்த multicast source-க்கும் Tunnel0 RPF interface-ஆக காட்டும் — அந்த tunnel வழியாக வரும் எல்லா traffic-க்கும் RPF check pass ஆகும்.
+
+கேள்வி 28. RPF check results real-time-ல் காட்டும் Cisco debugging command என்ன?
+பதில் 28. debug ip mpacket அல்லது debug ip pim multicast packet processing-ன் real-time output காட்டும், RPF check results உட்பட. Specific RPF debugging: debug ip rpf [source-address] specific source IP-க்கு RPF lookup result காட்டும். Penetration test-ல் spoofed source IPs RPF pass ஆகிறதா fail ஆகிறதா என்று verify செய்ய useful.
+
+கேள்வி 29. Cisco-ல் multicast RPF table என்றால் என்ன, unicast routing table-ஐ விட எப்படி வேறுபடுகிறது?
+பதில் 29. Multicast RPF table multicast traffic RPF lookups-க்கு specifically பயன்படுகிறது. Default-ஆக unicast routing table பயன்படுத்துகிறது. ஆனால் ip mroute commands unicast routing table lookups-ஐ multicast-க்கு override செய்யும் separate static entries create செய்கிறது. இந்த separation multicast traffic-ஐ unicast-ஐ விட different paths-ல் follow செய்ய அனுமதிக்கிறது — unicast routing-ஐ மட்டும் secure செய்தால் போதாது என்பதை இது காட்டுகிறது.
+
+கேள்வி 30. Tunneled multicast environment-ல் attacker ip mroute misconfiguration-ஐ எப்படி exploit செய்வார்?
+பதில் 30. ip mroute 0.0.0.0 0.0.0.0 Tunnel0 exist-ஆனால்: GRE/IPinIP tunnel-ல் packets inject செய்யும் attacker எந்த multicast source IP-யும் spoof செய்யலாம். Spoofed packets RPF pass (mroute எல்லா sources-ம் Tunnel0 வழியாக valid என்று சொல்கிறது), PIM processing-ஐ reach செய்து multicast group members-க்கு forward ஆகும். இது multicast streams-ல் source IP spoofing, multicast routing table manipulation, legitimate receivers-க்கு denial-of-service enable செய்கிறது.
+
+கேள்வி 31. RPF bypass configurations-ல் Tunnel0 interface-ன் significance என்ன?
+பதில் 31. Tunnel0 பொதுவாக GRE அல்லது IPinIP tunnel represent செய்யும் virtual interface. RPF configurations Tunnel0-ஐ RPF interface-ஆக point செய்யும்போது (ip mroute அல்லது static routes வழியாக), அந்த tunnel வழியாக வரும் எந்த packet-ம் automatically valid source-ல் இருந்து வந்தது என்று consider ஆகும். Tunnel interface physical path-ஐ abstract செய்கிறது, single point of trust ஆகிறது — அந்த trust misconfigured-ஆனால் tunnel வழியாக வரும் எல்லா traffic-க்கும் source validation bypass ஆகும்.
+
+கேள்வி 32. PIM globally enabled ஆனால் Tunnel0-ல் மட்டும் இல்லாவிட்டால் Cisco IOS multicast packet-ஐ எப்படி handle செய்யும்?
+பதில் 32. ip multicast-routing configured ஆனால் Tunnel0-ல் PIM இல்லாவிட்டால், router routing table வைத்து inner packet RPF check செய்யும். ஆனால் Tunnel0 PIM interface இல்லாதலால் எந்த multicast group-க்கும் OIL-ல் இருக்காது. Packet RPF pass ஆகும், ஆனால் forward செய்ய outgoing interface இல்லாதலால் drop ஆகும். Silent drop — bypass அல்ல.
+
+கேள்வி 33. RPF failure என்றால் என்ன, அது நடந்தால் router என்ன செய்யும்?
+பதில் 33. RPF failure: multicast packet expected RPF interface அல்லாத interface-ல் வரும்போது நடக்கும் (source reachable-ஆகும் interface அல்ல). RPF fail ஆனால் router packet silently drop செய்யும் — ICMP error generate ஆகாது, default-ஆக log entry create ஆகாது. இந்த silent drop behavior legitimate multicast problems மற்றும் attacker probing activity இரண்டையும் mask செய்யலாம்.
+
+கேள்வி 34. GRE tunnel over IPv6 outer headers inner IPv4 packet RPF behavior-ஐ affect செய்யுமா?
+பதில் 34. ஆம். Outer header IPv6, inner IPv4 (6in4 அல்லது GRE-over-IPv6) ஆனால் decapsulation inner IPv4 packet produce செய்கிறது. IPv4 RPF check inner packet-க்கு apply ஆகும். IPv6 outer routing inner IPv4 RPF lookup-க்கு irrelevant. Platform dual-stack tunnel processing support செய்ய வேண்டும், tunnel interface-ல் IPv4 multicast routing configuration inner packet-ல் RPF நடக்குமா என்று தீர்மானிக்கும்.
+
+கேள்வி 35. Tunneled enterprise environment-ல் "no ip pim rpf-check"-ன் security risk என்ன?
+பதில் 35. GRE/IPinIP tunnels multicast traffic carry செய்யும் enterprise-ல் no ip pim rpf-check multicast source IP spoofing-க்கு எதிரான கடைசி defense remove செய்கிறது. Tunnel-ல் packets inject செய்யும் attacker எந்த source-ல் இருந்தும் multicast traffic அனுப்பலாம் — legitimate internal multicast servers, management systems, routing protocol multicast addresses (OSPF: 224.0.0.5, PIM: 224.0.0.13) உட்பட. Routing protocols disrupt ஆகலாம், traffic injection possible ஆகும்.
+
+==============================================================
+பிரிவு 3: LINUX / OS-BASED (Q36–Q50)
+==============================================================
+
+கேள்வி 36. Linux-ல் rp_filter-ன் மூன்று values என்ன, ஒவ்வொன்றும் என்ன செய்கிறது?
+பதில் 36. rp_filter மூன்று values: 0 = RPF check இல்லை — source IP பார்க்காமல் எல்லா packets accept. 1 = Strict mode — source IP packet வந்த exact interface வழியாக reachable-ஆக இருக்க வேண்டும். 2 = Loose mode — source IP routing table-ல் any interface வழியாக reachable-ஆக இருந்தால் போதும். Value 0 பல Linux distributions-ல் default — RPF validation இல்லவே இல்லை என்று அர்த்தம்.
+
+கேள்வி 37. Linux tunnel endpoint-ல் current rp_filter value-ஐ pentester எப்படி check செய்வார்?
+பதில் 37. பயன்படுத்த வேண்டியவை: sysctl net.ipv4.conf.all.rp_filter மற்றும் sysctl net.ipv4.conf.tunl0.rp_filter (specific tunnel interface name). "all" key global setting காட்டும். Individual interface settings global-ஐ override செய்யலாம். Value 0 அந்த interface-ல் RPF disabled என்று அர்த்தம். /proc/sys/net/ipv4/conf/all/rp_filter-லும் same information கிடைக்கும்.
+
+கேள்வி 38. பல Linux systems-ல் rp_filter=0 default-ஆக ஏன் இருக்கிறது?
+பதில் 38. பல Linux distributions மற்றும் embedded systems (OpenWRT, VyOS) maximum compatibility-க்காக rp_filter=0 default-ஆக set செய்கின்றன — strict RPF asymmetric routing, multi-homed hosts, ingress-egress paths வேறாக இருக்கும் systems-ஐ break செய்யலாம். Developers security-ஐ விட connectivity-ஐ priority-ஆக வைக்கிறார்கள். இதனால்தான் hardening guides rp_filter=1 அல்லது 2 recommend செய்கின்றன.
+
+கேள்வி 39. GRE decapsulation-க்கு பிறகு Linux inner IP packet-ஐ எப்படி process செய்கிறது?
+பதில் 39. GRE decapsulation-க்கு பிறகு Linux kernel tunnel driver (ip_gre.c) inner IP packet-ஐ netif_rx() அல்லது similar functions வழியாக network stack-க்கு inject செய்கிறது. Packet GRE tunnel virtual interface (gre0 அல்லது named GRE interface) வழியாக வந்தது போல் treat ஆகும். Kernel rp_filter, iptables/nftables rules, routing table lookups apply செய்கிறது — physical interface packet-க்கு செய்வது போலவே.
+
+கேள்வி 40. Linux-ல் post-decap filtering identify செய்ய pentester என்ன iptables rule தேடுவார்?
+பதில் 40. Key iptables chains: iptables -L FORWARD -v -n (forwarded inner packets), iptables -L INPUT -v -n (tunnel endpoint-க்கு destined inner packets), iptables -t raw -L PREROUTING (connection tracking-க்கு முந்தைய early filtering). Post-decap filtering tunnel interface reference செய்ய வேண்டும் (-i gre0 அல்லது -i tun0). Tunnel interface-க்கு specific rules இல்லாவிட்டால் post-decap filtering இல்லை என்று indicate ஆகும்.
+
+கேள்வி 41. Linux GRE tunnel endpoint-ல் rp_filter=0 மற்றும் rp_filter=1-ன் security posture வித்தியாசம் என்ன?
+பதில் 41. rp_filter=0 ஆனால்: எந்த inner source IP-யும் accepted — complete source IP spoofing possible. rp_filter=1 ஆனால்: inner source IP GRE tunnel interface வழியாகவே reachable-ஆக இருக்க வேண்டும். Tunnel வழியாக normally route ஆகாத addresses-ல் இருந்து வருவது போல் packets inject செய்வதை prevent செய்கிறது. rp_filter=1 significantly more secure, ஆனால் asymmetric routing setups-ஐ break செய்யலாம்.
+
+கேள்வி 42. OpenWRT tunnel interfaces-ல் RPF-ஐ default-ஆக எப்படி handle செய்கிறது?
+பதில் 42. OpenWRT பெரும்பாலான interfaces-ல், tunnel interfaces உட்பட, rp_filter=0 default-ஆக Linux kernel பயன்படுத்துகிறது. Firewall rules (UCI firewall subsystem வழியாக iptables/nftables) zone-based filtering apply செய்யும் — ஆனால் inner tunnel packet source IP validation default-ஆக enforce ஆகாது. OpenWRT-based device target செய்யும் pentester explicitly hardened-ஆகாவிட்டால் RPF validation இல்லை என்று assume செய்ய வேண்டும்.
+
+கேள்வி 43. Linux network namespaces மற்றும் tunnel RPF-ல் என்ன relationship இருக்கிறது?
+பதில் 43. Linux network namespaces-ல் ஒவ்வொரு namespace-க்கும் own rp_filter settings, routing table, iptables rules இருக்கும். Namespace-க்குள் GRE tunnel endpoint அந்த namespace-ன் rp_filter apply செய்யும் — global host setting அல்ல. Container environments (Docker, Kubernetes) separate namespaces பயன்படுத்தலாம் — different (possibly weaker) rp_filter settings. Containerized tunnel endpoints analyze செய்யும் pentester namespace-specific settings check செய்ய வேண்டும், host settings மட்டும் அல்ல.
+
+கேள்வி 44. VyOS tunnel interfaces-ல் RPF எப்படி configure செய்கிறது?
+பதில் 44. VyOS Linux-ல் built, same rp_filter mechanism பயன்படுத்துகிறது. Default-ஆக tunnel interfaces-ல் rp_filter=0. VyOS CLI வழியாக admin set செய்யலாம். RPF strict mode careful routing design தேவை. VyOS default rp_filter=0 என்பதால் freshly installed VyOS tunnel endpoint-ல் RPF validation இல்லை.
+
+கேள்வி 45. /proc/sys/net/ipv4/conf/ hierarchy என்றால் என்ன, per-interface RPF-உடன் எப்படி தொடர்புடையது?
+பதில் 45. /proc/sys/net/ipv4/conf/ per-interface மற்றும் global network parameters-ஐ contain செய்கிறது. ஒவ்வொரு interface-க்கும் subdirectory இருக்கும் (eth0, gre0 போன்றவை). ஒவ்வொரு subdirectory-யிலும் rp_filter file அந்த interface RPF control செய்கிறது. "all" subdirectory global minimum set செய்கிறது — effective value max(all/rp_filter, interface/rp_filter). Pentester global "all" மற்றும் specific tunnel interface values இரண்டும் check செய்ய வேண்டும்.
+
+கேள்வி 46. Linux-ல் tunnel decapsulation context-ல் "netif_rx()" என்ன செய்கிறது?
+பதில் 46. netif_rx() Linux kernel function, packet-ஐ interface-ல் வந்தது போல் network receive queue-க்கு submit செய்கிறது. Tunnel drivers decapsulation பிறகு inner packet-உடன் இந்த function call செய்கிறார்கள், skb->dev-ஐ tunnel virtual interface-க்கு set செய்கிறார்கள். இது full receive path trigger செய்கிறது — rp_filter check, Netfilter hooks, routing — inner packet-க்கு. இதனால் inner packets எந்த other received packet-க்கும் same checks-க்கு subject ஆகும் என்பது புரியும்.
+
+கேள்வி 47. Linux-based MikroTik device GRE tunnels-ல் multicast RPF-ஐ default-ஆக எப்படி handle செய்கிறது?
+பதில் 47. MikroTik RouterOS Linux-based ஆனால் own routing engine பயன்படுத்துகிறது. Default-ஆக MikroTik multicast-க்கு loose RPF mode பயன்படுத்துகிறது. Default route (0.0.0.0/0) இருந்தால் loose RPF எந்த source IP-யும் pass செய்யும் — every IP "reachable" via default route. பெரும்பாலான real-world configurations-ல் RPF validation இல்லாமல் equivalent. MikroTik GRE tunnels target செய்யும் pentester default route இருந்தால் RPF bypass assume செய்ய வேண்டும்.
+
+கேள்வி 48. Inner packet validation-க்கு rp_filter மற்றும் iptables conntrack வித்தியாசம் என்ன?
+பதில் 48. rp_filter routing-layer source IP validation check — source IP return path verify செய்கிறது. iptables conntrack (connection tracking) TCP/UDP/ICMP state track செய்கிறது — packet established அல்லது related connection-ல் belong செய்கிறதா என்று validate. Raw IP spoofing inside GRE tunnel-க்கு conntrack help செய்யாது (GRE inner packets configuration பொறுத்து connection-tracked ஆகாது). rp_filter re-injected inner packets source IP validation-க்கு relevant control.
+
+கேள்வி 49. Attacker Linux GRE endpoint-ல் rp_filter=1-ஐ tunnel route table-ல் உள்ள source IP பயன்படுத்தி bypass செய்ய முடியுமா?
+பதில் 49. ஆம். Attacker GRE tunnel interface வழியாக route ஆகும் source IPs என்னென்ன என்று discover செய்தால் (organization address space reconnaissance மூலம்), அந்த source IPs-உடன் inner packets craft செய்யலாம். rp_filter=1 (strict) source IP packet வந்த interface வழியாக reachable-ஆ என்று மட்டும் check செய்கிறது — source IP legitimately tunnel interface route-ல் இருந்தால் check pass ஆகும். இதனால் rp_filter மட்டும் போதாது — additional filtering (iptables, ACLs) தேவை.
+
+கேள்வி 50. RPF lookups-க்கு effective routing table காட்டும் Linux command என்ன?
+பதில் 50. RPF lookup default-ஆக main routing table (table 254) பயன்படுத்துகிறது. Inspect செய்ய: ip route show table main அல்லது ip route. Policy routing (RPF affect செய்யலாம்): ip rule show எல்லா routing policies list செய்யும். Specific source IP RPF simulation: ip route get [source-ip] route காட்டும் — incoming interface match ஆனால் strict mode pass.
+
+==============================================================
+பிரிவு 4: ETHERIP & L2 TUNNELS (Q51–Q65)
+==============================================================
+
+கேள்வி 51. EtherIP என்றால் என்ன, அது எந்த IP protocol number பயன்படுத்துகிறது?
+பதில் 51. EtherIP (Ethernet over IP) RFC 3378-ல் define செய்யப்பட்ட tunneling protocol — Ethernet frames-ஐ IPv4 packets-க்குள் encapsulate செய்கிறது. IP protocol number 97 பயன்படுத்துகிறது. GRE (47) அல்லது IPinIP (4)-ஐ விட வேறு: EtherIP inner payload complete Ethernet frame — MAC addresses, VLAN tags, Ethernet payload உட்பட — raw IP packet அல்ல. இந்த Layer 2 nature security analysis-க்கு fundamentally different.
+
+கேள்வி 52. EtherIP inner payloads-க்கு L3 RPF structurally impossible-ஆக ஏன் இருக்கிறது?
+பதில் 52. RPF Layer 3 mechanism — IP source addresses-ல் operate செய்கிறது, IP routing table check செய்கிறது. EtherIP inner payload Layer 2 Ethernet frame — tunnel level-ல் IP header இல்லை (inner IP Ethernet frame payload-க்குள் buried-ஆக இருக்கும்). Tunnel endpoint EtherIP-ஐ bridging மூலம் process செய்கிறது — destination MAC address bridge table-ல் lookup செய்கிறது. RPF check செய்ய tunnel processing layer-ல் IP source address visible-ஆக இல்லை.
+
+கேள்வி 53. EtherIP decapsulation பிறகு bridge domain-ல் என்ன நடக்கும்?
+பதில் 53. EtherIP decapsulation பிறகு inner Ethernet frame bridge domain-க்கு deliver ஆகும். Bridge destination MAC address inspect செய்து MAC address table lookup செய்கிறது. Known-ஆனால் corresponding interface-க்கு forward. Unknown-ஆனால் bridge domain-ல் எல்லா interfaces-க்கும் flood (ingress தவிர). IP routing இல்லை, RPF இல்லை, PIM இல்லை — pure Layer 2 forwarding.
+
+கேள்வி 54. EtherIP-ல் RPF இல்லாமலிருப்பதை partially compensate செய்ய Layer 2 security controls என்ன இருக்கிறது?
+பதில் 54. Layer 2 security controls: Dynamic ARP Inspection (DAI) — DHCP snooping binding table வைத்து ARP packets validate செய்கிறது; DHCP Snooping — rogue DHCP servers prevent செய்கிறது; Port Security / MAC Address Limiting — bridge port-ல் எந்த MAC addresses appear ஆகலாம் என்று limit செய்கிறது; 802.1X authentication — frames forward ஆவதற்கு முன் authentication require செய்கிறது; Private VLAN (PVLAN) — ports communication-ஐ restrict செய்கிறது. ஆனால் இவை எதுவும் RPF-க்கு equivalent source IP validation provide செய்வதில்லை.
+
+கேள்வி 55. Attacker EtherIP tunnel வழியாக MAC addresses spoof செய்ய முடியுமா?
+பதில் 55. ஆம். EtherIP tunnel-ல் frames inject செய்ய முடியும் attacker எந்த source MAC address-உடனும் frames craft செய்யலாம். Bridge domain destination MAC வைத்து accept செய்து forward செய்யும், spoofed source MAC bridge table-ல் learn செய்யலாம் (bridge table poisoning). இது ARP cache poisoning, traffic interception (man-in-the-middle), legitimate communications disruption-க்கு வழிவகுக்கும்.
+
+கேள்வி 56. GRE bridging (BRIDGE key) மற்றும் EtherIP inner packet processing வித்தியாசம் என்ன?
+பதில் 56. GRE BRIDGE key (GRETAP) Ethernet frames-ஐ GRE-க்குள் encapsulate செய்கிறது, EtherIP போலவே. Key difference: GRE outer IP மற்றும் inner Ethernet frame-க்கு இடையே GRE header add செய்கிறது, EtherIP simple 2-byte header பயன்படுத்துகிறது. இரண்டிலும் inner payload L2 — L3 RPF equally inapplicable. GRETAP security analysis EtherIP analysis-க்கு similar.
+
+கேள்வி 57. EtherIP tunnel வழியாக VLAN tag bypass scenario என்ன?
+பதில் 57. EtherIP tunnel வழியாக frames inject செய்யும் attacker inner Ethernet frame-ல் 802.1Q VLAN tags include செய்யலாம். Bridge domain VLAN tags properly filter செய்யாவிட்டால், attacker bridge domain participate செய்யும் arbitrary VLANs-க்கு frames inject செய்யலாம். L2 tunneling மூலம் VLAN hopping attack — L3 RPF traffic stop செய்யாதலால் explicit VLAN access control lists (VACLs) அல்லது port-based VLAN restrictions மட்டும் prevent செய்யும்.
+
+கேள்வி 58. Network-ல் எந்த EtherIP tunnels exist-ஆகும் என்று attacker enumerate செய்வார் எப்படி?
+பதில் 58. Enumeration methods: Protocol scan — nmap raw socket scanners மூலம் IP protocol 97 (EtherIP) probe செய்யலாம்; Traffic capture — Wireshark-ல் Protocol field=0x61 (97) filter செய்யலாம் (ip.proto == 97); SNMP enumeration — bridge MIBs query செய்யலாம்; Routing analysis — data center prefixes-க்கு இடையே /32 host routes tunnel endpoints suggest செய்யும்; Shodan/Censys — specific SNMP data revealing EtherIP configurations search செய்யலாம்.
+
+கேள்வி 59. VXLAN protocol-ம் EtherIP-ம் inner packet processing comparison என்ன?
+பதில் 59. VXLAN Layer 2 Ethernet frames encapsulate செய்கிறது, ஆனால் raw IP-க்கு பதிலாக UDP outer transport பயன்படுத்துகிறது (typically UDP port 4789). VXLAN மற்றும் EtherIP இரண்டிலும் L2 inner payloads — L3 RPF inapplicable. VXLAN endpoints VNID (VXLAN Network Identifier) மற்றும் MAC validation மூலம் filtering implement செய்யலாம். EtherIP-ல் built-in identifier mechanism இல்லை — simpler, more permissive.
+
+கேள்வி 60. EtherIP tunnel இரண்டு sites-ஐ connect செய்தால் MAC spoofing attack-ன் blast radius என்ன?
+பதில் 60. Blast radius tunnel-ஐ connect செய்யும் two sites-ஐயும் cover செய்யும் — bridge domain spans both. Bridge table poison செய்யும் MAC spoofing attack bridged network segment-ல் உள்ள எந்த host-க்கும் destined traffic intercept செய்யலாம் — tunnel இரு பக்கங்களிலும். Enterprise environments-ல் EtherIP tunnels often entire network segments between data centers bridge செய்கின்றன — blast radius potentially very large.
+
+கேள்வி 61. EtherIP header format என்ன?
+பதில் 61. EtherIP header மிகவும் simple — 2 bytes மட்டும்: bits 0-3 version field (must be 3), bits 4-15 reserved (must be 0). 2-byte EtherIP header-க்கு பிறகு complete Ethernet frame வருகிறது (destination MAC-உடன் தொடங்கும்). Header-ல் source validation metadata-க்கு room இல்லாதலால் EtherIP endpoint identification-க்கு outer IP header மட்டும் rely செய்கிறது.
+
+கேள்வி 62. EtherIP tunnel injection vulnerability test செய்ய pentester எப்படி செய்வார்?
+பதில் 62. Testing steps: (1) EtherIP tunnel endpoints identify செய்யவும் (protocol 97 carry செய்யும் outer IP packets source மற்றும் destination). (2) Protocol=97, EtherIP header (0x30 0x00), crafted source MAC மற்றும் destination MAC-உடன் inner Ethernet frame-உடன் raw IP packet craft செய்யவும். (3) Outer IP header source expected tunnel endpoint-உடன் match செய்யும் position-ல் இருந்து send செய்யவும். (4) Injected frame target network-ல் appear ஆகிறதா என்று monitor செய்யவும். Success = tunnel injection without authentication possible.
+
+கேள்வி 63. EtherIP authentication அல்லது encryption support செய்கிறதா?
+பதில் 63. இல்லை. EtherIP (RFC 3378) built-in authentication அல்லது encryption mechanism இல்லை. Standard explicitly: confidentiality இல்லை, integrity இல்லை, source authentication இல்லை என்று state செய்கிறது. Security outer transport layer-ல் இருந்து வர வேண்டும் — IPsec ESP outer IP packet wrap செய்வது அல்லது VPN tunnel-க்குள் run செய்வது. இல்லாவிட்டால் EtherIP tunnels injection, spoofing, eavesdropping-க்கு completely open.
+
+கேள்வி 64. EtherIP வழியாக bridge table poisoning attack என்ன, ARP poisoning-ஐ விட எப்படி வேறு?
+பதில் 64. Bridge table poisoning Layer 2 forwarding table-ஐ random source MACs-உடன் flood செய்வது (bridge table space exhaust, all traffic flood ஆகும்) அல்லது victim source MAC-உடன் frames send செய்வது (traffic redirect). ARP poisoning hosts' ARP caches-ல் IP-to-MAC mappings target செய்கிறது. Bridge table poisoning switch/bridge internal forwarding logic target செய்கிறது. EtherIP வழியாக attacker இரண்டு attacks-ம் remotely execute செய்யலாம்.
+
+கேள்வி 65. EtherIP tunnel interfaces-ல் "ip unnumbered"-ன் role என்ன?
+பதில் 65. ip unnumbered tunnel interface-ஐ own IP address-க்கு பதிலாக another interface-ல் இருந்து IP borrow செய்ய அனுமதிக்கிறது. EtherIP tunnels-ல் dedicated IP space avoid செய்ய பயன்படுத்தப்படுகிறது. Security perspective: interface-specific ACLs IP address based-ஆக apply செய்வது harder ஆகும், tunnel interface routing tables-ல் less distinctly appear ஆகும். Pentester ip unnumbered on tunnel interfaces check செய்ய வேண்டும் — less deliberate security hardening indicate செய்யலாம்.
+
+==============================================================
+பிரிவு 5: ATTACK SCENARIOS & PENTESTING (Q66–Q85)
+==============================================================
+
+கேள்வி 66. GRE tunnel RPF bypass vulnerabilities analyze செய்யும் pentester-ன் first step என்ன?
+பதில் 66. First step: tunnel endpoint type மற்றும் operating system determine செய்யவும். இது default RPF posture தீர்மானிக்கும்: Linux (rp_filter=0 default — likely no RPF), Cisco IOS (default disabled unless configured), MikroTik (loose mode default), Juniper (platform-specific fast-tap). OS/platform தெரிந்தால் active testing-க்கு முன்னரே likely bypass category narrow ஆகும்.
+
+கேள்வி 67. GRE tunnel endpoint-ல் RPF active-ஆ என்று pentester எப்படி test செய்வார்?
+பதில் 67. Testing method: (1) GRE tunnel-ல் packets inject செய்யும் position establish செய்யவும். (2) Tunnel interface routing table-ல் இருக்கக்கூடாத spoofed source IP-உடன் inner multicast அல்லது unicast packet send செய்யவும். (3) Downstream host-ல் அல்லது traffic capture tool-ஐ வைத்து packet arrive ஆகிறதா என்று monitor செய்யவும். Spoofed source IP-உடன் packet downstream network-ஐ reach ஆனால் — RPF active இல்லை அல்லது bypassed. Drop ஆனால் — RPF enforced. Tunnel-ல் inject செய்யும் access தேவை.
+
+கேள்வி 68. "Tunnel injection" என்றால் என்ன, RPF bypass-உடன் எப்படி தொடர்புடையது?
+பதில் 68. Tunnel injection: legitimate outer tunnel headers (GRE, IPinIP, EtherIP) craft செய்து arbitrary inner packets inject செய்யும் attack technique. On-path-ஆக இருக்க வேண்டும் அல்லது tunnel endpoints-க்கு இடையே network path access தேவை. RPF bypass inject செய்த inner packets actually propagate ஆக allow செய்கிறது — RPF bypass இல்லாமல் injected inner packet endpoint-ல் drop ஆகும். RPF bypass tunnel injection position-ஐ actual traffic injection capability-ஆக convert செய்கிறது.
+
+கேள்வி 69. Tunneled enterprise GRE network-ல் spoofing-க்கு highest value target source IP addresses என்ன?
+பதில் 69. High-value spoofing targets: (1) Multicast protocol addresses — OSPF (224.0.0.5, 224.0.0.6), PIM (224.0.0.13), VRRP (224.0.0.18), HSRP — routing protocol disruption. (2) Internal server IP addresses — trusted sources-ல் இருந்து traffic injection. (3) DNS/NTP server IPs — DNS spoofing அல்லது NTP manipulation. (4) Management host IPs — management IPs whitelist செய்யும் ACLs bypass செய்யலாம். (5) PIM networks-ல் Rendezvous Point (RP) addresses — multicast routing manipulation.
+
+கேள்வி 70. Cisco GRE router-ல் ip mroute misconfiguration பயன்படுத்தும் step-by-step attack describe செய்யவும்.
+பதில் 70. Attack steps: (1) Reconnaissance — GRE tunnel endpoints identify செய்யவும், ip mroute 0.0.0.0 0.0.0.0 Tunnel0 exist-ஆகிறதா SNMP, config leak, routing table analysis மூலம் verify செய்யவும். (2) Positioning — GRE tunnel path-ல் packets inject செய்யும் access gain செய்யவும் (ARP spoofing, BGP hijacking, compromised intermediate device). (3) Crafting — spoofed source IP-உடன் GRE-encapsulated multicast packets construct செய்யவும். (4) Injection — crafted GRE packets tunnel endpoint-க்கு send செய்யவும். (5) Exploitation — mroute entry RPF pass ஆகச் செய்யும்; multicast packet PIM processing-ஐ reach செய்து group members-க்கு propagate ஆகும்.
+
+கேள்வி 71. Pentester Cisco router-ல் PIM configuration indirect-ஆக enumerate செய்வது எப்படி?
+பதில் 71. Direct CLI access இல்லாமல்: (1) Traffic analysis — multicast control traffic capture செய்யவும் (PIM Hello messages 224.0.0.13-ல் protocol 103) PIM-enabled interfaces மற்றும் neighbors identify செய்ய. (2) SNMP — CISCO-PIM-MIB அல்லது PIM-STD-MIB query செய்யவும். (3) Multicast group probing — IGMP membership reports send செய்து PIM Join messages propagate ஆகிறதா observe செய்யவும். (4) Routing table analysis — multicast routes (S,G மற்றும் *,G entries) SNMP MIB-II-ல் active PIM indicate செய்கிறது.
+
+கேள்வி 72. IPsec இல்லாத GRE tunnel மற்றும் IPsec-உடன் GRE tunnel attack surface வித்தியாசம் என்ன?
+பதில் 72. GRE without IPsec: outer IP header, GRE header, inner packet — எல்லாம் plaintext. On-path attacker எல்லாவற்றையும் read செய்யலாம், spoofed packets inject செய்யலாம் (RPF bypassed ஆனால்), captured packets replay செய்யலாம். GRE with IPsec: inner packet encrypted மற்றும் authenticated — injection IPsec break செய்ய வேண்டும் (modern algorithms-உடன் computationally infeasible). GRE packets inject செய்தாலும் ESP/AH authentication endpoint-ல் drop செய்யும். IPsec tunnel injection attack surface effectively closes.
+
+கேள்வி 73. RPF bypass-உடன் GRE tunnel வழியாக OSPF எப்படி disrupt செய்யலாம்?
+பதில் 73. OSPF multicast 224.0.0.5 (all OSPF routers) மற்றும் 224.0.0.6 (DR/BDR) பயன்படுத்துகிறது. GRE tunnel endpoint-ல் RPF bypassed ஆனால், attacker legitimate OSPF neighbor IP-ஆக claim செய்யும் spoofed source IPs-உடன் OSPF LSA packets inject செய்யலாம். இது: false route injection, route withdrawal, OSPF process disruption (malformed LSA flooding) cause செய்யும். Spoofed source existing OSPF neighbor IP-ஆக இருந்தால் attack particularly impactful.
+
+கேள்வி 74. EtherIP inner payload-உடன் GRE tunnel-ல் "reflection attack" என்றால் என்ன?
+பதில் 74. EtherIP reflection attack-ல், attacker victim MAC-ஐ spoofed source MAC-ஆக பயன்படுத்தி frames send செய்கிறார். Network devices-ல் இருந்து responses (ARP replies, ICMP responses, broadcast traffic) victim MAC-க்கு direct ஆகும் — ஆனால் bridge table poison ஆனதால் அந்த MAC attacker-ன் port-உடன் associate ஆகிவிட்டது. Traffic direct communication path இல்லாமல் EtherIP tunnel வழியாக attacker-க்கு reflect ஆகும்.
+
+கேள்வி 75. Default route-உடன் loose-mode uRPF complete RPF bypass எப்படி create செய்கிறது?
+பதில் 75. Loose-mode uRPF routing table-ல் ANY interface வழியாக source IP reachable-ஆ என்று check செய்கிறது. Default route (0.0.0.0/0) EVERY IP address reachable-ஆக காட்டுகிறது — routing table-ல் explicitly இல்லாத எந்த destination-ம் default route வழியாக handle ஆகும். எனவே loose-mode uRPF + default route = 100% source IPs-க்கும் RPF pass — completely spoofed ones-ஐ உட்பட. Feature "enabled" ஆகியிருந்தாலும் functionally RPF check இல்லாமல் equivalent.
+
+கேள்வி 76. Network EtherIP tunnels பயன்படுத்துகிறதா என்று reveal செய்யும் reconnaissance technique என்ன?
+பதில் 76. Reconnaissance techniques: (1) Protocol scanning — nmap raw IP packet injection மூலம் protocol 97 probe செய்யலாம். (2) Passive traffic analysis — Wireshark-ல் Protocol=0x61 filter (ip.proto == 97). (3) BGP route analysis — data center prefixes-க்கு இடையே /32 host routes tunnel endpoints suggest செய்யும். (4) SNMP interface MIB — ifDescr query செய்யலாம். (5) Shodan/Censys — specific SNMP data revealing EtherIP configurations search செய்யலாம்.
+
+கேள்வி 77. Juniper fast-tap RPF behavior-ன் security impact என்ன?
+பதில் 77. Juniper MX/PTX fast-tap pre-decapsulation headers filtering-க்கு பயன்படுத்துகிறது. Post-decapsulation inner packets same filter context-ல் re-evaluate ஆகாது. Security impact: outer tunnel interface-ல் applied firewall filters inner packet source IP validation-க்கு automatically extend ஆகாது. Attacker Juniper tunnel endpoints-ல் spoofed source IPs inject செய்யலாம் — explicit post-decap filters (loopback அல்லது inner interface-ல்) இல்லாவிட்டால் bypass.
+
+கேள்வி 78. PIM Register message decapsulation RPF bypass opportunity எப்படி create செய்கிறது?
+பதில் 78. PIM Register messages inner data packets PIM Register PDU-க்குள் encapsulate செய்து carry செய்கிறது. RP Register decapsulate செய்யும்போது inner source RPF checking இல்லாமல் (*, G) wildcard entry வைத்து forward செய்கிறது. PIM Register format-ல் GRE injection-உடன் (PIM-speaking device access தேவை) forged PIM Register messages create செய்யும் attacker inner packets inject செய்யலாம் — any multicast source-ல் இருந்து claim செய்து. RPF bypass ஆகி group members எல்லோருக்கும் forward ஆகும்.
+
+கேள்வி 79. MikroTik GRE tunnel RPF bypass practical test describe செய்யவும்.
+பதில் 79. Practical test: (1) MikroTik device மற்றும் GRE tunnel interface identify செய்யவும் (SNMP, banner, RouterOS-specific probing). (2) Default route exist-ஆகிறதா verify செய்யவும் (SNMP அல்லது traffic analysis மூலம் routing table query). (3) Completely non-routable source (e.g., 100.64.0.1 CGNAT range) — strict RPF fail ஆக வேண்டும், ஆனால் default route-உடன் loose RPF pass ஆக வேண்டும் — inner packet craft செய்யவும். (4) MikroTik GRE endpoint-க்கு send செய்யவும். (5) Spoofed source-உடன் packet downstream network reach ஆனால் — loose RPF bypass confirmed.
+
+கேள்வி 80. SSM (Source-Specific Multicast) என்றால் என்ன, RPF bypass-க்கு எதிரான protection provide செய்கிறதா?
+பதில் 80. SSM 232.0.0.0/8 range பயன்படுத்துகிறது, receivers group மட்டும் அல்ல source IP-ம் specify செய்ய வேண்டும் (S, G join — wildcard *,G இல்லை). Source IP spoofing-ன் value குறைகிறது — specific legitimate source IP-ஐ receivers expect செய்கிறார்கள். ஆனால் SSM RPF bypass-ஐ itself protect செய்வதில்லை — RPF bypassed ஆனால் attacker legitimate source IP-ஆக claim செய்யும் packets inject செய்யலாம். SSM attack surface குறைக்கிறது, RPF bypass vulnerability eliminate செய்வதில்லை.
+
+கேள்வி 81. Network-ன் PIM RP (Rendezvous Point) map செய்வதன் pentesting value என்ன?
+பதில் 81. PIM RP map செய்வதன் value: (1) RP multicast control plane hub — compromise அல்லது spoof செய்தால் எல்லா multicast group memberships manipulate ஆகும். (2) RP-க்கு அனுப்பப்படும் PIM Register messages craft செய்து spoofed multicast sources inject செய்யலாம். (3) RP IP shared tree (*,G) multicast RPF lookups-ல் பயன்படுகிறது — expected RPF path follow செய்யும் traffic craft செய்ய உதவும். (4) RP typically high-value, well-connected router — compromise high impact. RP discovery: Cisco Auto-RP multicast groups 224.0.1.39 மற்றும் 224.0.1.40.
+
+கேள்வி 82. Linux tunnel-ல் inner packet filtering post-decap apply ஆகிறதா என்று pentester எப்படி determine செய்வார்?
+பதில் 82. Methods: (1) Tunnel interface-ல் iptables rules check: iptables -L -v -n --line-numbers | grep -A5 -B5 "gre0\|tun0". (2) Different inner source IPs-உடன் probe packets send செய்து எவை drop-ஆகின்றன observe செய்யவும். (3) EtherIP tunnels-க்கு ebtables: ebtables -L. (4) nftables: nft list ruleset | grep [tunnel-interface]. (5) tc (traffic control): qdisc-level packet filtering. Tunnel interface-க்கு specific rules இல்லாவிட்டால் likely no post-decap filtering.
+
+கேள்வி 83. "GRE passthrough" என்றால் என்ன, RPF analysis-ஐ எப்படி affect செய்கிறது?
+பதில் 83. GRE passthrough: NAT router அல்லது firewall GRE packets state maintain அல்லது inner content inspect செய்யாமல் forward செய்கிறது. GRE passthrough mode-ல் intermediate device GRE packet decapsulate செய்வதில்லை — outer IP packet as-is forward செய்யும். RPF analysis only actual GRE tunnel endpoints-ல் relevant — decapsulation அங்கே நடக்கிறது. GRE passthrough mode devices inner packet RPF considerations-க்கு transparent — endpoint OS மற்றும் configuration மட்டும் matter.
+
+கேள்வி 84. Arbitrary inner content-உடன் GRE packets craft மற்றும் inject செய்ய pentester எந்த tool பயன்படுத்துவார்?
+பதில் 84. GRE packet crafting மற்றும் injection tools: (1) Scapy (Python) — most flexible, complete GRE/IPinIP/EtherIP packets arbitrary inner content-உடன் craft செய்யலாம்: from scapy.all import * / p = IP(dst="tunnel_endpoint")/GRE()/IP(src="spoofed")/ICMP(). (2) Hping3 — limited GRE support. (3) Ostinato — GUI-based packet generator. (4) Libpcap-based custom tools. Scapy standard tool — arbitrary protocol stacks construct செய்து raw socket level-ல் inject செய்ய முடியும்.
+
+கேள்வி 85. GRE tunnel injection attacks-ன் detection signature என்ன?
+பதில் 85. Detection signatures: (1) Expected IP allocation-ல் இல்லாத inner source IP — inner src known network ranges-உடன் compare. (2) RPF failure logs — Cisco: debug ip pim அல்லது show ip mroute drop statistics. (3) Different bridge ports-ல் duplicate MAC addresses (EtherIP injection). (4) OSPF/PIM neighbor flaps — known topology-ல் இல்லாத routers suddenly appear/disappear. (5) Unexpected source IPs-ல் இருந்து multicast traffic. (6) Netflow/IPFIX unexpected outer source IPs-ல் இருந்து GRE packets show.
+
+==============================================================
+பிரிவு 6: ADVANCED & MIXED SCENARIOS (Q86–Q100)
+==============================================================
+
+கேள்வி 86. Tunneled networks-ல் "triple encapsulation" attack pattern என்றால் என்ன?
+பதில் 86. Triple encapsulation: tunnel-ஐ இன்னொரு tunnel-க்குள் encapsulate செய்கிறது — உதாரணம் GRE-over-IPsec-over-GRE. Attack value: ஒரு encapsulation layer inspect செய்யும் intermediate devices inner layers inspect செய்யாது. Outermost tunnel-ல் inject செய்யும் attacker potentially inner tunnel endpoints reach செய்யலாம் — அங்கே different (weaker) RPF rules apply ஆகலாம். ஒவ்வொரு encapsulation layer-ம் potential security boundary crossing point.
+
+கேள்வி 87. IP fragmentation tunnel inner packet RPF-உடன் எப்படி interact செய்கிறது?
+பதில் 87. GRE tunnel-க்குள் inner packets fragment ஆனால் first fragment மட்டும் IP header source/destination addresses contain செய்கிறது. RPF check first fragment-ல் நடக்கிறது. Subsequent fragments (IP ID மற்றும் offset மட்டும், source IP இல்லை) fragment reassembly state வைத்து forward ஆகும் — independently RPF-checked ஆகாது. Attacker exploit செய்யலாம்: valid source IP-உடன் first fragment RPF-ஐ pass செய்யவும், பிறகு arbitrary content-உடன் subsequent fragments inject செய்யவும் — further RPF validation இல்லாமல் reassemble ஆகும்.
+
+கேள்வி 88. Tunneled traffic-க்கு MPLS மற்றும் RPF interaction என்ன?
+பதில் 88. MPLS-encapsulated traffic label-based forwarding பயன்படுத்துகிறது — labeled packets-க்கு IP routing tables consult ஆகாது. RPF (IP routing table lookup require செய்கிறது) labeled packet-ன் MPLS portion-க்கு apply ஆகாது. MPLS label pop ஆகும்போது (PHP அல்லது egress LER-ல்) underlying IP packet expose ஆகும், IP routing வழியாக forward ஆகும். RPF exposed IP packet-க்கு label popping-க்கு பிறகு apply ஆகலாம். GRE-over-MPLS scenarios-க்கு LSP egress-ல் என்ன நடக்கிறது என்று analysis தேவை.
+
+கேள்வி 89. "Anycast RPF" என்றால் என்ன, tunnel endpoint security-ஐ எப்படி affect செய்கிறது?
+பதில் 89. Anycast load distribution மற்றும் fault tolerance-க்காக multiple nodes-ல் same IP address பயன்படுத்துகிறது. Anycast-க்கு RPF problematic-ஆக இருக்கலாம் — source IP-க்கு return path verify செய்யும், ஆனால் anycast routes multiple paths இருக்கலாம். Tunneled environment-ல் anycast tunnel endpoints-உடன் RPF different anycast instance-க்கு route செய்யலாம். Legitimate traffic RPF fail ஆகலாம் — operators RPF disable செய்கிறார்கள், security gap create ஆகும். Anycast loose RPF mode deploy செய்வதற்கு அல்லது RPF disable செய்வதற்கு common justification.
+
+கேள்வி 90. GRE tunnel over multicast outer transport-ன் security implications describe செய்யவும்.
+பதில் 90. பொதுவாக GRE unicast outer IP பயன்படுத்துகிறது. GRE-over-multicast outer IP = multicast address — outer multicast group-ல் உள்ள எல்லா members-க்கும் GRE packet send ஆகும், எல்லோரும் decapsulate செய்கிறார்கள். Broadcast-like tunnel mesh create ஆகும். Security implication: outer multicast group-ல் inject செய்யும் attacker inner packet ALL tunnel endpoints-க்கு simultaneously deliver செய்கிறார். Any single endpoint-ல் RPF bypass எல்லோரையும் affect செய்யும். RPF misconfiguration-ன் impact amplify ஆகும்.
+
+கேள்வி 91. BGP-speaking tunnel networks-ல் "RPF hijack" என்றால் என்ன?
+பதில் 91. RPF hijack: RPF lookups manipulate செய்ய false BGP routes inject செய்கிறது. RPF unicast routing table check செய்கிறது (default), BGP route change multicast source IP RPF interface-ஐ change செய்கிறது. Controlled interface வழியாக source IP reachable என்று claim செய்யும் BGP route inject செய்யும் attacker அந்த interface-ல் arriving traffic-க்கு RPF pass ஆகும்படி செய்கிறார் — multicast packets that source-ல் இருந்து claim செய்து inject செய்யலாம். Tunnel configuration-ஐ மாற்றாமல் routing மூலம் RPF manipulate செய்யும் control-plane attack.
+
+கேள்வி 92. IPv6 tunneling (6in4) IPv4 tunneling-ஐ விட RPF behavior-ல் எப்படி வேறுபடுகிறது?
+பதில் 92. 6in4 tunnels IPv6 packets-ஐ IPv4 outer headers-க்குள் carry செய்கிறது (Protocol 41). Decapsulation endpoint-ல் inner IPv6 packet IPv6 network stack-க்கு re-inject ஆகும். IPv6-க்கு own RPF mechanism இருக்கிறது (net.ipv6.conf.all.accept_source_route மற்றும் related settings, IPv6 multicast routing). Default IPv6 RPF behavior platform-ஐ பொறுத்து வேறுபடும். IPv6-specific checks: source address validation, multicast scope checking, link-local source addresses global-scope tunnels-ல் appear ஆகக்கூடாது — potential detection heuristic.
+
+கேள்வி 93. GRE inner packet-ல் "loose source routing"-ன் security implication என்ன?
+பதில் 93. IP loose source routing (IP option 131) packet-க்கு traverse செய்ய வேண்டிய partial list of intermediate routers specify செய்ய allow செய்கிறது. Decapsulated inner packet loose source routing options contain செய்தால் decapsulation-க்கு பிறகு own forwarding path influence செய்யலாம் — attacker chosen specific next hop-க்கு direct செய்யலாம். ACLs மற்றும் routing policies-ஐ security choke points-ஐ bypass செய்து route செய்யலாம். பெரும்பாலான modern routers IP source routing options-உடன் packets default-ஆக drop செய்கிறார்கள் — verify செய்ய வேண்டும் (Cisco: no ip source-route).
+
+கேள்வி 94. RPF bypass-உடன் GRE tunnel வழியாக multicast group hijack attack என்ன?
+பதில் 94. Multicast group hijack: (1) Attacker legitimate traffic flow ஆகும் multicast group (S, G) identify செய்கிறார் — RPF bypass-உடன் GRE tunnel வழியாக. (2) Legitimate source IP S-உடன் (RPF bypass allows this) GRE-encapsulated multicast packets craft செய்கிறார். (3) Injected packets legitimate source-ல் இருந்து வந்தது போல் group members எல்லோருக்கும் deliver ஆகும். (4) Legitimate source traffic disrupt ஆகும் (duplicate packets, அல்லது attacker high rate-ல் flood செய்தால் legitimate traffic drown ஆகும்). (5) IPTV/video streaming-ல் attacker-controlled streams legitimate content-ஐ substitute செய்யலாம்.
+
+கேள்வி 95. "GRE injection attack" மற்றும் "GRE reflection attack" வித்தியாசம் என்ன?
+பதில் 95. GRE injection: Attacker tunnel endpoint-க்கு GRE packets craft செய்து send செய்கிறார் — active attack, target-க்கு packets send செய்யும் ability தேவை. Arbitrary inner content inject செய்கிறார். GRE reflection: Attacker victim IP-ஐ outer source address-ஆக பயன்படுத்தி GRE packet send செய்கிறார். Tunnel endpoint decapsulate செய்து inner process செய்யும், responses (ICMP unreachable, TCP RST, routing protocol responses) spoofed source (victim)-க்கு send ஆகும். On-path இல்லாமல் traffic victim-க்கு reflect ஆகும் — DoS amplification-க்கு பயன்படுத்தலாம்.
+
+கேள்வி 96. NAT GRE tunnel RPF analysis-ஐ எப்படி affect செய்கிறது?
+பதில் 96. NAT GRE tunnels-ஐ இரண்டு விதத்தில் affect செய்கிறது: (1) NAT traversal — standard NAT GRE packets translate செய்யாது (GRE-ல் port numbers இல்லை). NAT-T GRE-ஐ UDP-க்குள் wrap செய்கிறது. NAT-traversed GRE analyze செய்யும்போது outer UDP NATted, inner GRE content including inner IP source unchanged. (2) Decapsulation endpoint-ல் inner packet IP addresses pre-NAT (private) addresses — RPF private addresses-க்கு apply ஆகும். NAT layer inner RPF analysis-க்கு transparent.
+
+கேள்வி 97. Tunnel RPF-உடன் MPLS BFD (Bidirectional Forwarding Detection) interaction என்ன?
+பதில் 97. BFD tunnels மற்றும் adjacencies-க்கு fast failure detection protocol. GRE-over-MPLS scenario-ல் MPLS tunnels-க்கான BFD packets control plane level-ல் inject ஆகலாம். BFD itself data plane traffic போல் RPF checking-க்கு subject ஆகாது — control plane protocol. IP-based BFD ஆனால் BFD packets source IP uRPF configured-ஆனால் check ஆகலாம். Attacker BFD packets spoof செய்து false failure detection cause செய்யலாம் — tunnel failover trigger ஆகும். RPF bypass require செய்யாத DoS attack.
+
+கேள்வி 98. Mixed OS tunnel endpoints-உடன் enterprise GRE tunnel network-க்கு complete threat model describe செய்யவும்.
+பதில் 98. Threat model: (1) Linux endpoints (rp_filter=0 default) — injection position மட்டும் தேவை; எல்லா inner source IPs accepted. (2) Cisco endpoints (RPF default disabled) — injection position தேவை; explicitly enabled-ஆக இல்லாவிட்டால் RPF block செய்யாது. (3) MikroTik endpoints (loose mode + default route) — பெரும்பாலான deployments-ல் rp_filter=0-க்கு functionally equivalent. (4) Juniper endpoints — post-decap filters தேவை; இல்லாவிட்டால் inner packet source IPs validated ஆகாது. Summary: ALL endpoints-ல் explicit RPF hardening இல்லாத mixed-OS enterprise tunnel network-ல், ANY on-path position-ல் tunnel injection entire tunnel mesh-ல் complete inner source IP spoofing enable செய்கிறது.
+
+கேள்வி 99. GRE tunnel-ல் RPF enable செய்ய முடியாதபோது என்ன compensating controls recommend செய்வீர்கள்?
+பதில் 99. RPF enable செய்ய முடியாதபோது (asymmetric routing, anycast, operational constraints): (1) GRE with IPsec — ESP authentication RPF இல்லாமலும் injection prevent செய்கிறது. (2) Explicit tunnel ACLs — tunnel interface-ல் input ACL மூலம் inner source IPs expected address ranges-க்கு மட்டும் filter. (3) Private addressing + anti-spoofing ACLs — RFC1918 space tunnels-க்குள் பயன்படுத்தி unexpected source IPs block செய்யும் ACLs. (4) IDS/IPS signatures for inner source IP anomalies. (5) NetFlow analysis. (6) Separate tunnel per security domain — blast radius limit. (7) DMVPN with mGRE and NHRP authentication.
+
+கேள்வி 100. Tunneled network RPF bypass vulnerabilities audit செய்யும் pentester-க்கு comprehensive checklist என்ன?
+பதில் 100. Comprehensive audit checklist:
+1. Tunnel endpoints IDENTIFY செய்யவும் (GRE=47, IPinIP=4, EtherIP=97, VXLAN=UDP4789)
+2. ஒவ்வொரு endpoint-ல் OS/Platform DETERMINE செய்யவும் (Linux=rp_filter default, Cisco=explicit config, MikroTik=loose default, Juniper=fast-tap)
+3. Protocol type CHECK செய்யவும்: EtherIP → L3 RPF impossible; GRE/IPinIP → proceed
+4. Cisco commands ENUMERATE செய்யவும்: show ip pim interface, show ip mroute, show run | include mroute|rpf|verify
+5. Linux CHECK: sysctl net.ipv4.conf.all.rp_filter மற்றும் per-interface values
+6. MikroTik VERIFY: default route presence + loose mode = complete bypass
+7. Juniper CHECK: post-decap firewall filter inner interface-ல் presence
+8. Unicast inner packets TEST: multicast RPF config பொருட்படுத்தாமல் subject ஆகாது
+9. Spoofed inner packets TEST: spoofed inner src-உடன் GRE inject செய்து propagation monitor
+10. IPsec CHECK: GRE-over-IPsec = RPF பொருட்படுத்தாமல் injection protected
+11. Inner packet filtering DOCUMENT: iptables, ACLs, VACL presence/absence
+12. PIM RP IDENTIFY: register message injection vector
+13. Blast radius ASSESS: tunnel traverse செய்யும் multicast groups receive செய்யும் hosts
+14. REPORT: findings design/OS default/config bypass/drop-ஆக categorize செய்யவும்
