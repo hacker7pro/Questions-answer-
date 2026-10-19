@@ -1,0 +1,2452 @@
+================================================================
+  INDIRECT PENTEST MODEL — 200 ANSWERS (BILINGUAL)
+  English + Tamil — Order-wise
+  Topic: MPLS Architecture / Attack Chains /
+         Topology / Identification / Encapsulation
+================================================================
+
+--- SECTION 1: MPLS FUNDAMENTALS (Q1–Q20) ---
+
+A1.
+[EN] MPLS = Multiprotocol Label Switching. Primary purpose:
+     forward packets using short fixed-length labels instead of
+     long IP lookups. Enables fast forwarding, traffic engineering,
+     L3VPNs, QoS, and multi-protocol transport.
+
+[TM] MPLS = Multiprotocol Label Switching. நீண்ட IP lookup-க்கு
+     பதிலா சிறிய fixed-length labels பயன்படுத்தி packets forward
+     பண்றது. Fast forwarding, traffic engineering, L3VPN, QoS,
+     multi-protocol transport enable பண்றது.
+
+----------------------------------------------------------------
+
+A2.
+[EN] MPLS label sits between Layer 2 (data link) and Layer 3
+     (network) — "Layer 2.5". It is placed after the L2 header
+     and before the IP header.
+
+[TM] MPLS label Layer 2 (data link) மற்றும் Layer 3 (network)-க்கு
+     நடுவே — "Layer 2.5"-ல் இருக்கும். L2 header-க்கு பிறகு,
+     IP header-க்கு முன் வைக்கப்படும்.
+
+----------------------------------------------------------------
+
+A3.
+[EN] On a label swap, the router replaces the incoming top label
+     with a new outgoing label and sends the packet out the
+     corresponding interface. TTL is decremented.
+
+[TM] Label swap-ல் router incoming top label-ஐ புது outgoing
+     label-ஆல் replace பண்ணி, சம்பந்தப்பட்ட interface வழியா
+     அனுப்பும். TTL decrement ஆகும்.
+
+----------------------------------------------------------------
+
+A4.
+[EN] PUSH = add a new label on top of the stack (ingress PE).
+     SWAP = replace top label with another (core P router).
+     POP = remove the top label (egress PE or PHP).
+
+[TM] PUSH = stack-க்கு மேலே புது label சேர்க்கும் (ingress PE).
+     SWAP = top label-ஐ வேறொன்றால் replace பண்ணும் (core P router).
+     POP = top label-ஐ நீக்கும் (egress PE அல்லது PHP).
+
+----------------------------------------------------------------
+
+A5.
+[EN] PHP = Penultimate Hop Popping. The router one hop before
+     egress pops the label so the egress PE does only one lookup
+     (no double lookup). Improves efficiency. Signalled by
+     advertising label 3 (Implicit Null).
+
+[TM] PHP = Penultimate Hop Popping. Egress-க்கு ஒரு hop முன்
+     router label-ஐ pop பண்ணும், அதனால் egress PE ஒரே lookup
+     மட்டும் செய்யும் (double lookup இல்லை). Efficiency அதிகரிக்கும்.
+     Label 3 (Implicit Null) advertise பண்ணி signal ஆகும்.
+
+----------------------------------------------------------------
+
+A6.
+[EN] S=0 means "not bottom of stack" (more labels below);
+     S=1 means "bottom of stack". So the first label is the
+     transport/top label and the second is the bottom (VPN/
+     service) label. Stack depth = 2 (typical L3VPN).
+
+[TM] S=0 = "bottom of stack இல்லை" (கீழே இன்னும் labels உண்டு);
+     S=1 = "bottom of stack". அதனால் முதல் label = transport/top
+     label, இரண்டாவது = bottom (VPN/service) label. Stack depth = 2
+     (வழக்கமான L3VPN).
+
+----------------------------------------------------------------
+
+A7.
+[EN] 32-bit MPLS label fields:
+       Label    = 20 bits
+       EXP/TC   = 3 bits
+       S (bottom)= 1 bit
+       TTL      = 8 bits
+
+[TM] 32-bit MPLS label fields:
+       Label    = 20 bits
+       EXP/TC   = 3 bits
+       S (bottom)= 1 bit
+       TTL      = 8 bits
+
+----------------------------------------------------------------
+
+A8.
+[EN] A P router forwards purely on the MPLS label using the LFIB.
+     The IP header is irrelevant for core forwarding — that is the
+     design goal of MPLS (label switching, not IP routing).
+
+[TM] P router LFIB பயன்படுத்தி MPLS label மட்டும் பார்த்து forward
+     பண்ணும். Core forwarding-க்கு IP header தேவையில்லை — அதுதான்
+     MPLS-ன் design goal (IP routing இல்லை, label switching).
+
+----------------------------------------------------------------
+
+A9.
+[EN] LSP = Label Switched Path: a pre-established, unidirectional
+     path a packet follows based on label values (set up by LDP or
+     RSVP-TE). An IP routing path is hop-by-hop, per-packet,
+     destination-prefix based.
+
+[TM] LSP = Label Switched Path: label values அடிப்படையில் packet
+     பின்பற்றும் முன்கூட்டியே establish ஆன ஒரு வழி (LDP/RSVP-TE
+     மூலம்). IP routing path hop-by-hop, per-packet,
+     destination-prefix அடிப்படையிலானது.
+
+----------------------------------------------------------------
+
+A10.
+[EN] LFIB = Label Forwarding Information Base: maps incoming label
+     → outgoing label + outgoing interface. RIB is the IP routing
+     table (prefix → next-hop). LFIB is built from LIB + FIB and
+     used to forward labeled packets.
+
+[TM] LFIB = Label Forwarding Information Base: incoming label →
+     outgoing label + outgoing interface mapping. RIB = IP routing
+     table (prefix → next-hop). LFIB, LIB + FIB-லிருந்து கட்டப்பட்டு
+     labeled packets forward பண்ண பயன்படும்.
+
+----------------------------------------------------------------
+
+A11.
+[EN] Reserved labels:
+       0 = IPv4 Explicit Null
+       1 = Router Alert
+       2 = IPv6 Explicit Null
+       3 = Implicit Null (PHP)
+
+[TM] Reserved labels:
+       0 = IPv4 Explicit Null
+       1 = Router Alert
+       2 = IPv6 Explicit Null
+       3 = Implicit Null (PHP)
+
+----------------------------------------------------------------
+
+A12.
+[EN] LDP: simple, hop-by-hop, follows IGP shortest path, no
+     bandwidth reservation, no explicit path.
+     RSVP-TE: constraint-based, explicit paths, bandwidth
+     reservation, traffic engineering.
+
+[TM] LDP: எளிமையானது, hop-by-hop, IGP shortest path-ஐ பின்பற்றும்,
+     bandwidth reservation இல்லை, explicit path இல்லை.
+     RSVP-TE: constraint-based, explicit paths, bandwidth
+     reservation, traffic engineering.
+
+----------------------------------------------------------------
+
+A13.
+[EN] LDP discovery uses 224.0.0.2 (all routers on subnet),
+     UDP port 646. It is link-local (TTL=1), so it is delivered
+     by L2 multicast/broadcast and never routed — hence no PIM
+     is needed.
+
+[TM] LDP discovery 224.0.0.2 (subnet-ல் உள்ள எல்லா routers),
+     UDP port 646 பயன்படுத்தும். இது link-local (TTL=1), L2
+     multicast/broadcast மூலம் deliver ஆகும், route ஆகாது —
+     அதனால் PIM தேவையில்லை.
+
+----------------------------------------------------------------
+
+A14.
+[EN] CE = Customer Edge (customer side, no MPLS).
+     PE = Provider Edge (VRF, MPLS, connects to CE).
+     P  = Provider core (MPLS label switching only, no customer
+          routes).
+
+[TM] CE = Customer Edge (customer பக்கம், MPLS இல்லை).
+     PE = Provider Edge (VRF, MPLS, CE-உடன் இணைப்பு).
+     P  = Provider core (MPLS label switching மட்டும்,
+          customer routes இல்லை).
+
+----------------------------------------------------------------
+
+A15.
+[EN] CE talks to PE over a normal IP link (static/BGP/OSPF/eBGP).
+     CE does not need MPLS; the PE imposes and removes labels.
+
+[TM] CE, PE-உடன் சாதாரண IP link வழியா (static/BGP/OSPF/eBGP)
+     communicate பண்ணும். CE-க்கு MPLS தேவையில்லை; PE தான்
+     labels impose/remove பண்ணும்.
+
+----------------------------------------------------------------
+
+A16.
+[EN] VRF = Virtual Routing and Forwarding: a separate routing
+     table per customer on a PE. Allows overlapping addresses and
+     isolates customer traffic. Critical for MPLS L3VPN multi-tenancy.
+
+[TM] VRF = Virtual Routing and Forwarding: PE-ல் ஒவ்வொரு customer-க்கும்
+     தனி routing table. Overlapping addresses allow பண்ணி customer
+     traffic-ஐ isolate பண்ணும். MPLS L3VPN multi-tenancy-க்கு critical.
+
+----------------------------------------------------------------
+
+A17.
+[EN] RT = Route Target: BGP extended community controlling which
+     VPN routes are imported/exported. If misconfigured, routes
+     leak between VRFs (one customer sees another's routes) →
+     data breach / cross-tenant access.
+
+[TM] RT = Route Target: எந்த VPN routes import/export ஆகணும்-ன்னு
+     control பண்ற BGP extended community. Misconfigured ஆனால்
+     VRFs-க்கிடையே routes leak ஆகும் (ஒரு customer மற்றவரின் routes
+     பார்ப்பார்) → data breach / cross-tenant access.
+
+----------------------------------------------------------------
+
+A18.
+[EN] Transport label (outer): swapped by P routers, directs packet
+     to the egress PE. VPN label (inner): read only at the egress
+     PE, identifies the VRF. P routers look only at the transport
+     label; the egress PE pops it and uses the VPN label to select
+     the VRF.
+
+[TM] Transport label (outer): P routers swap பண்ணும், egress PE-க்கு
+     வழிகாட்டும். VPN label (inner): egress PE-ல் மட்டும் படிக்கப்படும்,
+     VRF-ஐ identify பண்ணும். P routers transport label மட்டும்
+     பார்க்கும்; egress PE அதை pop பண்ணி VPN label வைத்து VRF
+     தேர்வு செய்யும்.
+
+----------------------------------------------------------------
+
+A19.
+[EN] MPLS-TE uses RSVP-TE to build explicit paths with bandwidth
+     reservation (avoid congestion, policy routing). Basic LDP-MPLS
+     just follows the IGP shortest path with no bandwidth awareness.
+
+[TM] MPLS-TE, RSVP-TE பயன்படுத்தி bandwidth reservation-உடன் explicit
+     paths அமைக்கும் (congestion தவிர்க்க, policy routing). Basic
+     LDP-MPLS IGP shortest path-ஐ மட்டும் பின்பற்றும், bandwidth
+     awareness இல்லை.
+
+----------------------------------------------------------------
+
+A20.
+[EN] mVPN = Multicast VPN: carries multicast over MPLS VPN.
+     Three labels possible:
+       (1) transport LSP label
+       (2) VPN multicast label (identifies MVPN/VRF)
+       (3) P-tunnel label (mLDP/RSVP-TE P2MP)
+
+[TM] mVPN = Multicast VPN: MPLS VPN வழியா multicast carry பண்ணும்.
+     மூன்று labels possible:
+       (1) transport LSP label
+       (2) VPN multicast label (MVPN/VRF identify)
+       (3) P-tunnel label (mLDP/RSVP-TE P2MP)
+
+----------------------------------------------------------------
+
+--- SECTION 2: GRE vs MPLS ARCHITECTURE (Q21–Q40) ---
+
+A21.
+[EN] GRE requires explicit endpoint configuration (tunnel source/
+     destination). MPLS uses auto-discovery (LDP multicast neighbor
+     discovery, BGP).
+
+[TM] GRE-க்கு explicit endpoint config தேவை (tunnel source/
+     destination). MPLS auto-discovery பயன்படுத்தும் (LDP multicast
+     neighbor discovery, BGP).
+
+----------------------------------------------------------------
+
+A22.
+[EN] GRE has two IP headers (outer tunnel IP + inner payload IP).
+     Native MPLS has one IP header (the original packet) with the
+     label inserted between the L2 header and the IP header.
+
+[TM] GRE-க்கு இரண்டு IP headers (outer tunnel IP + inner payload IP).
+     Native MPLS-க்கு ஒரு IP header (original packet), label L2
+     header-க்கும் IP header-க்கும் நடுவே இருக்கும்.
+
+----------------------------------------------------------------
+
+A23.
+[EN] GRE uses "tunnel destination X.X.X.X". MPLS has NO equivalent
+     command — labels are distributed automatically and forwarding
+     is based on the routing/LFIB tables. Such a command does not
+     exist.
+
+[TM] GRE "tunnel destination X.X.X.X" பயன்படுத்தும். MPLS-க்கு
+     equivalent command இல்லை — labels தானாக distribute ஆகும்,
+     forwarding routing/LFIB tables அடிப்படையில். அப்படி ஒரு
+     command exist ஆகாது.
+
+----------------------------------------------------------------
+
+A24.
+[EN] GRE's two-IP model: outer IP (tunnel endpoints) and inner IP
+     (payload, often a trusted/whitelisted source). Native MPLS
+     has one IP header; labels are locally-significant 20-bit
+     values, not routable IP addresses — so there is no "inner
+     source IP" to spoof.
+
+[TM] GRE இரண்டு-IP model: outer IP (tunnel endpoints), inner IP
+     (payload, பல நேரம் trusted/whitelisted source). Native MPLS-க்கு
+     ஒரு IP header; labels locally-significant 20-bit values,
+     routable IP addresses இல்லை — அதனால் spoof பண்ண "inner source
+     IP" இல்லை.
+
+----------------------------------------------------------------
+
+A25.
+[EN] GRE Protocol field value 0x8847 (MPLS unicast), or 0x8848
+     for MPLS multicast.
+
+[TM] GRE Protocol field value 0x8847 (MPLS unicast), MPLS multicast-க்கு
+     0x8848.
+
+----------------------------------------------------------------
+
+A26.
+[EN] In MPLS over GRE, the GRE router (tunnel endpoint) is the
+     "whitelist router". Its two interface IPs:
+       - external/internet-facing IP → outer destination
+       - internal/LAN-facing IP → inner source (adjacent to MPLS)
+
+[TM] MPLS over GRE-ல் GRE router (tunnel endpoint) தான் "whitelist
+     router". அதன் இரண்டு interface IPs:
+       - external/internet-facing IP → outer destination
+       - internal/LAN-facing IP → inner source (MPLS-க்கு adjacent)
+
+----------------------------------------------------------------
+
+A27.
+[EN] Yes. LDP uses TCP 646 and also needs a TCP handshake; the
+     SYN-ACK must return to the attacker. So the same return-path
+     fix (route injection) is required for the LDP session.
+
+[TM] ஆம். LDP TCP 646 பயன்படுத்தும், TCP handshake-உம் தேவை;
+     SYN-ACK attacker-க்கு திரும்ப வரணும். அதனால் GRE BGP attack
+     மாதிரியே return-path fix (route injection) LDP-க்கும் தேவை.
+
+----------------------------------------------------------------
+
+A28.
+[EN] (a) Plain GRE overhead = 24 bytes (20 outer IP + 4 GRE).
+     (b) GRE + 1 MPLS label = 28 bytes.
+     Difference = 4 bytes (the label).
+
+[TM] (a) Plain GRE overhead = 24 bytes (20 outer IP + 4 GRE).
+     (b) GRE + 1 MPLS label = 28 bytes.
+     Difference = 4 bytes (label).
+
+----------------------------------------------------------------
+
+A29.
+[EN] MPLS uses the routing table and label bindings learned via
+     LDP/RSVP-TE/BGP to pick the outgoing label and interface. No
+     tunnel destination is needed — forwarding is per-label via the
+     LFIB.
+
+[TM] MPLS, LDP/RSVP-TE/BGP மூலம் கற்ற routing table மற்றும் label
+     bindings பயன்படுத்தி outgoing label + interface தேர்வு செய்யும்.
+     Tunnel destination தேவையில்லை — LFIB வழியா per-label forwarding.
+
+----------------------------------------------------------------
+
+A30.
+[EN] An Ethernet frame with EtherType 0x8847 inside EtherIP means
+     an MPLS-labeled frame is being injected into the L2 domain —
+     i.e., MPLS frame/label injection (into the local L2/MPLS
+     domain, bypassing edge controls).
+
+[TM] EtherIP-க்குள் EtherType 0x8847 உள்ள Ethernet frame என்றால்
+     MPLS-labeled frame L2 domain-க்குள் inject ஆகிறது — அதாவது
+     MPLS frame/label injection (edge controls bypass பண்ணி local
+     L2/MPLS domain-க்குள்).
+
+----------------------------------------------------------------
+
+A31.
+[EN] GRE over MPLS: GRE tunnel runs inside the MPLS network (MPLS
+     is the outer transport). MPLS over GRE: MPLS labels are inside
+     the GRE payload. MPLS over GRE is more dangerous — the attacker
+     controls the GRE endpoint and injects arbitrary MPLS labels
+     directly into the MPLS domain.
+
+[TM] GRE over MPLS: GRE tunnel MPLS network-க்குள் (MPLS outer
+     transport). MPLS over GRE: MPLS labels GRE payload-க்குள்.
+     MPLS over GRE more dangerous — attacker GRE endpoint-ஐ control
+     பண்ணி MPLS domain-க்குள் நேரடியாக arbitrary MPLS labels inject
+     பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A32.
+[EN] RFC 7510. UDP was chosen over GRE for NAT traversal, firewall
+     friendliness, ECMP hashing (UDP source-port entropy), and to
+     avoid GRE protocol filtering in middleboxes.
+
+[TM] RFC 7510. GRE-விட UDP தேர்வு செய்யப்பட்டதற்கு காரணம்: NAT
+     traversal, firewall friendliness, ECMP hashing (UDP source-port
+     entropy), middleboxes-ல் GRE protocol filtering தவிர்க்க.
+
+----------------------------------------------------------------
+
+A33.
+[EN] EtherType 0x8847 = MPLS unicast. The router processes the
+     MPLS layer: LFIB lookup, then swap/pop/swap+push the label and
+     forward the packet.
+
+[TM] EtherType 0x8847 = MPLS unicast. Router MPLS layer process
+     பண்ணும்: LFIB lookup, பிறகு label swap/pop/swap+push பண்ணி
+     packet forward பண்ணும்.
+
+----------------------------------------------------------------
+
+A34.
+[EN] Next step: inject fake label mappings (FEC → label) into the
+     LDP session. This populates LFIB entries so traffic for target
+     prefixes is labelled with attacker-chosen labels and redirected
+     to the attacker — achieving traffic redirection/interception.
+
+[TM] அடுத்த step: LDP session-ல் fake label mappings (FEC → label)
+     inject பண்ணுவது. இது LFIB entries-ஐ populate பண்ணி, target
+     prefixes traffic attacker-தேர்ந்த labels-உடன் attacker-க்கு
+     redirect ஆகும் — traffic redirection/interception.
+
+----------------------------------------------------------------
+
+A35.
+[EN] IP-in-IP has no payload-type field; the payload is assumed to
+     be IP (first nibble 0x45). An MPLS label starts with label bits,
+     which look like an invalid IP version → conflict. GRE has an
+     explicit Protocol field (0x8847) that says "MPLS inside", so no
+     ambiguity.
+
+[TM] IP-in-IP-க்கு payload-type field இல்லை; payload IP என்று
+     எடுத்துக்கொள்ளப்படும் (first nibble 0x45). MPLS label label
+     bits-உடன் தொடங்கும், அது invalid IP version மாதிரி தெரியும் →
+     conflict. GRE-ல் explicit Protocol field (0x8847) "MPLS inside"
+     என்று சொல்வதால் ambiguity இல்லை.
+
+----------------------------------------------------------------
+
+A36.
+[EN] Two techniques:
+       (1) mtr --mpls / traceroute with MPLS extensions (RFC 4950)
+       (2) Packet capture (Wireshark/tcpdump) of MPLS or LDP traffic,
+           and/or SNMP MPLS MIB queries to read the label tables.
+
+[TM] இரண்டு techniques:
+       (1) mtr --mpls / traceroute with MPLS extensions (RFC 4950)
+       (2) MPLS அல்லது LDP traffic packet capture (Wireshark/tcpdump),
+           மற்றும்/அல்லது SNMP MPLS MIB queries மூலம் label tables
+           படிப்பது.
+
+----------------------------------------------------------------
+
+A37.
+[EN] Label 3 = Implicit Null: advertised by the egress PE to tell
+     the penultimate router to pop the label (PHP). It never appears
+     in the packet — hence "implicit".
+
+[TM] Label 3 = Implicit Null: penultimate router label-ஐ pop
+     பண்ண சொல்ல egress PE advertise பண்ணும் (PHP). Packet-ல் இது
+     ஒருபோதும் தெரியாது — அதனால்தான் "implicit".
+
+----------------------------------------------------------------
+
+A38.
+[EN] Label 0 (IPv4 Explicit Null) forces the router to pop the
+     label and forward based on the IPv4 header (explicit null
+     signalling). An attacker uses it to bypass label-based
+     filtering or to steer a packet to IP-based forwarding.
+
+[TM] Label 0 (IPv4 Explicit Null) router-ஐ label pop பண்ணி IPv4
+     header அடிப்படையில் forward பண்ண வைக்கும் (explicit null
+     signalling). Attacker இதை label-based filtering bypass
+     பண்ணவோ packet-ஐ IP-based forwarding-க்கு திருப்பவோ
+     பயன்படுத்துவான்.
+
+----------------------------------------------------------------
+
+A39.
+[EN] Forging Customer B's VPN label while being in Customer A →
+     the egress PE delivers the packet into Customer B's VRF →
+     cross-VPN injection/leak. Attacker can inject traffic into B
+     or intercept B's return traffic — VPN isolation breach.
+
+[TM] Customer A-வில் இருந்து Customer B-ஓட VPN label forge பண்ணினால்
+     egress PE packet-ஐ Customer B VRF-க்கு deliver பண்ணும் →
+     cross-VPN injection/leak. Attacker B-க்குள் traffic inject
+     பண்ணவோ B-ஓட return traffic intercept பண்ணவோ முடியும் —
+     VPN isolation breach.
+
+----------------------------------------------------------------
+
+A40.
+[EN] ERO (Explicit Route Object) is a sub-object inside the RSVP
+     PATH message that specifies the exact hop path. Attack surface:
+     spoofed PATH with a forged ERO can reroute a TE tunnel through
+     the attacker (path hijack). PATH without ERO only reserves
+     resources; ERO gives path control.
+
+[TM] ERO (Explicit Route Object) என்பது RSVP PATH message-க்குள்
+     உள்ள sub-object, exact hop path specify பண்ணும். Attack surface:
+     forged ERO-உடன் spoofed PATH TE tunnel-ஐ attacker வழியா reroute
+     பண்ணும் (path hijack). ERO இல்லாத PATH resources மட்டும் reserve
+     பண்ணும்; ERO path control தரும்.
+
+----------------------------------------------------------------
+
+--- SECTION 3: TOPOLOGY BASED (Q41–Q65) ---
+
+A41.
+[EN] Star with GRE hub + MPLS spokes all on the same VLAN: the
+     attacker has a single GRE endpoint that is L2-adjacent to every
+     spoke, so one injection reaches all spokes via L2 multicast/
+     broadcast. Single injection point + full L2 reach = BEST.
+
+[TM] Star, GRE hub + MPLS spokes எல்லாம் same VLAN: attacker-க்கு
+     ஒரே GRE endpoint, அது ஒவ்வொரு spoke-க்கும் L2-adjacent. ஒரே
+     injection L2 multicast/broadcast வழியா எல்லா spokes-க்கும்
+     போகும். Single injection + full L2 reach = BEST.
+
+----------------------------------------------------------------
+
+A42.
+[EN] Different subnets: link-local multicast (224.0.0.0/24, TTL=1)
+     is not forwarded across an L3 boundary; the router drops TTL=1
+     packets. So the attack fails at the subnet boundary.
+
+[TM] வேற subnets: link-local multicast (224.0.0.0/24, TTL=1) L3
+     boundary-ஐ கடக்காது; router TTL=1 packets drop பண்ணும்.
+     அதனால் subnet boundary-ல் attack fail ஆகும்.
+
+----------------------------------------------------------------
+
+A43.
+[EN] OSPF LSA Type 5 (AS External LSA) — flooded domain-wide to
+     all normal areas, bypassing the two-hop / link-local limit.
+     (Blocked only in stub/NSSA areas.)
+
+[TM] OSPF LSA Type 5 (AS External LSA) — எல்லா normal areas-க்கும்
+     domain-wide flood ஆகும், இரண்டு-hop / link-local limit-ஐ
+     bypass பண்ணும். (Stub/NSSA areas-ல் மட்டும் block ஆகும்.)
+
+----------------------------------------------------------------
+
+A44.
+[EN] mGRE hub accepts GRE from any source (point-to-multipoint,
+     no fixed tunnel destination, dynamic NHRP). A standard P2P GRE
+     has a fixed destination. mGRE therefore lets an attacker send
+     GRE from anywhere and be decapsulated — extremely vulnerable.
+
+[TM] mGRE hub எந்த source-லிருந்தும் GRE accept பண்ணும்
+     (point-to-multipoint, fixed tunnel destination இல்லை, dynamic
+     NHRP). Standard P2P GRE-க்கு fixed destination. அதனால் mGRE
+     எங்கிருந்தும் GRE அனுப்ப decapsulate பண்ணும் — extremely
+     vulnerable.
+
+----------------------------------------------------------------
+
+A45.
+[EN] The L3 firewall decrements TTL; TTL=1 → TTL=0 → packet
+     dropped, ICMP TTL-exceeded returned. The link-local attack
+     fails at the firewall.
+
+[TM] L3 firewall TTL-ஐ decrement பண்ணும்; TTL=1 → TTL=0 → packet
+     drop, ICMP TTL-exceeded return. Firewall-ல் link-local attack
+     fail ஆகும்.
+
+----------------------------------------------------------------
+
+A46.
+[EN] Yes. A Layer 2 transparent bridge does not decrement TTL
+     (TTL is an L3 field). The TTL=1 packet passes through and the
+     link-local multicast is delivered to the segment — attack
+     succeeds.
+
+[TM] ஆம். Layer 2 transparent bridge TTL-ஐ decrement பண்ணாது
+     (TTL = L3 field). TTL=1 packet கடந்து, link-local multicast
+     segment-ல் deliver ஆகும் — attack succeed ஆகும்.
+
+----------------------------------------------------------------
+
+A47.
+[EN] Full mesh, all on the same VLAN: every router is L2-adjacent
+     to the attacker, so one injection reaches all routers
+     simultaneously — blast radius = the whole network.
+
+[TM] Full mesh, எல்லாம் same VLAN: ஒவ்வொரு router-உம் attacker-க்கு
+     L2-adjacent, ஒரே injection எல்லா routers-க்கும் ஒரே நேரத்தில்
+     போகும் — blast radius = முழு network.
+
+----------------------------------------------------------------
+
+A48.
+[EN] With /30 links and TTL=1 multicast, the attacker reaches only
+     the routers directly connected on the same L2 segment/subnet as
+     the GRE endpoint (the adjacent routers on that /30). Others
+     require unicast/route injection.
+
+[TM] /30 links மற்றும் TTL=1 multicast-ல், GRE endpoint-ன் same
+     L2 segment/subnet-ல் நேரடியாக connect ஆன routers-ஐ மட்டும்
+     attacker reach பண்ண முடியும் (அந்த /30-ல் adjacent routers).
+     மற்றவை unicast/route injection தேவை.
+
+----------------------------------------------------------------
+
+A49.
+[EN] EtherIP-based double-tagged 802.1Q VLAN hopping (outer tag =
+     native VLAN, inner tag = target VLAN) to cross the VLAN
+     boundary.
+
+[TM] EtherIP-based double-tagged 802.1Q VLAN hopping (outer tag =
+     native VLAN, inner tag = target VLAN) வழியா VLAN boundary-ஐ
+     கடக்கலாம்.
+
+----------------------------------------------------------------
+
+A50.
+[EN] Prerequisite: the attacker's port must be on the native VLAN,
+     and the outer tag must match the trunk's native VLAN; the
+     target VLAN must be allowed on the trunk, and a trunk link
+     must exist between the switches.
+
+[TM] Prerequisite: attacker port native VLAN-ல் இருக்கணும், outer
+     tag trunk-ன் native VLAN-உடன் match ஆகணும்; target VLAN trunk-ல்
+     allowed ஆகணும், switches-க்கிடையே trunk link இருக்கணும்.
+
+----------------------------------------------------------------
+
+A51.
+[EN] "ip nhrp map multicast dynamic" makes the hub replicate
+     multicast/broadcast from a spoke to all other spokes. The
+     attacker's LDP Hello (multicast, 224.0.0.2) is replicated to
+     all spokes → LDP Hello reaches all MPLS routers → LDP sessions
+     form broadly.
+
+[TM] "ip nhrp map multicast dynamic" hub-ஐ, ஒரு spoke-லிருந்து வரும்
+     multicast/broadcast-ஐ மற்ற எல்லா spokes-க்கும் replicate
+     பண்ண வைக்கும். Attacker LDP Hello (multicast, 224.0.0.2) எல்லா
+     spokes-க்கும் replicate ஆகும் → LDP Hello எல்லா MPLS
+     routers-க்கும் போகும் → LDP sessions பரவலாக form ஆகும்.
+
+----------------------------------------------------------------
+
+A52.
+[EN] Attack packet:
+       Outer Dst = 203.0.113.1 (GRE router internet-facing IP)
+       Inner Src = 10.0.0.3 (unused/spoofed IP in 10.0.0.0/24,
+                   same LAN segment as 10.0.0.2)
+
+[TM] Attack packet:
+       Outer Dst = 203.0.113.1 (GRE router internet-facing IP)
+       Inner Src = 10.0.0.3 (10.0.0.0/24-ல் unused/spoofed IP,
+                   10.0.0.2-உடன் same LAN segment)
+
+----------------------------------------------------------------
+
+A53.
+[EN] Star: the hub is L2-adjacent to every spoke, so one injection
+     reaches all spokes directly. Bus with GRE at one end: the
+     attacker only reaches the first segment; routers beyond the
+     first hop are not L2-adjacent. Star gives more direct reach.
+
+[TM] Star: hub ஒவ்வொரு spoke-க்கும் L2-adjacent, ஒரே injection
+     எல்லா spokes-க்கும் நேரடியாக போகும். Bus, GRE ஒரு முனையில்:
+     attacker முதல் segment-ஐ மட்டும் reach பண்ணும்; முதல் hop-க்கு
+     அப்பால் உள்ள routers L2-adjacent இல்லை. Star அதிக நேரடி
+     reach தரும்.
+
+----------------------------------------------------------------
+
+A54.
+[EN] Yes. VLAN 999 spanning all layers is one flat L2 domain, so
+     the attacker has L2 adjacency to all MPLS routers across
+     layers — the attack is possible across layers.
+
+[TM] ஆம். எல்லா layers-ல் span ஆகும் VLAN 999 ஒரு flat L2 domain,
+     அதனால் attacker-க்கு எல்லா layers-ல் உள்ள MPLS routers-க்கும்
+     L2 adjacency உண்டு — layers-ல் attack possible.
+
+----------------------------------------------------------------
+
+A55.
+[EN] GRE router = firewall itself: after GRE decapsulation the
+     inner packet enters the LAN directly with no separate L3 hop,
+     so no TTL decrement by another device → the TTL hop problem is
+     eliminated.
+
+[TM] GRE router = firewall-ஏ: GRE decapsulation-க்கு பிறகு inner
+     packet நேரடியாக LAN-ல் enter ஆகும், தனி L3 hop இல்லை, வேறு
+     device TTL decrement பண்ணாது → TTL hop problem eliminate.
+
+----------------------------------------------------------------
+
+A56.
+[EN] The injected OSPF route is redistributed into EIGRP at the
+     distribution layer and then propagates as a normal EIGRP
+     routing update to the access layer, bypassing the TTL=1
+     link-local limitation entirely.
+
+[TM] Inject ஆன OSPF route distribution layer-ல் EIGRP-க்கு
+     redistribute ஆகி, பிறகு சாதாரண EIGRP routing update-ஆக access
+     layer-க்கு propagate ஆகும் — TTL=1 link-local limitation-ஐ
+     முழுமையாக bypass பண்ணும்.
+
+----------------------------------------------------------------
+
+A57.
+[EN] DMVPN Phase 2 allows spoke-to-spoke tunnels. An attacker on
+     one spoke can build direct tunnels to all other spokes, giving
+     a much larger reachable attack surface than Phase 1 where all
+     traffic goes through the hub.
+
+[TM] DMVPN Phase 2 spoke-to-spoke tunnels allow பண்ணும். ஒரு
+     spoke-ல் உள்ள attacker மற்ற எல்லா spokes-க்கும் நேரடி
+     tunnels build பண்ணலாம் — Phase 1-ல் எல்லா traffic-உம் hub
+     வழியா போகும், அதைவிட மிகப்பெரிய attack surface.
+
+----------------------------------------------------------------
+
+A58.
+[EN] No, not via GRE injection alone. Without inter-VLAN routing,
+     a GRE inner packet cannot cross the VLAN boundary. The attacker
+     needs an L2 trick (EtherIP double-tag / VLAN hopping) or a
+     routed device.
+
+[TM] இல்லை, GRE injection மட்டும் போதாது. Inter-VLAN routing இல்லாம
+     GRE inner packet VLAN boundary-ஐ கடக்க முடியாது. Attacker-க்கு
+     L2 trick (EtherIP double-tag / VLAN hopping) அல்லது routed
+     device தேவை.
+
+----------------------------------------------------------------
+
+A59.
+[EN] Maximum usable inner Src = 10.0.0.254 (the last usable host
+     in 10.0.0.0/24; .1 and .2 are in use).
+
+[TM] Maximum usable inner Src = 10.0.0.254 (10.0.0.0/24-ல் கடைசி
+     usable host; .1 மற்றும் .2 use-ல் உள்ளன).
+
+----------------------------------------------------------------
+
+A60.
+[EN] Full-mesh topology where all routers are on the same VLAN/L2
+     domain: a single GRE injection (L2 multicast) reaches ALL
+     routers without any redistribution.
+
+[TM] எல்லா routers-உம் same VLAN/L2 domain-ல் உள்ள full-mesh
+     topology: ஒரே GRE injection (L2 multicast) redistribution
+     இல்லாமல் எல்லா routers-ஐயும் reach பண்ணும்.
+
+----------------------------------------------------------------
+
+A61.
+[EN] Yes. The fake OSPF route is injected into the same OSPF
+     process that runs on both SVIs, so it is advertised on both
+     SVIs and affects VLAN 20 routing as well (unless area/route
+     filters block it).
+
+[TM] ஆம். Fake OSPF route இரண்டு SVIs-லும் run ஆகும் அதே OSPF
+     process-க்குள் inject ஆகிறது, அதனால் இரண்டு SVIs-லும்
+     advertise ஆகி VLAN 20 routing-ஐயும் affect பண்ணும் (area/route
+     filters தடுத்தால் தவிர).
+
+----------------------------------------------------------------
+
+A62.
+[EN] Link-local multicast reaches only Router A's directly
+     connected neighbours (the routers on A's point-to-point /30
+     links). All other routers require unicast-based attacks after
+     route injection.
+
+[TM] Link-local multicast Router A-ன் நேரடி neighbours-ஐ மட்டும்
+     reach பண்ணும் (A-ன் point-to-point /30 links-ல் உள்ள routers).
+     மற்ற எல்லா routers-க்கும் route injection-க்கு பிறகு
+     unicast-based attacks தேவை.
+
+----------------------------------------------------------------
+
+A63.
+[EN] OSPF virtual link: a virtual link across a transit area can
+     connect the non-contiguous backbone, potentially bridging the
+     gap between the two OSPF domains without direct L2 adjacency.
+
+[TM] OSPF virtual link: transit area வழியா ஒரு virtual link
+     non-contiguous backbone-ஐ connect பண்ணும், நேரடி L2 adjacency
+     இல்லாமல் இரண்டு OSPF domains-ஐ bridge பண்ண வாய்ப்புண்டு.
+
+----------------------------------------------------------------
+
+A64.
+[EN] Ring, all /24 and one L2 domain: the blast radius is the
+     entire ring (all routers in the same broadcast domain), and
+     unlike a star the ring has redundant paths, so injected
+     traffic can loop/reach routers from two directions.
+
+[TM] Ring, எல்லாம் /24, ஒரே L2 domain: blast radius முழு ring
+     (same broadcast domain-ல் உள்ள எல்லா routers), star-ஐ விட
+     மாறாக ring-ல் redundant paths உண்டு, inject ஆன traffic
+     இரண்டு திசைகளிலும் loop/reach ஆகலாம்.
+
+----------------------------------------------------------------
+
+A65.
+[EN] MPLS label spoofing/injection: the attacker sends GRE
+     (Protocol 0x8847) with a crafted MPLS label to the tunnel
+     endpoint, injecting labelled packets directly into the MPLS
+     domain — enabling traffic redirection to the attacker.
+
+[TM] MPLS label spoofing/injection: attacker GRE (Protocol 0x8847)
+     உடன் crafted MPLS label tunnel endpoint-க்கு அனுப்பி, labelled
+     packets நேரடியாக MPLS domain-க்குள் inject பண்ணுவான் — traffic
+     attacker-க்கு redirect ஆகும்.
+
+----------------------------------------------------------------
+
+--- SECTION 4: MPLS IDENTIFICATION/RECONNAISSANCE (Q66–Q90) ---
+
+A66.
+[EN] nmap -sU -p 646 <target>  (and/or nmap -sS -p 646). LDP uses
+     TCP/UDP 646.
+
+[TM] nmap -sU -p 646 <target>  (மற்றும்/அல்லது nmap -sS -p 646).
+     LDP TCP/UDP 646 பயன்படுத்தும்.
+
+----------------------------------------------------------------
+
+A67.
+[EN] Two labels: 1000 (s=0, transport) and 200 (s=1, VPN/service
+     label) → indicates MPLS L3VPN (2-label stack). s=0 = not
+     bottom of stack; s=1 = bottom of stack.
+
+[TM] இரண்டு labels: 1000 (s=0, transport), 200 (s=1, VPN/service
+     label) → MPLS L3VPN (2-label stack) indicate பண்றது. s=0 =
+     bottom of stack இல்லை; s=1 = bottom of stack.
+
+----------------------------------------------------------------
+
+A68.
+[EN] Hops 3–5 show stars while hops 2 and 6 are visible → hops
+     3–5 are MPLS P routers with TTL propagation disabled /
+     ICMP filtered, so they do not return TTL-exceeded. Indicates
+     an MPLS core hiding its internal topology.
+
+[TM] Hops 3–5 stars, hops 2, 6 visible → hops 3–5 TTL propagation
+     disabled / ICMP filtered உள்ள MPLS P routers, TTL-exceeded
+     return பண்ணாது. Internal topology மறைக்கும் MPLS core
+     indicate பண்றது.
+
+----------------------------------------------------------------
+
+A69.
+[EN] Max successful payload = 1468 → path MTU = 1468 + 28
+     (20 IP + 8 ICMP) = 1496. Overhead = 1500 − 1496 = 4 bytes →
+     one MPLS label present on the path.
+
+[TM] Max success payload = 1468 → path MTU = 1468 + 28
+     (20 IP + 8 ICMP) = 1496. Overhead = 1500 − 1496 = 4 bytes →
+     path-ல் ஒரு MPLS label உள்ளது.
+
+----------------------------------------------------------------
+
+A70.
+[EN] MSS = 1452 → path MTU = 1452 + 40 (20 IP + 20 TCP) = 1492.
+     Overhead = 1500 − 1492 = 8 bytes → two MPLS labels
+     (typical L3VPN encapsulation).
+
+[TM] MSS = 1452 → path MTU = 1452 + 40 (20 IP + 20 TCP) = 1492.
+     Overhead = 1500 − 1492 = 8 bytes → இரண்டு MPLS labels
+     (வழக்கமான L3VPN encapsulation).
+
+----------------------------------------------------------------
+
+A71.
+[EN] Wireshark filter:  gre.proto == 0x8847
+     (optionally:  gre && mpls )
+
+[TM] Wireshark filter:  gre.proto == 0x8847
+     (விருப்பம்:  gre && mpls )
+
+----------------------------------------------------------------
+
+A72.
+[EN] Next-hop MTU 1492 → overhead 8 bytes → label stack depth
+     = 2 MPLS labels.
+
+[TM] Next-hop MTU 1492 → overhead 8 bytes → label stack depth
+     = 2 MPLS labels.
+
+----------------------------------------------------------------
+
+A73.
+[EN] "no mpls ip propagate-ttl" stops copying the IP TTL into the
+     MPLS label TTL and vice versa. Effect: traceroute through the
+     MPLS core shows P routers as stars (no TTL-exceeded from the
+     core), hiding the MPLS topology.
+
+[TM] "no mpls ip propagate-ttl" IP TTL-ஐ MPLS label TTL-க்கு (மற்றும்
+     நேர்மாறாக) copy பண்ணுவதை நிறுத்தும். Effect: MPLS core வழியா
+     traceroute-ல் P routers stars-ஆகத் தெரியும் (core-லிருந்து
+     TTL-exceeded இல்லை), MPLS topology மறையும்.
+
+----------------------------------------------------------------
+
+A74.
+[EN] RFC 4950 MPLS Label Stack Extension Object in an ICMP
+     TTL-exceeded reveals the full MPLS label stack (label value,
+     EXP, S, TTL) of the packet that triggered the ICMP. Attacker
+     learns label values, stack depth and forwarding info.
+
+[TM] ICMP TTL-exceeded-ல் RFC 4950 MPLS Label Stack Extension
+     Object முழு MPLS label stack-ஐ (label value, EXP, S, TTL)
+     reveal பண்ணும். Attacker label values, stack depth, forwarding
+     info தெரிந்துகொள்வான்.
+
+----------------------------------------------------------------
+
+A75.
+[EN] The S-bit marks the bottom of the stack. By counting labels
+     until S=1, the attacker determines the exact label stack depth
+     from captured traffic.
+
+[TM] S-bit stack-ன் bottom-ஐ குறிக்கும். S=1 வரை labels எண்ணி,
+     captured traffic-லிருந்து attacker exact label stack depth
+     தெரிந்துகொள்வான்.
+
+----------------------------------------------------------------
+
+A76.
+[EN] Proto 46 (RSVP) open + Proto 89 (OSPF) open → strongly
+     suggests an MPLS-TE enabled router (RSVP-TE + OSPF IGP).
+
+[TM] Proto 46 (RSVP) open + Proto 89 (OSPF) open → MPLS-TE enabled
+     router (RSVP-TE + OSPF IGP) என்று strongly suggest பண்றது.
+
+----------------------------------------------------------------
+
+A77.
+[EN] pmtu 1496 → path MTU 1496 → overhead 4 bytes → one MPLS
+     label on the path.
+
+[TM] pmtu 1496 → path MTU 1496 → overhead 4 bytes → path-ல் ஒரு
+     MPLS label.
+
+----------------------------------------------------------------
+
+A78.
+[EN] Use TCP-based probing: read the TCP MSS from the SYN-ACK
+     (MSS + 40 = path MTU), use TCP traceroute to port 80, and
+     probe with varying TCP payload sizes (DF set). MSS = 1452 →
+     MTU 1492 → 2 labels, etc.
+
+[TM] TCP-based probing: SYN-ACK-ல் TCP MSS படி (MSS + 40 = path
+     MTU), TCP traceroute to port 80, வெவ்வேறு TCP payload sizes-உடன்
+     (DF set) probe. MSS = 1452 → MTU 1492 → 2 labels, முதலியன.
+
+----------------------------------------------------------------
+
+A79.
+[EN] Overhead = 24 (GRE) + 8 (2 labels) = 32 bytes.
+     Max ICMP payload = 1500 − 32 − 28 = 1440 bytes.
+
+[TM] Overhead = 24 (GRE) + 8 (2 labels) = 32 bytes.
+     Max ICMP payload = 1500 − 32 − 28 = 1440 bytes.
+
+----------------------------------------------------------------
+
+A80.
+[EN] 3 labels = 12 bytes → path MTU = 1488 → TCP MSS = 1488 − 40
+     = 1448.
+
+[TM] 3 labels = 12 bytes → path MTU = 1488 → TCP MSS = 1488 − 40
+     = 1448.
+
+----------------------------------------------------------------
+
+A81.
+[EN] Sub-millisecond, consistent latency → hardware/ASIC label
+     switching → suggests MPLS forwarding (not software IP routing).
+
+[TM] Sub-millisecond, consistent latency → hardware/ASIC label
+     switching → MPLS forwarding (software IP routing இல்லை) என்று
+     suggest பண்றது.
+
+----------------------------------------------------------------
+
+A82.
+[EN] Private (RFC1918) IPs appearing as intermediate hops indicate
+     the provider's internal MPLS P routers (the ISP core uses
+     private addressing).
+
+[TM] Intermediate hops-ஆக private (RFC1918) IPs தெரிவது provider-ன்
+     internal MPLS P routers-ஐ indicate பண்றது (ISP core private
+     addressing பயன்படுத்தும்).
+
+----------------------------------------------------------------
+
+A83.
+[EN] Path MTU = MSS + 40  (IPv4: 20 IP header + 20 TCP header).
+
+[TM] Path MTU = MSS + 40  (IPv4: 20 IP header + 20 TCP header).
+
+----------------------------------------------------------------
+
+A84.
+[EN] nmap -sU -p 6635 <target>. A positive result means the router
+     supports MPLS-in-UDP → an attacker can inject MPLS labels via
+     UDP 6635, bypassing GRE-blocking firewalls.
+
+[TM] nmap -sU -p 6635 <target>. Positive result என்றால் router
+     MPLS-in-UDP support பண்றது → attacker UDP 6635 வழியா MPLS
+     labels inject பண்ணலாம், GRE-blocking firewalls bypass.
+
+----------------------------------------------------------------
+
+A85.
+[EN] AFI=1, SAFI=4 = Labeled Unicast → BGP-LU: the router
+     distributes MPLS labels via BGP (inter-AS / SR / BGP-LU
+     environment).
+
+[TM] AFI=1, SAFI=4 = Labeled Unicast → BGP-LU: router BGP வழியா
+     MPLS labels distribute பண்றது (inter-AS / SR / BGP-LU
+     environment).
+
+----------------------------------------------------------------
+
+A86.
+[EN] These private IPs are the provider's internal MPLS P routers
+     (the ISP MPLS core uses RFC1918 addressing).
+
+[TM] இந்த private IPs provider-ன் internal MPLS P routers
+     (ISP MPLS core RFC1918 addressing பயன்படுத்தும்).
+
+----------------------------------------------------------------
+
+A87.
+[EN] Overhead = 1500 − 1440 − 28 = 32 bytes.
+     32 = 24 (GRE) + 8 (2 MPLS labels) → GRE + 2 MPLS labels.
+
+[TM] Overhead = 1500 − 1440 − 28 = 32 bytes.
+     32 = 24 (GRE) + 8 (2 MPLS labels) → GRE + 2 MPLS labels.
+
+----------------------------------------------------------------
+
+A88.
+[EN] EtherType 0x8848 = MPLS multicast (vs 0x8847 unicast) →
+     MPLS multicast traffic (mVPN/PIM) is being carried.
+
+[TM] EtherType 0x8848 = MPLS multicast (0x8847 unicast அல்ல) →
+     MPLS multicast traffic (mVPN/PIM) carry ஆகிறது.
+
+----------------------------------------------------------------
+
+A89.
+[EN] Traceroute works but no MPLS label data → MPLS extension
+     data (RFC 4950) is not returned: TTL propagation may be
+     disabled, or ICMP extensions are filtered. MPLS is likely
+     present but hidden.
+
+[TM] Traceroute வேலை செய்யுது ஆனால் MPLS label data இல்லை → MPLS
+     extension data (RFC 4950) return ஆகவில்லை: TTL propagation
+     disabled, அல்லது ICMP extensions filtered. MPLS இருக்க
+     வாய்ப்புண்டு ஆனால் மறைந்துள்ளது.
+
+----------------------------------------------------------------
+
+A90.
+[EN] No. 224.0.0.2 is link-local and TTL=1 is never forwarded by
+     routers. From a different segment the LDP Hello will NOT reach
+     the MPLS router.
+
+[TM] இல்லை. 224.0.0.2 link-local, TTL=1 routers forward பண்ணாது.
+     வேற segment-லிருந்து LDP Hello MPLS router-ஐ reach பண்ணாது.
+
+----------------------------------------------------------------
+
+--- SECTION 5: INDIRECT ATTACK METHODS (Q91–Q120) ---
+
+A91.
+[EN] Chain: (1) inject a fake OSPF route via GRE pointing to the
+     attacker; (2) the distribution router redistributes OSPF → EIGRP;
+     (3) the fake route propagates to the MPLS router's segment;
+     (4) fix the return path; (5) establish an LDP/TCP session;
+     (6) inject fake labels.
+
+[TM] Chain: (1) GRE வழியா attacker-ஐ நோக்கிய fake OSPF route inject;
+     (2) distribution router OSPF → EIGRP redistribute;
+     (3) fake route MPLS router segment-க்கு propagate;
+     (4) return path fix; (5) LDP/TCP session establish;
+     (6) fake labels inject.
+
+----------------------------------------------------------------
+
+A92.
+[EN] Set the OSPF tag value that the redistribute route-map matches
+     (e.g., "match tag 100"); the injected LSA must carry that exact
+     tag so the redistribution policy accepts it.
+
+[TM] Redistribute route-map match பண்ணும் OSPF tag value-ஐ set
+     பண்ணணும் (உ.ம். "match tag 100"); inject ஆன LSA அந்த tag-ஐ
+     சரியாக carry பண்ணினால் மட்டுமே redistribution policy
+     ஏற்கும்.
+
+----------------------------------------------------------------
+
+A93.
+[EN] LSA Type 5 floods to all normal areas (Area 0, Area 1, Area 2).
+     It is blocked in stub, totally-stubby and NSSA areas.
+
+[TM] LSA Type 5 எல்லா normal areas-க்கும் (Area 0, Area 1, Area 2)
+     flood ஆகும். Stub, totally-stubby, NSSA areas-ல் block ஆகும்.
+
+----------------------------------------------------------------
+
+A94.
+[EN] All routers in the iBGP domain are affected, because the
+     Route Reflector reflects the route to all its clients/peers.
+
+[TM] iBGP domain-ல் உள்ள எல்லா routers-உம் affect ஆகும், ஏனெனில்
+     Route Reflector route-ஐ அதன் எல்லா clients/peers-க்கும்
+     reflect பண்ணும்.
+
+----------------------------------------------------------------
+
+A95.
+[EN] With "ip redirects" enabled, the firewall accepts the ICMP
+     Redirect and updates its route for the MPLS router's traffic to
+     use the attacker as next-hop → traffic redirected to attacker.
+
+[TM] "ip redirects" enabled ஆனால் firewall ICMP Redirect-ஐ ஏற்று,
+     MPLS router traffic-க்கான route-ஐ attacker next-hop-ஆக update
+     பண்ணும் → traffic attacker-க்கு redirect ஆகும்.
+
+----------------------------------------------------------------
+
+A96.
+[EN] LSR is a normal routed unicast packet with TTL=64 (not 1),
+     so it is forwarded hop-by-hop and survives multiple hops. The
+     LSR list forces the path through the firewall and then the MPLS
+     router, bypassing the TTL=1 link-local limitation.
+
+[TM] LSR ஒரு சாதாரண routed unicast packet, TTL=64 (1 அல்ல), hop-by-hop
+     forward ஆகி பல hops-ஐ கடக்கும். LSR list firewall வழியாகவும்
+     பிறகு MPLS router வழியாகவும் path-ஐ force பண்ணி, TTL=1
+     link-local limitation-ஐ bypass பண்ணும்.
+
+----------------------------------------------------------------
+
+A97.
+[EN] EtherIP frame: outer 802.1Q tag = 100 (native VLAN), inner
+     802.1Q tag = 200 (target VLAN). The outer tag is stripped by
+     the native-VLAN switch and the inner tag delivers the frame to
+     VLAN 200.
+
+[TM] EtherIP frame: outer 802.1Q tag = 100 (native VLAN), inner
+     802.1Q tag = 200 (target VLAN). Outer tag native-VLAN switch-ல்
+     strip ஆகி, inner tag frame-ஐ VLAN 200-க்கு deliver பண்ணும்.
+
+----------------------------------------------------------------
+
+A98.
+[EN] All LDP traffic (TCP 646) matching ACL 101 is redirected to
+     next-hop 10.0.0.99 (attacker) → the attacker intercepts/
+     hijacks LDP sessions.
+
+[TM] ACL 101-ஐ match பண்ணும் எல்லா LDP traffic (TCP 646)-உம்
+     next-hop 10.0.0.99 (attacker)-க்கு redirect ஆகும் → attacker
+     LDP sessions-ஐ intercept/hijack பண்ணுவான்.
+
+----------------------------------------------------------------
+
+A99.
+[EN] Customer A's VRF imports Customer B's RT → Customer A sees
+     Customer B's routes → the attacker in A can reach, scan and
+     intercept B's traffic → cross-tenant data breach.
+
+[TM] Customer A VRF Customer B-ன் RT import பண்ணும் → Customer A
+     Customer B-ன் routes பார்க்கும் → A-வில் உள்ள attacker B-ன்
+     traffic reach/scan/intercept பண்ணலாம் → cross-tenant data
+     breach.
+
+----------------------------------------------------------------
+
+A100.
+[EN] Yes. LSAs injected into the main Area 0 propagate through
+     the virtual link across Area 1 into the non-contiguous Area 0
+     segment.
+
+[TM] ஆம். Main Area 0-ல் inject ஆன LSAs, Area 1 வழியா virtual
+     link மூலம் non-contiguous Area 0 segment-க்கு propagate ஆகும்.
+
+----------------------------------------------------------------
+
+A101.
+[EN] MED=0 is the most preferred (lower MED wins) → the receiving
+     AS prefers the attacker's path → traffic hijack toward the
+     attacker.
+
+[TM] MED=0 மிகவும் preferred (குறைந்த MED வெற்றி) → receiving AS
+     attacker path-ஐ prefer பண்ணும் → traffic attacker-க்கு hijack.
+
+----------------------------------------------------------------
+
+A102.
+[EN] The BGP community tag enables policy matching — route
+     filtering, redistribution control, no-export, or triggering
+     specific actions (e.g., blackhole) in the BGP domain.
+
+[TM] BGP community tag policy matching-ஐ enable பண்ணும் — route
+     filtering, redistribution control, no-export, அல்லது BGP
+     domain-ல் குறிப்பிட்ட actions (உ.ம். blackhole) trigger
+     பண்ணும்.
+
+----------------------------------------------------------------
+
+A103.
+[EN] The attacker can intercept all traffic destined to Customer
+     B's leaked prefixes (routed into A's VRF), read/modify it — a
+     full cross-VPN man-in-the-middle.
+
+[TM] Customer B-ன் leaked prefixes-க்கு (A-ன் VRF-க்கு route ஆகும்)
+     போகும் எல்லா traffic-ஐயும் attacker intercept பண்ணி
+     படிக்க/மாற்றலாம் — முழு cross-VPN man-in-the-middle.
+
+----------------------------------------------------------------
+
+A104.
+[EN] Yes. Metric=1 ≤ 100, so it passes the distribute-list filter
+     and is redistributed successfully.
+
+[TM] ஆம். Metric=1 ≤ 100, distribute-list filter-ஐ கடந்து வெற்றிகரமாக
+     redistribute ஆகும்.
+
+----------------------------------------------------------------
+
+A105.
+[EN] Loop prevention: route tags, split horizon, administrative
+     distance, AS-path. An attacker can exploit it by stripping/
+     spoofing tags or manipulating metrics to create routing loops
+     → DoS.
+
+[TM] Loop prevention: route tags, split horizon, administrative
+     distance, AS-path. Attacker tags-ஐ strip/spoof பண்ணியோ
+     metrics manipulate பண்ணியோ routing loops உருவாக்கி → DoS
+     செய்யலாம்.
+
+----------------------------------------------------------------
+
+A106.
+[EN] LOCAL_PREF=1000 is higher and therefore preferred → iBGP
+     peers prefer the attacker's fake route → traffic hijacked.
+
+[TM] LOCAL_PREF=1000 அதிகம், அதனால் preferred → iBGP peers
+     attacker-ன் fake route-ஐ prefer பண்ணும் → traffic hijack.
+
+----------------------------------------------------------------
+
+A107.
+[EN] No. A /32 is longer than /24, so the route-map's prefix-length
+     filter drops it — the /32 return-path fix is NOT redistributed
+     and the attack fails.
+
+[TM] இல்லை. /32 /24-ஐ விட நீளமானது, route-map-ன் prefix-length
+     filter அதை drop பண்ணும் — /32 return-path fix redistribute
+     ஆகாது, attack fail ஆகும்.
+
+----------------------------------------------------------------
+
+A108.
+[EN] No. EIGRP stub routers only accept summary/default routes, so
+     a specific /32 route is not installed.
+
+[TM] இல்லை. EIGRP stub routers summary/default routes மட்டுமே
+     ஏற்கும், குறிப்பிட்ட /32 route install ஆகாது.
+
+----------------------------------------------------------------
+
+A109.
+[EN] inter-AS Option A = back-to-back VRFs on the ASBRs: each AS
+     has its own MPLS domain and labels are not exchanged across
+     the AS boundary. Therefore label spoofing from one AS cannot
+     reach another AS's MPLS domain.
+
+[TM] inter-AS Option A = ASBRs-ல் back-to-back VRFs: ஒவ்வொரு AS-க்கும்
+     தனி MPLS domain, AS boundary-ஐ கடந்து labels பரிமாறப்படாது.
+     அதனால் ஒரு AS-லிருந்து label spoofing மற்றொரு AS-ன் MPLS
+     domain-ஐ reach பண்ணாது.
+
+----------------------------------------------------------------
+
+A110.
+[EN] Traffic to 192.168.1.1 (B's leaked prefix) is forwarded with
+     Customer B's VPN label (the label B's egress PE advertised) →
+     the egress PE delivers it into B's VRF.
+
+[TM] 192.168.1.1-க்கு (B-ன் leaked prefix) traffic Customer B-ன்
+     VPN label-உடன் (B-ன் egress PE advertise பண்ண label) forward
+     ஆகும் → egress PE அதை B-ன் VRF-க்கு deliver பண்ணும்.
+
+----------------------------------------------------------------
+
+--- SECTION 6: ENCAPSULATION CHAIN ATTACKS (Q111–Q130) ---
+
+A111.
+[EN] This is an MPLS label spoofing/injection attack. It injects a
+     crafted MPLS-labelled packet directly into the customer VPN
+     (10.0.0.50), bypassing MPLS edge controls → unauthorized
+     access/traffic injection into the VPN.
+
+[TM] இது MPLS label spoofing/injection attack. Crafted MPLS-labelled
+     packet-ஐ நேரடியாக customer VPN-க்குள் (10.0.0.50) inject
+     பண்ணி, MPLS edge controls bypass → VPN-க்குள் unauthorized
+     access/traffic injection.
+
+----------------------------------------------------------------
+
+A112.
+[EN] It crosses (1) the VLAN boundary (VLAN 10 → VLAN 20) and
+     (2) the L2 → MPLS boundary (into the MPLS domain via label 200).
+
+[TM] இது (1) VLAN boundary (VLAN 10 → VLAN 20), மற்றும்
+     (2) L2 → MPLS boundary (label 200 வழியா MPLS domain-க்குள்)
+     இரண்டையும் cross பண்ணும்.
+
+----------------------------------------------------------------
+
+A113.
+[EN] EtherIP over MPLS over GRE, outermost → innermost:
+       [Outer IP][GRE][MPLS label(s)][EtherIP]
+       [Ethernet][MPLS label][Inner IP payload]
+
+[TM] EtherIP over MPLS over GRE, outermost → innermost:
+       [Outer IP][GRE][MPLS label(s)][EtherIP]
+       [Ethernet][MPLS label][Inner IP payload]
+
+----------------------------------------------------------------
+
+A114.
+[EN] GRE proto 0x0800 = IPv4 payload → the router decapsulates
+     GRE and routes the inner IPv4 packet normally. GRE proto
+     0x8847 = MPLS payload → the router decapsulates GRE and
+     processes the MPLS label (LFIB lookup), not IP.
+
+[TM] GRE proto 0x0800 = IPv4 payload → router GRE decapsulate
+     பண்ணி inner IPv4 packet-ஐ சாதாரணமாக route பண்ணும். GRE proto
+     0x8847 = MPLS payload → router GRE decapsulate பண்ணி MPLS
+     label-ஐ (LFIB lookup) process பண்ணும், IP அல்ல.
+
+----------------------------------------------------------------
+
+A115.
+[EN] With MPLS-in-UDP enabled, the router decapsulates UDP 6635,
+     processes the MPLS label and forwards the packet into the MPLS
+     domain → label injection via UDP, bypassing GRE-blocking
+     firewalls.
+
+[TM] MPLS-in-UDP enabled ஆனால் router UDP 6635 decapsulate பண்ணி,
+     MPLS label process பண்ணி packet-ஐ MPLS domain-க்குள் forward
+     பண்ணும் → UDP வழியா label injection, GRE-blocking firewalls
+     bypass.
+
+----------------------------------------------------------------
+
+A116.
+[EN] IDS/IPS sees only encrypted ESP (cannot inspect the inner
+     MPLS+GRE). The firewall sees ESP (proto 50), which is permitted
+     for VPN traffic → the attack is hidden inside ESP.
+
+[TM] IDS/IPS encrypted ESP-ஐ மட்டும் பார்க்கும் (inner MPLS+GRE
+     inspect பண்ண முடியாது). Firewall ESP (proto 50) பார்க்கும்,
+     அது VPN traffic-க்கு permit → attack ESP-க்குள் மறைந்துள்ளது.
+
+----------------------------------------------------------------
+
+A117.
+[EN] VNI identifies the VXLAN segment/tenant. The attacker uses
+     the VNI to target a specific tenant/segment and deliver an
+     MPLS-labelled frame into that VNI's domain → tenant isolation
+     bypass.
+
+[TM] VNI VXLAN segment/tenant-ஐ identify பண்ணும். Attacker VNI
+     பயன்படுத்தி குறிப்பிட்ட tenant/segment-ஐ target பண்ணி,
+     MPLS-labelled frame அந்த VNI domain-க்குள் deliver பண்ணுவான்
+     → tenant isolation bypass.
+
+----------------------------------------------------------------
+
+A118.
+[EN] Overhead = 24 (GRE) + 4 (1 label) + 56 (ESP) = 84 bytes.
+     Effective MTU = 1500 − 84 = 1416.
+     TCP MSS = 1416 − 40 = 1376.
+
+[TM] Overhead = 24 (GRE) + 4 (1 label) + 56 (ESP) = 84 bytes.
+     Effective MTU = 1500 − 84 = 1416.
+     TCP MSS = 1416 − 40 = 1376.
+
+----------------------------------------------------------------
+
+A119.
+[EN] Label 3 (Implicit Null) appearing means PHP is in use: the
+     egress PE advertised implicit-null, so the penultimate router
+     pops the label before the last hop.
+
+[TM] Label 3 (Implicit Null) தெரிவது PHP use-ல் உள்ளது என்று
+     பொருள்: egress PE implicit-null advertise பண்ணது, அதனால்
+     penultimate router கடைசி hop-க்கு முன் label-ஐ pop பண்ணும்.
+
+----------------------------------------------------------------
+
+A120.
+[EN] After stripping the outer IP, the router expects the IPv4
+     version nibble 0x45 but sees MPLS label bits (an invalid IP
+     version) → it treats it as malformed and drops the packet (or
+     misinterprets it) — this is the IP-in-IP/MPLS conflict.
+
+[TM] Outer IP strip பண்ணிய பிறகு router IPv4 version nibble 0x45
+     எதிர்பார்க்கும், ஆனால் MPLS label bits (invalid IP version)
+     தெரியும் → malformed என்று packet-ஐ drop பண்ணும் (அல்லது
+     தவறாக interpret பண்ணும்) — இதுதான் IP-in-IP/MPLS conflict.
+
+----------------------------------------------------------------
+
+A121.
+[EN] GRE proto 0x8848 = MPLS multicast. The network carries mVPN/
+     PIM multicast over MPLS — indicating a multicast-enabled MPLS
+     (mVPN) deployment.
+
+[TM] GRE proto 0x8848 = MPLS multicast. Network mVPN/PIM multicast-ஐ
+     MPLS வழியா carry பண்றது — multicast-enabled MPLS (mVPN)
+     deployment indicate பண்றது.
+
+----------------------------------------------------------------
+
+A122.
+[EN] [Outer IP: attacker src → GRE endpoint dst]
+     [EtherIP: protocol]
+     [Ethernet: src/dst MAC + optional 802.1Q tags]
+     [MPLS Label: target label value]
+     [Inner IP: target host IP]
+
+[TM] [Outer IP: attacker src → GRE endpoint dst]
+     [EtherIP: protocol]
+     [Ethernet: src/dst MAC + விருப்ப 802.1Q tags]
+     [MPLS Label: target label value]
+     [Inner IP: target host IP]
+
+----------------------------------------------------------------
+
+A123.
+[EN] IP-based ACLs inspect the IP header. MPLS-forwarded packets
+     are switched by the LFIB using the label — the inner IP header
+     is not examined in the core, so label-switched traffic bypasses
+     IP ACLs.
+
+[TM] IP-based ACLs IP header-ஐ inspect பண்ணும். MPLS-forwarded
+     packets LFIB label வைத்து switch ஆகும் — core-ல் inner IP
+     header பார்க்கப்படாது, அதனால் label-switched traffic IP ACLs-ஐ
+     bypass பண்ணும்.
+
+----------------------------------------------------------------
+
+A124.
+[EN] 3 labels = 12 bytes → effective MTU = 1488. Max IP payload
+     = 1488 − 20 (IP header) = 1468 bytes.
+
+[TM] 3 labels = 12 bytes → effective MTU = 1488. Max IP payload
+     = 1488 − 20 (IP header) = 1468 bytes.
+
+----------------------------------------------------------------
+
+A125.
+[EN] Each PATH reserves 10 Gbps; total 40 Gbps → after 4 messages
+     capacity is exhausted. The 5th (and legitimate) PATH/reservation
+     then fails.
+
+[TM] ஒவ்வொரு PATH-உம் 10 Gbps reserve; total 40 Gbps → 4 messages-க்கு
+     பிறகு capacity தீர்ந்துவிடும். 5-வது (மற்றும் legitimate)
+     PATH/reservation fail ஆகும்.
+
+----------------------------------------------------------------
+
+A126.
+[EN] Ingress PE pushes the MPLS label onto the GRE packet (label
+     imposition). Egress PE pops the label (PHP/label disposition)
+     and the GRE packet is decapsulated.
+
+[TM] Ingress PE GRE packet-மேல் MPLS label push பண்ணும் (label
+     imposition). Egress PE label-ஐ pop பண்ணும் (PHP/label
+     disposition), GRE packet decapsulate ஆகும்.
+
+----------------------------------------------------------------
+
+A127.
+[EN] Broadcast MAC (FF:FF:FF:FF:FF:FF) floods the frame to all
+     ports in the VLAN → reaches every device (noisy, less precise,
+     may be dropped by port security). Unicast MAC is targeted and
+     stealthier but requires knowing the target's MAC.
+
+[TM] Broadcast MAC (FF:FF:FF:FF:FF:FF) frame-ஐ VLAN-ல் உள்ள எல்லா
+     ports-க்கும் flood பண்ணும் → எல்லா devices-க்கும் போகும்
+     (noisy, குறைந்த துல்லியம், port security drop பண்ணலாம்).
+     Unicast MAC targeted & stealthier ஆனால் target MAC தெரியணும்.
+
+----------------------------------------------------------------
+
+A128.
+[EN] Every router's LFIB is updated (FEC 10.0.0.0/8 → label 99999,
+     next-hop attacker). The bypassed control: normal IP routing/
+     RIB checks and IP-based ACLs — label-based forwarding ignores
+     them.
+
+[TM] ஒவ்வொரு router-ன் LFIB-உம் update ஆகும் (FEC 10.0.0.0/8 →
+     label 99999, next-hop attacker). Bypass ஆன control: சாதாரண
+     IP routing/RIB checks மற்றும் IP-based ACLs — label-based
+     forwarding அவற்றை ignore பண்ணும்.
+
+----------------------------------------------------------------
+
+A129.
+[EN] Cisco IOS command:
+       mpls ldp neighbor <ip> password <password>
+     (with "mpls ldp password required" globally). MD5 authentication
+     means an injected LDP Hello/session without the correct key is
+     rejected → the GRE→LDP injection chain is blocked.
+
+[TM] Cisco IOS command:
+       mpls ldp neighbor <ip> password <password>
+     ("mpls ldp password required" globally). MD5 authentication
+     என்பதால் சரியான key இல்லாத injected LDP Hello/session reject
+     ஆகும் → GRE→LDP injection chain block ஆகும்.
+
+----------------------------------------------------------------
+
+A130.
+[EN] Outer → inner:
+       - GRE: traverses internet / firewall to reach the tunnel
+         endpoint.
+       - MPLS: enters the MPLS domain and is label-switched.
+       - EtherIP: injects an L2 frame across a VLAN/subnet.
+       - Inner Ethernet + MPLS: delivers into the target L2 domain
+         / VRF.
+
+[TM] Outer → inner:
+       - GRE: internet / firewall கடந்து tunnel endpoint-ஐ அடையும்.
+       - MPLS: MPLS domain-க்குள் நுழைந்து label-switch ஆகும்.
+       - EtherIP: VLAN/subnet கடந்து L2 frame inject பண்ணும்.
+       - Inner Ethernet + MPLS: target L2 domain / VRF-க்குள்
+         deliver பண்ணும்.
+
+----------------------------------------------------------------
+
+--- SECTION 7: MPLS MULTICAST & PIM (Q131–Q150) ---
+
+A131.
+[EN] 224.0.0.0/24 is link-local multicast; it is delivered by
+     L2 multicast/broadcast (TTL=1) and never routed, so neither
+     LDP Hello nor OSPF Hello needs PIM inside the tunnel.
+
+[TM] 224.0.0.0/24 link-local multicast; L2 multicast/broadcast
+     (TTL=1) மூலம் deliver ஆகும், ஒருபோதும் route ஆகாது, அதனால்
+     LDP Hello மற்றும் OSPF Hello இரண்டுக்கும் tunnel-க்குள் PIM
+     தேவையில்லை.
+
+----------------------------------------------------------------
+
+A132.
+[EN] RSVP uses TTL=255 so that messages must come from a directly
+     connected neighbour (an off-link spoofed message would have a
+     lower TTL). This is an integrity/anti-spoofing mechanism, not
+     link-local delivery.
+
+[TM] RSVP TTL=255 பயன்படுத்துவதால் messages நேரடி neighbour-லிருந்து
+     மட்டும் வர வேண்டும் (off-link spoofed message-க்கு TTL குறைவாக
+     இருக்கும்). இது integrity/anti-spoofing mechanism, link-local
+     delivery அல்ல.
+
+----------------------------------------------------------------
+
+A133.
+[EN] Ironically, no. PIM Hello (224.0.0.13) is link-local multicast
+     and is delivered without PIM itself. PIM is needed for actual
+     multicast data forwarding, not for Hello delivery.
+
+[TM] வேடிக்கையாக, இல்லை. PIM Hello (224.0.0.13) link-local multicast,
+     PIM இல்லாமலேயே deliver ஆகும். PIM உண்மையான multicast data
+     forwarding-க்குத் தேவை, Hello delivery-க்கு அல்ல.
+
+----------------------------------------------------------------
+
+A134.
+[EN] A fake mLDP P2MP FEC hijacks the multicast P-tunnel: the
+     attacker becomes part of or redirects the multicast tree, so
+     multicast traffic is misdirected, intercepted or blackholed.
+
+[TM] Fake mLDP P2MP FEC multicast P-tunnel-ஐ hijack பண்ணும்:
+     attacker multicast tree-ல் பங்கேற்க அல்லது redirect பண்ண,
+     multicast traffic தவறாக வழிநடத்த/இடைமறிக்க/blackhole ஆகும்.
+
+----------------------------------------------------------------
+
+A135.
+[EN] The IGMP Membership Report to 224.0.0.1 joins the all-hosts
+     group (the report body specifies the actual group). With PIM
+     sparse-mode, PIM plays a role: it builds the (*,G) tree for the
+     joined group.
+
+[TM] 224.0.0.1-க்கான IGMP Membership Report all-hosts group-ஐ join
+     பண்ணும் (report body உண்மையான group-ஐ specify பண்ணும்). PIM
+     sparse-mode-ல் PIM role play பண்ணும்: join ஆன group-க்கு
+     (*,G) tree build பண்ணும்.
+
+----------------------------------------------------------------
+
+A136.
+[EN] The boundary is 224.0.0.0/24 (link-local, not forwarded, no
+     PIM) vs 224.0.0.0/4 globally-scoped multicast (239.x.x.x),
+     which is routed and requires PIM.
+
+[TM] Boundary: 224.0.0.0/24 (link-local, forward ஆகாது, PIM இல்லை)
+     vs 224.0.0.0/4 globally-scoped multicast (239.x.x.x) — route
+     ஆகும், PIM தேவை.
+
+----------------------------------------------------------------
+
+A137.
+[EN] The Register creates (S,G) state at the RP with the attacker
+     as the source. Legitimate traffic for 239.5.5.5 may be
+     redirected/duplicated to the attacker or disrupted → multicast
+     hijack/DoS.
+
+[TM] Register RP-ல் attacker-ஐ source-ஆகக் கொண்ட (S,G) state
+     உருவாக்கும். 239.5.5.5-க்கான legitimate traffic attacker-க்கு
+     redirect/duplicate ஆகலாம் அல்லது disrupt ஆகலாம் → multicast
+     hijack/DoS.
+
+----------------------------------------------------------------
+
+A138.
+[EN] Sparse-mode: uses an RP, explicit joins, (*,G)/(S,G) trees,
+     efficient (traffic only where needed). Dense-mode: flood-and-
+     prune, no RP, bandwidth-heavy. Enterprise MPLS networks
+     commonly use PIM sparse-mode.
+
+[TM] Sparse-mode: RP பயன்படுத்தும், explicit joins, (*,G)/(S,G)
+     trees, efficient (தேவையான இடத்தில் மட்டும் traffic).
+     Dense-mode: flood-and-prune, RP இல்லை, அதிக bandwidth.
+     Enterprise MPLS networks-ல் பொதுவாக PIM sparse-mode.
+
+----------------------------------------------------------------
+
+A139.
+[EN] 50 × 1 Gbps = 50 Gbps requested vs 20 Gbps total → bandwidth
+     is exhausted. The 51st PATH (and legitimate reservations) is
+     rejected with insufficient bandwidth → DoS.
+
+[TM] 50 × 1 Gbps = 50 Gbps request, total 20 Gbps → bandwidth
+     தீர்ந்துவிடும். 51-வது PATH (மற்றும் legitimate reservations)
+     insufficient bandwidth-ஆல் reject ஆகும் → DoS.
+
+----------------------------------------------------------------
+
+A140.
+[EN] No PIM needed — 224.0.0.251 is link-local. Most affected:
+     macOS/iOS (Bonjour) and Windows (mDNS/LLMNR), plus Linux
+     (avahi).
+
+[TM] PIM தேவையில்லை — 224.0.0.251 link-local. அதிகம் affect
+     ஆவது: macOS/iOS (Bonjour), Windows (mDNS/LLMNR), மேலும்
+     Linux (avahi).
+
+----------------------------------------------------------------
+
+--- SECTION 8: DETECTION & DEFENSE (Q141–Q160) ---
+
+A141.
+[EN] Block IP protocols 47 (GRE), 4 (IP-in-IP) and 97 (EtherIP) at
+     the internet-facing interface. A practical minimal ACL set:
+       deny gre any any
+       deny 4 any any
+       deny 97 any any
+     (If a single entry is required, a default-deny with only
+     strictly required permits.)
+
+[TM] Internet-facing interface-ல் IP protocols 47 (GRE), 4
+     (IP-in-IP), 97 (EtherIP) block பண்ணணும். நடைமுறை minimal ACL:
+       deny gre any any
+       deny 4 any any
+       deny 97 any any
+     (ஒரே entry தேவைப்பட்டால், கண்டிப்பாக தேவையான permits மட்டும்
+     கொண்ட default-deny.)
+
+----------------------------------------------------------------
+
+A142.
+[EN] With LDP MD5 enabled, the injected Hello/session does not
+     carry the correct TCP MD5 signature → the session is rejected
+     and cannot be established.
+
+[TM] LDP MD5 enabled ஆனால் inject ஆன Hello/session சரியான TCP
+     MD5 signature carry பண்ணாது → session reject ஆகி establish
+     ஆகாது.
+
+----------------------------------------------------------------
+
+A143.
+[EN] With OSPF MD5 authentication, the injected LSA without a valid
+     MD5 digest is rejected by the OSPF process → the LSA is not
+     accepted into the LSDB.
+
+[TM] OSPF MD5 authentication-ல் சரியான MD5 digest இல்லாத injected
+     LSA OSPF process-ஆல் reject ஆகும் → LSA LSDB-ல் ஏற்கப்படாது.
+
+----------------------------------------------------------------
+
+A144.
+[EN] The fake PATH without the correct RSVP MD5 key is rejected →
+     no bandwidth is reserved.
+
+[TM] சரியான RSVP MD5 key இல்லாத fake PATH reject ஆகும் →
+     bandwidth reserve ஆகாது.
+
+----------------------------------------------------------------
+
+A145.
+[EN] No. "no mpls ip" on the internet-facing interface does not
+     stop the attack: GRE is decapsulated and the inner packet is
+     delivered on the LAN-facing interface, where MPLS/label
+     injection can still occur. The tunnel/GRE itself must be
+     controlled.
+
+[TM] இல்லை. Internet-facing interface-ல் "no mpls ip" attack-ஐ
+     நிறுத்தாது: GRE decapsulate ஆகி inner packet LAN-facing
+     interface-ல் deliver ஆகும், அங்கே MPLS/label injection
+     தொடரலாம். Tunnel/GRE-ஐயே control பண்ணணும்.
+
+----------------------------------------------------------------
+
+A146.
+[EN] It indicates an MPLS-over-GRE injection attack in progress.
+     Immediate actions: block/shun GRE (proto 47) at the firewall,
+     ACL-deny the source, enable LDP MD5, clear suspicious LDP
+     neighbours/LFIB entries, and investigate.
+
+[TM] MPLS-over-GRE injection attack நடப்பதை indicate பண்றது.
+     உடனடி நடவடிக்கை: firewall-ல் GRE (proto 47) block/shun,
+     source-ஐ ACL-deny, LDP MD5 enable, suspicious LDP neighbours/
+     LFIB entries clear, விசாரணை.
+
+----------------------------------------------------------------
+
+A147.
+[EN] It hides the MPLS core topology: P router hops, label values,
+     stack depth and internal IPs are not revealed by traceroute,
+     so the attacker cannot map the MPLS network.
+
+[TM] MPLS core topology-ஐ மறைக்கும்: P router hops, label values,
+     stack depth, internal IPs traceroute-ல் தெரியாது, அதனால்
+     attacker MPLS network-ஐ map பண்ண முடியாது.
+
+----------------------------------------------------------------
+
+A148.
+[EN] No. The OSPF (proto 89) IDS rule will not catch MPLS label
+     spoofing, because that attack uses EtherType 0x8847 / label
+     forwarding and generates no OSPF traffic. A separate MPLS/
+     EtherType-based rule is needed.
+
+[TM] இல்லை. OSPF (proto 89) IDS rule MPLS label spoofing-ஐ catch
+     பண்ணாது, ஏனெனில் அந்த attack EtherType 0x8847 / label
+     forwarding பயன்படுத்தும், OSPF traffic இல்லை. தனி MPLS/
+     EtherType-based rule தேவை.
+
+----------------------------------------------------------------
+
+A149.
+[EN] Cisco command:  mpls label range <min> <max>
+     This restricts the label range and prevents the use of very
+     high label values (like 99999).
+
+[TM] Cisco command:  mpls label range <min> <max>
+     இது label range-ஐ restrict பண்ணி மிக உயர்ந்த label values
+     (99999 போன்றவை) பயன்படுத்துவதைத் தடுக்கும்.
+
+----------------------------------------------------------------
+
+A150.
+[EN] Attack chain: internet GRE → rogue LDP session (10.0.0.99) →
+     fake LFIB entry 10.0.0.0/8 → label 99999 → traffic blackholed/
+     redirected.
+     Immediate containment: block GRE at the internet edge, clear
+     the rogue LDP neighbour/session, remove the fake LFIB entries,
+     enable LDP MD5, and investigate the source.
+
+[TM] Attack chain: internet GRE → rogue LDP session (10.0.0.99) →
+     fake LFIB entry 10.0.0.0/8 → label 99999 → traffic blackholed/
+     redirected.
+     உடனடி containment: internet edge-ல் GRE block, rogue LDP
+     neighbour/session clear, fake LFIB entries remove, LDP MD5
+     enable, source விசாரணை.
+
+----------------------------------------------------------------
+
+--- SECTION 9: MTU CALCULATIONS (Q151–Q170) ---
+
+A151.
+[EN] Max payload 1472 → path MTU = 1472 + 28 = 1500 → overhead
+     0 bytes → plain Ethernet, no encapsulation.
+
+[TM] Max payload 1472 → path MTU = 1472 + 28 = 1500 → overhead
+     0 bytes → plain Ethernet, encapsulation இல்லை.
+
+----------------------------------------------------------------
+
+A152.
+[EN] 1 MPLS label = 4 bytes → path MTU = 1496 → max ping payload
+     = 1496 − 28 = 1468.
+
+[TM] 1 MPLS label = 4 bytes → path MTU = 1496 → max ping payload
+     = 1496 − 28 = 1468.
+
+----------------------------------------------------------------
+
+A153.
+[EN] MSS = 1436 → path MTU = 1436 + 40 = 1476 → overhead
+     = 1500 − 1476 = 24 bytes → GRE encapsulation.
+
+[TM] MSS = 1436 → path MTU = 1436 + 40 = 1476 → overhead
+     = 1500 − 1476 = 24 bytes → GRE encapsulation.
+
+----------------------------------------------------------------
+
+A154.
+[EN] Overhead = 24 (GRE) + 12 (3 labels) = 36 bytes.
+     (a) Effective MTU = 1500 − 36 = 1464
+     (b) Max ICMP payload = 1464 − 28 = 1436
+     (c) TCP MSS = 1464 − 40 = 1424
+
+[TM] Overhead = 24 (GRE) + 12 (3 labels) = 36 bytes.
+     (a) Effective MTU = 1500 − 36 = 1464
+     (b) Max ICMP payload = 1464 − 28 = 1436
+     (c) TCP MSS = 1464 − 40 = 1424
+
+----------------------------------------------------------------
+
+A155.
+[EN] Overhead = 1500 − 1468 = 32 bytes.
+     Combination: 24 (GRE) + 8 (2 MPLS labels) = 32, or
+     20 (IP-in-IP) + 12 (3 MPLS labels) = 32.
+
+[TM] Overhead = 1500 − 1468 = 32 bytes.
+     Combination: 24 (GRE) + 8 (2 MPLS labels) = 32, அல்லது
+     20 (IP-in-IP) + 12 (3 MPLS labels) = 32.
+
+----------------------------------------------------------------
+
+A156.
+[EN] Overhead = 1500 − 1444 = 56 bytes.
+     (a) 56 bytes
+     (b) e.g., 24 (GRE) + 8 (2 MPLS labels) + 24 (an additional
+         tunnel such as a second GRE/IPSec AH)
+     (c) TCP MSS = 1444 − 40 = 1404
+
+[TM] Overhead = 1500 − 1444 = 56 bytes.
+     (a) 56 bytes
+     (b) உ.ம். 24 (GRE) + 8 (2 MPLS labels) + 24 (கூடுதல் tunnel —
+         இரண்டாவது GRE/IPSec AH)
+     (c) TCP MSS = 1444 − 40 = 1404
+
+----------------------------------------------------------------
+
+A157.
+[EN] GRE 24 + 2 MPLS labels 8 = 32 bytes overhead.
+
+[TM] GRE 24 + 2 MPLS labels 8 = 32 bytes overhead.
+
+----------------------------------------------------------------
+
+A158.
+[EN] Overhead = 20 (IP-in-IP) + 4 (1 label) = 24 bytes.
+     Max ping payload = 1500 − 24 − 28 = 1448.
+
+[TM] Overhead = 20 (IP-in-IP) + 4 (1 label) = 24 bytes.
+     Max ping payload = 1500 − 24 − 28 = 1448.
+
+----------------------------------------------------------------
+
+A159.
+[EN] The 28-byte drop = newly encountered encapsulation overhead:
+     e.g., 24 (GRE) + 4 (1 MPLS label) = 28, or 20 (IP-in-IP) +
+     8 (2 MPLS labels) = 28. Indicates an additional tunnel/label
+     hop appeared on the path.
+
+[TM] 28-byte drop = புதிதாக எதிர்கொண்ட encapsulation overhead:
+     உ.ம். 24 (GRE) + 4 (1 MPLS label) = 28, அல்லது 20 (IP-in-IP) +
+     8 (2 MPLS labels) = 28. Path-ல் கூடுதல் tunnel/label hop
+     தோன்றியதை indicate பண்றது.
+
+----------------------------------------------------------------
+
+A160.
+[EN] Plain Ethernet:  MTU=1500, MSS=1460
+     1 MPLS label:    MTU=1496, MSS=1456
+     2 MPLS labels:   MTU=1492, MSS=1452
+     GRE only:        MTU=1476, MSS=1436
+     GRE+1 MPLS:      MTU=1472, MSS=1432
+     GRE+2 MPLS:      MTU=1468, MSS=1428
+
+[TM] Plain Ethernet:  MTU=1500, MSS=1460
+     1 MPLS label:    MTU=1496, MSS=1456
+     2 MPLS labels:   MTU=1492, MSS=1452
+     GRE only:        MTU=1476, MSS=1436
+     GRE+1 MPLS:      MTU=1472, MSS=1432
+     GRE+2 MPLS:      MTU=1468, MSS=1428
+
+----------------------------------------------------------------
+
+--- SECTION 10: ADVANCED CHAIN SCENARIOS (Q161–Q200) ---
+
+A161.
+[EN] Phases:
+     1. Recon: mtr --mpls, MSS/MTU probing, nmap.
+     2. GRE tunnel to the mGRE hub.
+     3. LDP Hello (224.0.0.2) multicast injection (no auth).
+     4. OSPF route injection to fix the return path.
+     5. LDP TCP session (TCP 646) established.
+     6. Fake label mappings injected.
+     7. LFIB poisoning on all MPLS routers.
+     8. Traffic redirection/interception → full MPLS control.
+
+[TM] Phases:
+     1. Recon: mtr --mpls, MSS/MTU probing, nmap.
+     2. mGRE hub-க்கு GRE tunnel.
+     3. LDP Hello (224.0.0.2) multicast injection (auth இல்லை).
+     4. Return path fix-க்கு OSPF route injection.
+     5. LDP TCP session (TCP 646) establish.
+     6. Fake label mappings inject.
+     7. எல்லா MPLS routers-லும் LFIB poisoning.
+     8. Traffic redirection/interception → full MPLS control.
+
+----------------------------------------------------------------
+
+A162.
+[EN] A single config change such as enabling redistribution between
+     the two OSPF processes (or adding an OSPF virtual link / route
+     leaking) would bridge the segments and make the indirect attack
+     possible. Such config could be discovered via SNMP.
+
+[TM] இரண்டு OSPF processes-க்கிடையே redistribution enable பண்ணுவது
+     (அல்லது OSPF virtual link / route leaking சேர்ப்பது) போன்ற ஒரே
+     config change segments-ஐ bridge பண்ணி indirect attack-ஐ
+     சாத்தியமாக்கும். இது SNMP வழியா discover ஆகலாம்.
+
+----------------------------------------------------------------
+
+A163.
+[EN] When the LDP session drops, LDP withdraws its labels and the
+     fake LFIB entry is removed (after hold-time expiry) → traffic
+     is restored.
+
+[TM] LDP session drop ஆனதும் LDP அதன் labels-ஐ withdraw பண்ணும்,
+     fake LFIB entry (hold-time முடிந்த பிறகு) remove ஆகும் →
+     traffic restore ஆகும்.
+
+----------------------------------------------------------------
+
+A164.
+[EN] Yes, potentially. The leaked route makes 172.31.0.1 reachable
+     via Customer B's VPN label; packets are forwarded using B's
+     VPN label into B's VRF, so the attacker can attempt a BGP
+     session with that peer if reachable.
+
+[TM] ஆம், வாய்ப்புண்டு. Leaked route 172.31.0.1-ஐ Customer B-ன்
+     VPN label வழியா reachable ஆக்கும்; packets B-ன் VPN label
+     வைத்து B-ன் VRF-க்குள் forward ஆகும், அதனால் reachable என்றால்
+     attacker அந்த peer-உடன் BGP session attempt பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A165.
+[EN] The TE tunnel is rerouted through the ATTACKER (R1→ATTACKER→R3)
+     → traffic engineering hijack: traffic goes through the attacker,
+     enabling interception/DoS.
+
+[TM] TE tunnel ATTACKER வழியா reroute ஆகும் (R1→ATTACKER→R3) →
+     traffic engineering hijack: traffic attacker வழியா போகும்,
+     interception/DoS சாத்தியம்.
+
+----------------------------------------------------------------
+
+A166.
+[EN] The receiving router installs label 12345 for 10.0.0.0/8 in
+     its LFIB with next-hop = attacker → traffic to 10.0.0.0/8 is
+     redirected to the attacker.
+
+[TM] Receiving router LFIB-ல் 10.0.0.0/8-க்கு label 12345-ஐ
+     next-hop = attacker உடன் install பண்ணும் → 10.0.0.0/8 traffic
+     attacker-க்கு redirect ஆகும்.
+
+----------------------------------------------------------------
+
+A167.
+[EN] Spokes prefer the attacker's more specific route (longest-
+     prefix match wins) → traffic is redirected to the attacker.
+
+[TM] Spokes attacker-ன் more specific route-ஐ prefer பண்ணும்
+     (longest-prefix match வெற்றி) → traffic attacker-க்கு redirect
+     ஆகும்.
+
+----------------------------------------------------------------
+
+A168.
+[EN] No. IS-IS runs directly on L2 (not IP), so IP-based GRE
+     injection cannot inject IS-IS directly. An alternative is L2
+     access (EtherIP, VLAN hopping, STP takeover) to inject IS-IS
+     frames, or compromising an IS-IS router.
+
+[TM] இல்லை. IS-IS நேரடியாக L2-ல் run ஆகும் (IP அல்ல), அதனால்
+     IP-based GRE injection IS-IS-ஐ நேரடியாக inject பண்ண முடியாது.
+     மாற்று: L2 access (EtherIP, VLAN hopping, STP takeover) மூலம்
+     IS-IS frames inject, அல்லது IS-IS router-ஐ compromise பண்ணுவது.
+
+----------------------------------------------------------------
+
+A169.
+[EN] Detectable at Phase 4 (fake label mapping) when the LFIB
+     changes, because a basic NMS that monitors LFIB changes will
+     see the new label entries. (Phase 3 may also raise LDP session
+     alarms.)
+
+[TM] Phase 4-ல் (fake label mapping) LFIB மாறும்போது detectable
+     ஆகும், ஏனெனில் LFIB changes monitor பண்ற basic NMS புது label
+     entries-ஐப் பார்க்கும். (Phase 3-ல் LDP session alarms-உம்
+     எழலாம்.)
+
+----------------------------------------------------------------
+
+A170.
+[EN] No. Without LDP, the GRE→LDP chain does not work. Alternative:
+     hijack/establish a rogue BGP session via route injection and
+     advertise labeled routes with BGP-LU → label injection via BGP.
+
+[TM] இல்லை. LDP இல்லாமல் GRE→LDP chain வேலை செய்யாது. மாற்று:
+     route injection வழியா rogue BGP session hijack/establish
+     பண்ணி, BGP-LU வழியா labeled routes advertise → BGP வழியா label
+     injection.
+
+----------------------------------------------------------------
+
+A171.
+[EN] 32 bytes = 24 (GRE) + 8 (2 labels) → the network is an
+     L3VPN over GRE deployment: a 2-label stack (transport + VPN)
+     inside a GRE tunnel.
+
+[TM] 32 bytes = 24 (GRE) + 8 (2 labels) → network L3VPN over GRE
+     deployment: GRE tunnel-க்குள் 2-label stack (transport + VPN).
+
+----------------------------------------------------------------
+
+A172.
+[EN] The attacker knows label 3000 (transport, s=0) and label 500
+     (VPN, s=1). They craft a packet with VPN label 500 toward the
+     egress PE → VPN boundary escape: the packet is delivered into
+     the VRF associated with label 500, giving cross-VPN access.
+
+[TM] Attacker label 3000 (transport, s=0), label 500 (VPN, s=1)
+     தெரியும். VPN label 500-உடன் egress PE-க்கு packet craft
+     பண்ணுவான் → VPN boundary escape: label 500-உடன் தொடர்புடைய
+     VRF-க்குள் packet deliver ஆகும், cross-VPN access கிடைக்கும்.
+
+----------------------------------------------------------------
+
+A173.
+[EN] Alternative: inject a /24 or /25 route that passes the
+     prefix-list (instead of /32), or inject via another protocol
+     (BGP), or poison with a default/summary route that is allowed
+     by the filter.
+
+[TM] மாற்று: prefix-list-ஐ கடக்கும் /24 அல்லது /25 route (/32
+     பதிலாக) inject, அல்லது வேறு protocol (BGP) வழியா inject,
+     அல்லது filter அனுமதிக்கும் default/summary route வழியா poison.
+
+----------------------------------------------------------------
+
+A174.
+[EN] BGP injection (or an OSPF default route) can reach all
+     routers including stubs, bypassing the EIGRP stub restriction.
+
+[TM] BGP injection (அல்லது OSPF default route) stubs உட்பட எல்லா
+     routers-ஐயும் reach பண்ணும், EIGRP stub restriction-ஐ
+     bypass பண்ணும்.
+
+----------------------------------------------------------------
+
+A175.
+[EN] ARP poisoning: L2 same-subnet MITM, scope limited to the L2
+     segment, not persistent (ARP cache ages), detectable via DAI.
+     MPLS label injection: domain-wide (L3/MPLS) impact, persistent
+     (LFIB until session down), harder to detect (no IP signature).
+
+[TM] ARP poisoning: L2 same-subnet MITM, scope L2 segment-க்கு
+     மட்டும், persistent இல்லை (ARP cache age ஆகும்), DAI வழியா
+     detect. MPLS label injection: domain-wide (L3/MPLS) impact,
+     persistent (LFIB session down வரை), detect பண்ண கடினம்
+     (IP signature இல்லை).
+
+----------------------------------------------------------------
+
+A176.
+[EN] STP root takeover gives the attacker L2 forwarding control,
+     so they can position themselves to receive/forward traffic and
+     gain VLAN access to the MPLS domain, chaining into GRE/VLAN
+     hopping and MPLS label injection.
+
+[TM] STP root takeover attacker-க்கு L2 forwarding control தரும்,
+     அதனால் traffic receive/forward பண்ண இடம் பிடித்து, MPLS
+     domain-க்கு VLAN access பெற்று, GRE/VLAN hopping மற்றும்
+     MPLS label injection-ஆக chain பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A177.
+[EN] Platform Cisco 7600 + IOS 12.4(24)T identifies a specific
+     version with known CVEs; the attacker can search for MPLS/LDP
+     vulnerabilities affecting that exact version and target them.
+
+[TM] Platform Cisco 7600 + IOS 12.4(24)T ஒரு குறிப்பிட்ட version,
+     அதற்கு known CVEs உண்டு; attacker அந்த version-ஐ பாதிக்கும்
+     MPLS/LDP vulnerabilities தேடி target பண்ணலாம்.
+
+----------------------------------------------------------------
+
+A178.
+[EN] LDP label bindings are independent of OSPF. They persist
+     until the LDP session goes down or the label is withdrawn
+     (after the LDP hold-time, typically ~180 s) — they do not
+     disappear just because the OSPF routes are flushed.
+
+[TM] LDP label bindings OSPF-ஐ சார்ந்தவை அல்ல. LDP session down
+     ஆகும் வரை அல்லது label withdraw ஆகும் வரை (LDP hold-time,
+     பொதுவாக ~180 s) persist ஆகும் — OSPF routes flush ஆனால்
+     மட்டும் disappear ஆகாது.
+
+----------------------------------------------------------------
+
+A179.
+[EN] Control-plane attacks change the routing/label tables and
+     therefore persistently affect all traffic until protocol
+     reconvergence. Data-plane label spoofing is per-packet and not
+     persistent. Control-plane is more persistent.
+
+[TM] Control-plane attacks routing/label tables-ஐ மாற்றுவதால்
+     protocol reconvergence வரை எல்லா traffic-ஐயும் persistently
+     affect பண்ணும். Data-plane label spoofing per-packet, persistent
+     இல்லை. Control-plane more persistent.
+
+----------------------------------------------------------------
+
+A180.
+[EN] Yes, routes from one sub-AS propagate to other sub-ASes via
+     confederation eBGP. Controlled by attributes such as
+     AS_CONFED_SEQUENCE / AS_CONFED_SET (loop prevention) and
+     LOCAL_PREF/MED.
+
+[TM] ஆம், ஒரு sub-AS-லிருந்து routes confederation eBGP வழியா
+     மற்ற sub-ASes-க்கு propagate ஆகும். AS_CONFED_SEQUENCE /
+     AS_CONFED_SET (loop prevention), LOCAL_PREF/MED போன்ற
+     attributes control பண்ணும்.
+
+----------------------------------------------------------------
+
+A181.
+[EN] The spoofed PathErr tears down or reroutes the TE tunnel;
+     FRR may switch traffic to a backup path, or traffic is dropped
+     → disruption/DoS.
+
+[TM] Spoofed PathErr TE tunnel-ஐ tear down/reroute பண்ணும்;
+     FRR traffic-ஐ backup path-க்கு மாற்றலாம், அல்லது traffic
+     drop ஆகலாம் → disruption/DoS.
+
+----------------------------------------------------------------
+
+A182.
+[EN] SR-MPLS distributes labels via IGP (OSPF/IS-IS) using prefix-
+     SIDs, so there is no LDP and the LDP Hello injection chain no
+     longer applies. New vector: IGP-based SID injection (SR
+     extensions in OSPF/IS-IS) → traffic steering hijack.
+
+[TM] SR-MPLS IGP (OSPF/IS-IS) வழியா prefix-SIDs பயன்படுத்தி
+     labels distribute பண்ணும், LDP இல்லை, LDP Hello injection
+     chain பொருந்தாது. புது vector: IGP-based SID injection
+     (OSPF/IS-IS-ல் SR extensions) → traffic steering hijack.
+
+----------------------------------------------------------------
+
+A183.
+[EN] Only traffic to 10.0.0.0/24 is affected (longest-prefix
+     match); the rest of 10.0.0.0/8 is unaffected.
+
+[TM] 10.0.0.0/24-க்கான traffic மட்டும் affect ஆகும் (longest-prefix
+     match); 10.0.0.0/8-ல் மற்றவை affect ஆகாது.
+
+----------------------------------------------------------------
+
+A184.
+[EN] The spoofed BFD DOWN makes the LSP appear down → MPLS TE/
+     RSVP-TE reroutes to a backup or tears the tunnel down → traffic
+     disruption; FRR may engage.
+
+[TM] Spoofed BFD DOWN LSP-ஐ down ஆகக் காட்டும் → MPLS TE/RSVP-TE
+     backup-க்கு reroute அல்லது tunnel tear down → traffic
+     disruption; FRR செயல்படலாம்.
+
+----------------------------------------------------------------
+
+A185.
+[EN] Step 3 (GRE inject → LDP session) is where the attack crosses
+     from the L2 domain into the L3/MPLS domain.
+
+[TM] Step 3 (GRE inject → LDP session) — இங்குதான் attack L2
+     domain-லிருந்து L3/MPLS domain-க்கு cross ஆகிறது.
+
+----------------------------------------------------------------
+
+A186.
+[EN] Possible: IP-based protocols — BGP, LDP (TCP 646), PIM,
+     RSVP. NOT possible: direct IS-IS injection (IS-IS is a
+     non-IP L2 protocol).
+
+[TM] Possible: IP-based protocols — BGP, LDP (TCP 646), PIM, RSVP.
+     NOT possible: நேரடி IS-IS injection (IS-IS non-IP L2 protocol).
+
+----------------------------------------------------------------
+
+A187.
+[EN] The ACL permits only TCP 646 to 10.10.10.1 and denies
+     everything else. GRE (proto 47) is not TCP 646 → it is denied.
+     So the ACL BLOCKS the GRE-based LDP Hello injection.
+
+[TM] ACL TCP 646 to 10.10.10.1 மட்டும் permit, மற்ற எல்லாவற்றையும்
+     deny. GRE (proto 47) TCP 646 அல்ல → deny ஆகும். அதனால் ACL
+     GRE-based LDP Hello injection-ஐ BLOCK பண்ணும்.
+
+----------------------------------------------------------------
+
+A188.
+[EN] Block at the internet-facing firewall:
+       - GRE (IP proto 47)
+       - IP-in-IP (proto 4)
+       - EtherIP (proto 97)
+       - LDP TCP/UDP 646
+       - MPLS-in-UDP 6635
+       - VXLAN UDP 4789
+       - ESP (proto 50) / AH (proto 51) unless needed
+       - OSPF (proto 89), PIM (proto 103), RSVP (proto 46)
+
+[TM] Internet-facing firewall-ல் block:
+       - GRE (IP proto 47)
+       - IP-in-IP (proto 4)
+       - EtherIP (proto 97)
+       - LDP TCP/UDP 646
+       - MPLS-in-UDP 6635
+       - VXLAN UDP 4789
+       - ESP (proto 50) / AH (proto 51) தேவை இல்லாவிட்டால்
+       - OSPF (proto 89), PIM (proto 103), RSVP (proto 46)
+
+----------------------------------------------------------------
+
+A189.
+[EN] The attacker's route with metric=1 is still lower than the
+     admin's metric=5, so the attacker route remains preferred →
+     traffic is still hijacked. The admin must remove the fake route
+     or use a lower metric/filter.
+
+[TM] Attacker route metric=1 admin-ன் metric=5-ஐ விடக் குறைவு,
+     அதனால் attacker route இன்னும் preferred → traffic இன்னும்
+     hijack. Admin fake route-ஐ remove பண்ணணும் அல்லது குறைந்த
+     metric/filter பயன்படுத்தணும்.
+
+----------------------------------------------------------------
+
+A190.
+[EN] L2 controls: port security, DAI, DHCP snooping, disable
+     native-VLAN trunking, BPDU guard.
+     L3 controls: block GRE/proto 4/97 at the edge, uRPF,
+     OSPF/BGP MD5 auth, route filtering/prefix-lists.
+     MPLS controls: LDP MD5 auth, label range restriction, TTL
+     propagation policy, disable MPLS on untrusted interfaces.
+
+[TM] L2 controls: port security, DAI, DHCP snooping, native-VLAN
+     trunking disable, BPDU guard.
+     L3 controls: edge-ல் GRE/proto 4/97 block, uRPF, OSPF/BGP MD5
+     auth, route filtering/prefix-lists.
+     MPLS controls: LDP MD5 auth, label range restriction, TTL
+     propagation policy, untrusted interfaces-ல் MPLS disable.
+
+----------------------------------------------------------------
+
+A191.
+[EN] The star (*) at hop 4 means that P router is filtering/
+     suppressing ICMP TTL-exceeded (ICMP rate-limit/filter or TTL
+     propagation disabled), so it hides itself from traceroute.
+
+[TM] Hop 4-ல் star (*) என்றால் அந்த P router ICMP TTL-exceeded-ஐ
+     filter/suppress பண்ணுகிறது (ICMP rate-limit/filter அல்லது TTL
+     propagation disabled), தன்னை traceroute-லிருந்து மறைக்கிறது.
+
+----------------------------------------------------------------
+
+A192.
+[EN] Label 500 is the VPN label for a specific VRF, so the PE
+     delivers the packet into that VRF (the customer associated
+     with label 500) and then to 192.168.1.1.
+
+[TM] Label 500 ஒரு குறிப்பிட்ட VRF-ன் VPN label, அதனால் PE packet-ஐ
+     அந்த VRF-க்குள் (label 500-உடன் தொடர்புடைய customer) deliver
+     பண்ணி, பிறகு 192.168.1.1-க்கு அனுப்பும்.
+
+----------------------------------------------------------------
+
+A193.
+[EN] Labels in the SRGB range represent Segment Routing prefix-SIDs
+     (node/prefix segments) — they identify SR-MPLS segments/nodes.
+
+[TM] SRGB range-ல் உள்ள labels Segment Routing prefix-SIDs
+     (node/prefix segments) represent பண்ணும் — SR-MPLS segments/
+     nodes-ஐ identify பண்ணும்.
+
+----------------------------------------------------------------
+
+A194.
+[EN] Management-plane (SNMP write to LFIB) needs credentials/write
+     access, changes config directly, and is logged (SNMP traps) —
+     easier to detect. Control-plane (LDP injection) looks like
+     normal protocol traffic and is harder to detect.
+
+[TM] Management-plane (LFIB-க்கு SNMP write) credentials/write access
+     தேவை, config-ஐ நேரடியாக மாற்றும், log ஆகும் (SNMP traps) —
+     detect பண்ண எளிது. Control-plane (LDP injection) சாதாரண
+     protocol traffic மாதிரி தெரியும், detect பண்ண கடினம்.
+
+----------------------------------------------------------------
+
+A195.
+[EN] From passive capture alone the attacker can learn: MPLS label
+     values, stack depth (S-bit), EtherTypes, presence of LDP/OSPF/
+     BGP, MTU/MSS, topology hints, router IPs, vendor info (CDP/
+     LLDP) and VPN labels.
+
+[TM] Passive capture மட்டும் வைத்து attacker தெரிந்துகொள்வது: MPLS
+     label values, stack depth (S-bit), EtherTypes, LDP/OSPF/BGP
+     presence, MTU/MSS, topology hints, router IPs, vendor info
+     (CDP/LLDP), VPN labels.
+
+----------------------------------------------------------------
+
+A196.
+[EN] Remaining capacity = 40 − 10 (voice) − 30 (fake) = 0 Gbps →
+     no capacity remains for new reservations (DoS).
+
+[TM] Remaining capacity = 40 − 10 (voice) − 30 (fake) = 0 Gbps →
+     புது reservations-க்கு capacity இல்லை (DoS).
+
+----------------------------------------------------------------
+
+A197.
+[EN] A misconfigured RT import causes a silent cross-VPN route
+     leak → full confidentiality breach across tenants, affecting
+     all traffic and hard to notice. A misconfigured OSPF area type
+     mostly causes routing issues, which are more visible and
+     limited. RT leak is more dangerous.
+
+[TM] Misconfigured RT import ஒரு silent cross-VPN route leak →
+     tenants-க்கிடையே முழு confidentiality breach, எல்லா traffic-ஐயும்
+     பாதிக்கும், கவனிக்க கடினம். Misconfigured OSPF area type
+     பொதுவாக routing issues, அது அதிகம் தெரியும், limited. RT leak
+     more dangerous.
+
+----------------------------------------------------------------
+
+A198.
+[EN] No. Fake LFIB entries on other MPLS routers persist until
+     the LDP session/label bindings time out or are withdrawn, so
+     traffic continues to be redirected until the LFIB is cleared.
+
+[TM] இல்லை. மற்ற MPLS routers-ல் உள்ள fake LFIB entries LDP
+     session/label bindings timeout/withdraw ஆகும் வரை persist
+     ஆகும், அதனால் LFIB clear ஆகும் வரை traffic redirect ஆகிக்கொண்டே
+     இருக்கும்.
+
+----------------------------------------------------------------
+
+A199.
+[EN] The attacker minimally needs network reachability to TCP 646
+     on an LDP-enabled router/interface (LDP adjacency reachability).
+     No GRE is needed — LDP itself carries the injection.
+
+[TM] Attacker-க்கு குறைந்தபட்சம் LDP-enabled router/interface-ல்
+     TCP 646 reachability (LDP adjacency reachability) தேவை. GRE
+     தேவையில்லை — LDP-ஏ injection-ஐ carry பண்ணும்.
+
+----------------------------------------------------------------
+
+A200.
+[EN] Methodology:
+     1. Passive recon: capture HTTPS-only traffic, derive MSS/MTU
+        and detect MPLS encapsulation.
+     2. MTU/MSS probing over TCP 443 (no ICMP) to confirm the
+        label stack depth.
+     3. Pivot to internal network over TCP 443 (SSL-VPN/app-layer
+        tunnel) since direct GRE is blocked.
+     4. OSPF (no auth) route injection from the internal foothold
+        to poison routing.
+     5. Use route injection to reach LDP (TCP 646) and establish
+        an LDP session.
+     6. Inject fake labels → traffic redirection → MPLS control.
+
+[TM] Methodology:
+     1. Passive recon: HTTPS-only traffic capture, MSS/MTU
+        கண்டறிந்து MPLS encapsulation detect.
+     2. TCP 443 வழியா MTU/MSS probing (ICMP இல்லை), label stack
+        depth உறுதி.
+     3. Direct GRE blocked என்பதால் TCP 443 வழியா internal
+        network-க்கு pivot (SSL-VPN/app-layer tunnel).
+     4. OSPF (auth இல்லை) route injection — internal foothold-லிருந்து
+        routing poison.
+     5. Route injection பயன்படுத்தி LDP (TCP 646) reach பண்ணி LDP
+        session establish.
+     6. Fake labels inject → traffic redirection → MPLS control.
+
+================================================================
+  END OF ANSWERS — 200 TOTAL
+  Sections:
+  1. MPLS Fundamentals        (Q1–Q20)
+  2. GRE vs MPLS Architecture (Q21–Q40)
+  3. Topology Based           (Q41–Q65)
+  4. Identification/Recon     (Q66–Q90)
+  5. Indirect Attack Methods  (Q91–Q120)
+  6. Encapsulation Chains     (Q111–Q130)
+  7. MPLS Multicast & PIM     (Q131–Q150)
+  8. Detection & Defense      (Q141–Q160)
+  9. MTU Calculations         (Q151–Q170)
+  10. Advanced Chain Scenarios (Q161–Q200)
+================================================================
